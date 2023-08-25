@@ -35,6 +35,14 @@ public class User {
 		this.telephone = newTelephone;
 		this.cep = newCep;
 	}
+	
+	public User(String newName, String newSurname, String newEmail, String newTelephone, String newCep) {
+		this.name = newName;
+		this.surname = newSurname;
+		this.email = newEmail;
+		this.telephone = newTelephone;
+		this.cep = newCep;
+	}
 
 	public String getId() {
 		return id;

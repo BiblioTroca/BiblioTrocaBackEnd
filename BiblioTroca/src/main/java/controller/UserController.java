@@ -8,17 +8,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
 import exception.CpfNotFoundException;
 
 @RestController
 @RequestMapping("/api/v1/bibliotroca/usuarios")
 public class UserController {
-
+	private UserService userService;
+	
+	@Autowired
+	public UserController(UserService userService) {
+		this.userService = userService;
+	}
+	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public User createNewUser(@Valid @RequestBody User user) throws CpfAlreadyInUseException {
-		
+		return this.userService.createNewUser(user);
 	}
 	
 	@GetMapping
@@ -40,7 +45,7 @@ public class UserController {
 	
 	@DeleteMapping("/{cpf}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteUserByCPF(@PathVariable String cpf) throws CpfNotFoundException {
+	public void deleteUser(@PathVariable String cpf) throws CpfNotFoundException {
 		this.userService.deleteUserByCPF(cpf);
 	}
 }
