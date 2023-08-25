@@ -1,7 +1,6 @@
 package controller;
 
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,5 +29,18 @@ public class UserController {
 	@GetMapping("/{cpf}")
 	public User returnUserByCPF(@PathVariable String cpf) throws CpfNotFoundException {
 		return this.userService.returnUserByCPF(cpf);
+	}
+	
+	@PutMapping("/{cpf}")
+	public User updateUserByCPF(@PathVariable String cpf, @Valid UserDTO userDTO) throws CpfNotFoundException {
+		User userRequest = UserDTO.returnUser(userDTO);
+		User userUpdated = this.userService.updateUser(cpf, userRequest);
+		return UserDTO.returnUserDTO(userUpdated);
+	}
+	
+	@DeleteMapping("/{cpf}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteUserByCPF(@PathVariable String cpf) throws CpfNotFoundException {
+		this.userService.deleteUserByCPF(cpf);
 	}
 }
