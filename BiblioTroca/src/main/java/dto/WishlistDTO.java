@@ -2,17 +2,30 @@ package dto;
 
 
 
+import entity.User;
 import entity.Wishlist;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 public class WishlistDTO {
 
     @NotBlank(message = "Nome do livro é obrigatório")
     private String nameBook;
 
-    @NotBlank(message = "Nome do cliente é obrigatório")
-    private String user;
+    @NotBlank(message = "Nome do autor é obrigatório")
+    private String author;
+
+    @NotBlank(message = "Nome da categoria é obrigatório")
+    private String category;
+
+    @NotBlank(message = "Nome do usuário é obrigatório")
+    private User user;
+
+
+    @CreatedDate
+    private LocalDateTime createDate;
 
 
     public WishlistDTO() {
@@ -20,8 +33,11 @@ public class WishlistDTO {
     }
 
 
-    public WishlistDTO(String nameBook, String user) {
+    public WishlistDTO(String nameBook, String author, String category, LocalDateTime createDate, User user) {
         this.nameBook = nameBook;
+        this.author = author;
+        this.category = category;
+        this.createDate = createDate;
         this.user = user;
     }
 
@@ -33,15 +49,34 @@ public class WishlistDTO {
         this.nameBook = nameBook;
     }
 
-    public String getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(String user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
+    public String getAuthor() {
+        return author;
+    }
+    public String getCategory() {
+        return category;
+    }
+    public LocalDateTime getCreateDate() {
+        return createDate;
+    }
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
+    }
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     public Wishlist returnWishlist() {
-        return new Wishlist(nameBook, user);
+        return new Wishlist(nameBook, author, category, createDate, user);
     }
 }

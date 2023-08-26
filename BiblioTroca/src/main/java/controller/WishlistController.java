@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import dto.WishlistDTO;
+import entity.User;
 import entity.Wishlist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import service.UserService;
 import service.WishlistService;
 
 @RestController
@@ -31,15 +33,18 @@ public class WishlistController {
 
     public WishlistController() {
     }
-
     @CrossOrigin
     @PostMapping
     public ResponseEntity<Object> saveWishlist(@RequestBody @Valid WishlistDTO wishlistDTO, BindingResult result) {
         this.wish = new Wishlist();
+       // User user = UserService.findByCpf(wishlistDTO.getUser());
+
         if (result.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dados inválidos.");
         } else {
             try {
+               // Wishlist.setUser(user);
+                //Wishlist.setUser(UserService.findByCpf(wishlistDTO.getUser()));
                 return ResponseEntity.status(HttpStatus.CREATED).body(this.wishlistService.save(wishlistDTO.returnWishlist()));
             } catch (Exception var4) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro não esperado ");
@@ -55,7 +60,7 @@ public class WishlistController {
 
     @CrossOrigin
     @DeleteMapping({"/{id}"})
-    public ResponseEntity<Object> deleteById(@PathVariable("id") long id) {
+    public ResponseEntity<Object> deleteById(@PathVariable("id") String id) {
         Optional<Wishlist> wishDelete = this.wishlistService.searchById(id);
         if (wishDelete.isPresent()) {
             this.wishlistService.delete(id);
@@ -67,7 +72,7 @@ public class WishlistController {
 
     @CrossOrigin
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateWishlist(@PathVariable("id") long id, @RequestBody @Valid WishlistDTO wishlistDTO, BindingResult result) {
+    public ResponseEntity<Object> updateWishlist(@PathVariable("id") String id, @RequestBody @Valid WishlistDTO wishlistDTO, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dados inválidos.");
         } else {
@@ -87,7 +92,7 @@ public class WishlistController {
 
     @CrossOrigin
         @GetMapping({"/{id}"})
-        public ResponseEntity<Object> searchById (@PathVariable Long id){
+        public ResponseEntity<Object> searchById (@PathVariable String id){
         Optional<Wishlist> wishFound = this.wishlistService.searchById(id);
         return wishFound.isPresent() ? ResponseEntity.status(HttpStatus.OK).body(wishFound.get()) : this.wishlistIsEmpty(wishFound);
     }

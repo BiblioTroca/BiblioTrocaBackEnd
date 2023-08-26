@@ -2,12 +2,15 @@ package entity;
 
 import javax.validation.constraints.NotBlank;
 import jakarta.persistence.Entity;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.time.LocalDateTime;
 
-@Entity
+
+// @Entity
 @Document(collection="Lista-de-Desejos")
 
 public class Wishlist {
@@ -18,11 +21,24 @@ public class Wishlist {
     @NotBlank(message = "Nome do livro é obrigatório")
     private String nameBook;
 
-    @NotBlank(message = "Nome do usuário é obrigatório")
-    private String user;
+    @NotBlank(message = "Nome do autor é obrigatório")
+    private String author;
 
-    public Wishlist(String nameBook, String user) {
+    @NotBlank(message = "Nome da categoria é obrigatório")
+    private String category;
+
+    @NotBlank(message = "Nome do usuário é obrigatório")
+    private User user;
+
+
+    @CreatedDate
+    private LocalDateTime createDate;
+
+    public Wishlist(String nameBook, String author, String category, LocalDateTime createDate, User user) {
         this.nameBook = nameBook;
+        this.author = author;
+        this.category = category;
+        this.createDate = createDate;
         this.user = user;
     }
 
@@ -45,12 +61,31 @@ public class Wishlist {
         this.nameBook = nameBook;
     }
 
-    public String getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(String user) {
+    public void setUser(User user) {
         this.user = user;
+    }
+
+    public LocalDateTime getCreateDate() {
+        return createDate;
+    }
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
+    }
+    public String getAuthor() {
+        return author;
+    }
+    public void setAuthor(String author) {
+        this.author= author;
+    }
+    public String getCategory() {
+        return category;
+    }
+    public void setCategory(String category) {
+        this.category= category;
     }
 }
 
