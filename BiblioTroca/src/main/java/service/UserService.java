@@ -1,7 +1,15 @@
 package service;
 
 import org.springframework.stereotype.Service;
-import controller.Autowired;
+
+import entity.User;
+import exception.CpfAlreadyInUseException;
+import exception.CpfNotFoundException;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import repository.UserRepository;
 
 @Service
 public class UserService {
@@ -31,7 +39,7 @@ public class UserService {
 	}
 	
 	public User updateUser(String cpf, User user) throws CpfNotFoundException {
-		if(!this.userRepository.findByCpf(cpf)) {
+		if(!this.userRepository.existsByCpf(cpf)) {
 			throw new CpfNotFoundException(cpf);
 		}
 		User userRequest = this.userRepository.getReferenceByCpf(cpf);
@@ -41,7 +49,7 @@ public class UserService {
 			user.setName(userRequest.getName());
 		}
 		if(user.getSurname() == null) {
-			user.setSurame(userRequest.getSurame());
+			user.setSurname(userRequest.getSurname());
 		}
 		if(user.getEmail() == null) {
 			user.setEmail(userRequest.getEmail());
@@ -56,7 +64,7 @@ public class UserService {
 	}
 	
 	public void deleteUser(String cpf) throws CpfNotFoundException {
-		if(this.userRepository.findByCpf(cpf)) {
+		if(this.userRepository.existsByCpf(cpf)) {
 			this.userRepository.deleteByCpf(cpf);
 		} else {
 			throw new CpfNotFoundException(cpf);

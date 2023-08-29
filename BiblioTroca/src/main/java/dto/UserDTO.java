@@ -1,6 +1,6 @@
 package dto;
 
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
+import entity.User;
 
 public class UserDTO {
 	private String name;
@@ -58,7 +58,7 @@ public class UserDTO {
 		return new UserDTO(user.getName(), user.getSurname(), user.getEmail(), user.getTelephone(), user.getCep());
 	}
 	
-	public static User returnUser(UserDTO, userDTO) {
+	public static User returnUser(UserDTO userDTO) {
 		return new User(userDTO.getName(), userDTO.getSurname(), userDTO.getEmail(), userDTO.getTelephone(), userDTO.getCep());
 	}
 }
