@@ -1,29 +1,19 @@
-package service;
-
-import org.springframework.stereotype.Service;
-
-import entity.User;
-import exception.CpfAlreadyInUseException;
-import exception.CpfNotFoundException;
+package bibliotroca.BiblioTroca.service;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import repository.UserRepository;
+import org.springframework.stereotype.Service;
+import bibliotroca.BiblioTroca.entity.User;
+import bibliotroca.BiblioTroca.exception.CpfNotFoundException;
+import bibliotroca.BiblioTroca.repository.UserRepository;
 
 @Service
 public class UserService {
-	private UserRepository userRepository;
-	
 	@Autowired
-	public UserService(UserRepository userRepository) {
-		this.userRepository = userRepository;
-	}
+	UserRepository userRepository;
 	
-	public User createNewUser(User user) throws CpfAlreadyInUseException {
-		if(this.userRepository.existsByCpf(user.getCpf())) {
-			throw new CpfAlreadyInUseException(user.getCpf());
-		}
+	public User createUser(User user) {
 		return this.userRepository.save(user);
 	}
 	
@@ -42,7 +32,7 @@ public class UserService {
 		if(!this.userRepository.existsByCpf(cpf)) {
 			throw new CpfNotFoundException(cpf);
 		}
-		User userRequest = this.userRepository.getReferenceByCpf(cpf);
+		User userRequest = this.userRepository.findByCpf(cpf);
 		user.setId(userRequest.getId());
 		user.setCpf(cpf);
 		if(user.getName() == null) {

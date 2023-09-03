@@ -1,6 +1,6 @@
-package dto;
+package bibliotroca.BiblioTroca.dto;
 
-import entity.User;
+import bibliotroca.BiblioTroca.entity.User;
 
 public class UserDTO {
 	private String name;

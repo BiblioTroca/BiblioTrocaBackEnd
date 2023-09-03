@@ -1,13 +1,7 @@
-package controller;
-
+package bibliotroca.BiblioTroca.controller;
 
 import java.util.List;
 import java.util.Optional;
-import javax.validation.Valid;
-
-import dto.WishlistDTO;
-import entity.User;
-import entity.Wishlist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +15,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import service.UserService;
-import service.WishlistService;
+
+import bibliotroca.BiblioTroca.dto.WishlistDTO;
+import bibliotroca.BiblioTroca.entity.Wishlist;
+import bibliotroca.BiblioTroca.service.WishlistService;
+import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping({"/api/v1/bibliotroca/lista-de-desejos"})
@@ -101,4 +99,3 @@ public class WishlistController {
         return wish.isEmpty() ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("Id não encontrado.") : ResponseEntity.status(HttpStatus.OK).body(wish.get());
     }
     }
-

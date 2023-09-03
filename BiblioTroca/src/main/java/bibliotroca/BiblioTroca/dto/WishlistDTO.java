@@ -1,23 +1,15 @@
-package entity;
+package bibliotroca.BiblioTroca.dto;
 
-import javax.validation.constraints.NotBlank;
-import jakarta.persistence.Entity;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.MongoId;
+
+import bibliotroca.BiblioTroca.entity.User;
+import bibliotroca.BiblioTroca.entity.Wishlist;
+import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDateTime;
 
+public class WishlistDTO {
 
-// @Entity
-@Document(collection="Lista-de-Desejos")
-
-public class Wishlist {
-
-    @Id
-    @MongoId
-    private String id;
     @NotBlank(message = "Nome do livro é obrigatório")
     private String nameBook;
 
@@ -34,23 +26,18 @@ public class Wishlist {
     @CreatedDate
     private LocalDateTime createDate;
 
-    public Wishlist(String nameBook, String author, String category, LocalDateTime createDate, User user) {
+
+    public WishlistDTO() {
+
+    }
+
+
+    public WishlistDTO(String nameBook, String author, String category, LocalDateTime createDate, User user) {
         this.nameBook = nameBook;
         this.author = author;
         this.category = category;
         this.createDate = createDate;
         this.user = user;
-    }
-
-    public Wishlist() {
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public  void setId(String id) {
-        this.id = id;
     }
 
     public String getNameBook() {
@@ -69,23 +56,26 @@ public class Wishlist {
         this.user = user;
     }
 
+    public String getAuthor() {
+        return author;
+    }
+    public String getCategory() {
+        return category;
+    }
     public LocalDateTime getCreateDate() {
         return createDate;
     }
     public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
     }
-    public String getAuthor() {
-        return author;
-    }
     public void setAuthor(String author) {
-        this.author= author;
-    }
-    public String getCategory() {
-        return category;
+        this.author = author;
     }
     public void setCategory(String category) {
-        this.category= category;
+        this.category = category;
+    }
+
+    public Wishlist returnWishlist() {
+        return new Wishlist(nameBook, author, category, createDate, user);
     }
 }
-

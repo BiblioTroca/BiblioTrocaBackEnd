@@ -1,4 +1,4 @@
-package controller;
+package bibliotroca.BiblioTroca.controller;
 
 import java.util.List;
 
@@ -14,27 +14,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import dto.UserDTO;
-import entity.User;
-import exception.CpfAlreadyInUseException;
-import exception.CpfNotFoundException;
+import bibliotroca.BiblioTroca.dto.UserDTO;
+import bibliotroca.BiblioTroca.entity.User;
+import bibliotroca.BiblioTroca.exception.CpfAlreadyInUseException;
+import bibliotroca.BiblioTroca.exception.CpfNotFoundException;
+import bibliotroca.BiblioTroca.service.UserService;
 import jakarta.validation.Valid;
-import service.UserService;
 
 @RestController
 @RequestMapping("/api/v1/bibliotroca/usuarios")
 public class UserController {
-	private UserService userService;
-	
 	@Autowired
-	public UserController(UserService userService) {
-		this.userService = userService;
-	}
+	UserService userService;
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public User createNewUser(@Valid @RequestBody User user) throws CpfAlreadyInUseException {
-		return this.userService.createNewUser(user);
+	public User createUser(@RequestBody @Valid User user) throws CpfAlreadyInUseException {
+		return this.userService.createUser(user);
 	}
 	
 	@GetMapping

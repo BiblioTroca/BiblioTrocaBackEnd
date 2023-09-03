@@ -1,16 +1,12 @@
-package entity;
+package bibliotroca.BiblioTroca.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.MongoId;
+import jakarta.validation.constraints.NotBlank;
 
-@Entity
 @Document(collection="Usuarios")
 public class User {
 	@Id
-	@MongoId
 	private String id;
 	@NotBlank(message="O CPF é obrigatório")
 	private String cpf;
@@ -27,21 +23,31 @@ public class User {
 	
 	public User() {	}
 	
-	public User(String newCpf, String newName, String newSurname, String newEmail, String newTelephone, String newCep) {
-		this.cpf = newCpf;
-		this.name = newName;
-		this.surname = newSurname;
-		this.email = newEmail;
-		this.telephone = newTelephone;
-		this.cep = newCep;
+	public User(String id, String cpf, String name, String surname, String email, String telephone, String cep) {
+		this.id = id;
+		this.cpf = cpf;
+		this.name = name;
+		this.surname = surname;
+		this.email = email;
+		this.telephone = telephone;
+		this.cep = cep;
 	}
 	
-	public User(String newName, String newSurname, String newEmail, String newTelephone, String newCep) {
-		this.name = newName;
-		this.surname = newSurname;
-		this.email = newEmail;
-		this.telephone = newTelephone;
-		this.cep = newCep;
+	public User(String cpf, String name, String surname, String email, String telephone, String cep) {
+		this.cpf = cpf;
+		this.name = name;
+		this.surname = surname;
+		this.email = email;
+		this.telephone = telephone;
+		this.cep = cep;
+	}
+	
+	public User(String name, String surname, String email, String telephone, String cep) {
+		this.name = name;
+		this.surname = surname;
+		this.email = email;
+		this.telephone = telephone;
+		this.cep = cep;
 	}
 
 	public String getId() {

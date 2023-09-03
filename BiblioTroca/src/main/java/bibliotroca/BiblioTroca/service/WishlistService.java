@@ -1,11 +1,10 @@
-package service;
+package bibliotroca.BiblioTroca.service;
 
-
-import entity.Wishlist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.WishlistRepository;
 
+import bibliotroca.BiblioTroca.entity.Wishlist;
+import bibliotroca.BiblioTroca.repository.WishlistRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -69,7 +68,3 @@ public class WishlistService {
                 }
 
         }
-
-
-
-

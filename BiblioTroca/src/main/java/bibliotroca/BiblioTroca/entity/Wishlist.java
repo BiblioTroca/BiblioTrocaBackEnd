@@ -1,16 +1,21 @@
-package dto;
+package bibliotroca.BiblioTroca.entity;
 
 
-
-import entity.User;
-import entity.Wishlist;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
+
 import java.time.LocalDateTime;
 
-public class WishlistDTO {
+@Document(collection="Lista-de-Desejos")
+public class Wishlist {
 
+    @Id
+    @MongoId
+    private String id;
     @NotBlank(message = "Nome do livro é obrigatório")
     private String nameBook;
 
@@ -27,18 +32,23 @@ public class WishlistDTO {
     @CreatedDate
     private LocalDateTime createDate;
 
-
-    public WishlistDTO() {
-
-    }
-
-
-    public WishlistDTO(String nameBook, String author, String category, LocalDateTime createDate, User user) {
+    public Wishlist(String nameBook, String author, String category, LocalDateTime createDate, User user) {
         this.nameBook = nameBook;
         this.author = author;
         this.category = category;
         this.createDate = createDate;
         this.user = user;
+    }
+
+    public Wishlist() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public  void setId(String id) {
+        this.id = id;
     }
 
     public String getNameBook() {
@@ -57,26 +67,22 @@ public class WishlistDTO {
         this.user = user;
     }
 
-    public String getAuthor() {
-        return author;
-    }
-    public String getCategory() {
-        return category;
-    }
     public LocalDateTime getCreateDate() {
         return createDate;
     }
     public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
     }
+    public String getAuthor() {
+        return author;
+    }
     public void setAuthor(String author) {
-        this.author = author;
+        this.author= author;
+    }
+    public String getCategory() {
+        return category;
     }
     public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public Wishlist returnWishlist() {
-        return new Wishlist(nameBook, author, category, createDate, user);
+        this.category= category;
     }
 }
