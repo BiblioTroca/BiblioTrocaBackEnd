@@ -44,7 +44,7 @@ public class UserController {
 	}
 	
 	@PutMapping("/{cpf}")
-	public UserDTO updateUserByCPF(@PathVariable String cpf, @Valid UserDTO userDTO) throws CpfNotFoundException {
+	public UserDTO updateUserByCPF(@PathVariable String cpf, @RequestBody @Valid UserDTO userDTO) throws CpfNotFoundException {
 		User userRequest = UserDTO.returnUser(userDTO);
 		User userUpdated = this.userService.updateUser(cpf, userRequest);
 		return UserDTO.returnUserDTO(userUpdated);
