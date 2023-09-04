@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import bibliotroca.BiblioTroca.entity.User;
+import bibliotroca.BiblioTroca.exception.CpfAlreadyInUseException;
 import bibliotroca.BiblioTroca.exception.CpfNotFoundException;
 import bibliotroca.BiblioTroca.repository.UserRepository;
 
@@ -13,7 +14,10 @@ public class UserService {
 	@Autowired
 	UserRepository userRepository;
 	
-	public User createUser(User user) {
+	public User createUser(User user) throws CpfAlreadyInUseException {
+		if(this.userRepository.existsByCpf(user.getCpf())) {
+			throw new CpfAlreadyInUseException();
+		}
 		return this.userRepository.save(user);
 	}
 	

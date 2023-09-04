@@ -8,6 +8,6 @@ public class CpfNotFoundException extends Exception {
 	private static final long serialVersionUID = 1L;
 	
 	public CpfNotFoundException(String cpf) {
-		super(String.format("O CPF %s não foi encontrado", cpf));
+		super(String.format("O CPF %s não foi encontrado", cpf), null, false, false);
 	}
 }
