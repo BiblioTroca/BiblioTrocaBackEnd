@@ -1,7 +1,10 @@
 package bibliotroca.BiblioTroca.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.tomcat.util.digester.ArrayStack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,15 +35,20 @@ public class UserController {
 	public User createUser(@RequestBody @Valid User user) throws CpfAlreadyInUseException {
 		return this.userService.createUser(user);
 	}
-	
+
 	@GetMapping
-	public List<User> returnAllUsers(){
-		return this.userService.returnAllUsers();
+	public ArrayList<UserDTO> returnAllUsers(){
+		List<User> users = this.userService.returnAllUsers();
+		ArrayList<UserDTO> usersDTO = new ArrayList<>();
+		for(User user : users) {
+			usersDTO.add(UserDTO.returnUserDTO(user));
+		}
+		return usersDTO;
 	}
 	
 	@GetMapping("/{cpf}")
-	public User returnUserByCPF(@PathVariable String cpf) throws CpfNotFoundException {
-		return this.userService.returnUserByCPF(cpf);
+	public UserDTO returnUserByCPF(@PathVariable String cpf) throws CpfNotFoundException {
+		return UserDTO.returnUserDTO(userService.returnUserByCPF(cpf));
 	}
 	
 	@PutMapping("/{cpf}")
