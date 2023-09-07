@@ -1,7 +1,7 @@
 package bibliotroca.BiblioTroca.dto;
 
 import bibliotroca.BiblioTroca.entity.Review;
-import bibliotroca.BiblioTroca.entity.User;
+import bibliotroca.BiblioTroca.entity.Wishlist;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -16,9 +16,6 @@ public class ReviewDTO {
 
     @NotNull(message = "Pontuação necessária")
     private int score;
-
-
-
 
     public ReviewDTO() {
     }
@@ -54,11 +51,11 @@ public class ReviewDTO {
     }
 
 
-    public ReviewDTO returnReviewDTO(Review review) {
-        return new ReviewDTO(review.getNameEvaluator(), review.getNameEvaluated(), review.getScore());
-    }
 
-    public Review returnReview(ReviewDTO reviewDTO) {
+
+
+
+    public Review returnReview( ReviewDTO reviewDTO) {
         return new Review(reviewDTO.getNameEvaluator(), reviewDTO.getNameEvaluated(), reviewDTO.getScore());
     }
 }
