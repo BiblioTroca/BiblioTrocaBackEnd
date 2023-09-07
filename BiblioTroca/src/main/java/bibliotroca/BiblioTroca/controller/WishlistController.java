@@ -23,7 +23,7 @@ import jakarta.validation.Valid;
 
 
 @RestController
-@RequestMapping({"/api/v1/bibliotroca/lista-de-desejos"})
+@RequestMapping({"/api/v1/bibliotroca/desejos"})
 public class WishlistController {
     @Autowired
     WishlistService wishlistService;
@@ -83,10 +83,6 @@ public class WishlistController {
             }
         }
     }
-
-
-
-
 
     @CrossOrigin
         @GetMapping({"/{id}"})

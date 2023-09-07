@@ -40,7 +40,6 @@ public class WishlistService {
         public Optional<Wishlist> updates(String id, Wishlist wishlist) {
                 //public Optional<Wishlist> update(Long id, Wishlist updatedWishlist) {
 
-
                 Optional<Wishlist> existingWishlist = this.repository.findById(id);
 
                 if (existingWishlist.isPresent()) {

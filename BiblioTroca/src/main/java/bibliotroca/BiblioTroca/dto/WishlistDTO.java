@@ -19,7 +19,6 @@ public class WishlistDTO {
     @NotBlank(message = "Nome da categoria é obrigatório")
     private String category;
 
-    @NotBlank(message = "Nome do usuário é obrigatório")
     private User user;
 
 
