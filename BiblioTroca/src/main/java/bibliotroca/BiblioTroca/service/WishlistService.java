@@ -24,10 +24,10 @@ public class WishlistService {
                 return repository.findById(id);
         }
 
-        public Optional<Wishlist> searchByNameBook(String nameBook) {
-                return repository.findByNameBook(nameBook);
+        public Optional<Wishlist> searchByBookName(String bookName) {
+                return repository.findByBookName(bookName);
         }
-         /* public Optional<Wishlist> searchByNameBook(String nameBook) {
+         /* public Optional<Wishlist> searchByNameBook(String bookName) {
             return Optional.empty();
         }*/
 
@@ -44,9 +44,9 @@ public class WishlistService {
 
                 if (existingWishlist.isPresent()) {
                         Wishlist wishlistToUpdate = existingWishlist.get();
-                        wishlistToUpdate.setNameBook(wishlist.getNameBook());
+                        wishlistToUpdate.setBookName(wishlist.getBookName());
                         wishlistToUpdate.setAuthor(wishlist.getAuthor());
-                        wishlistToUpdate.setCategory(wishlist.getCategory());
+                        wishlistToUpdate.setStudyField(wishlist.getStudyField());
                        // wishlistToUpdate.setUser(wishlist.getUser());
 
                         return Optional.ofNullable(repository.save(wishlistToUpdate));

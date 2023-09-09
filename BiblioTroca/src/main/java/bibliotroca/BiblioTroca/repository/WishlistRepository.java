@@ -8,6 +8,6 @@ import bibliotroca.BiblioTroca.entity.Wishlist;
 
 public interface WishlistRepository extends MongoRepository<Wishlist, String> {
 
-	Optional<Wishlist> findByNameBook(String nameBook);
+	Optional<Wishlist> findByBookName(String bookName);
 
 }

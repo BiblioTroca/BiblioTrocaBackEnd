@@ -11,13 +11,13 @@ import java.time.LocalDateTime;
 public class WishlistDTO {
 
     @NotBlank(message = "Nome do livro é obrigatório")
-    private String nameBook;
+    private String bookName;
 
     @NotBlank(message = "Nome do autor é obrigatório")
     private String author;
 
-    @NotBlank(message = "Nome da categoria é obrigatório")
-    private String category;
+    @NotBlank(message = "Nome do campo de estudo é obrigatório")
+    private String studyField;
 
     private User user;
 
@@ -31,20 +31,20 @@ public class WishlistDTO {
     }
 
 
-    public WishlistDTO(String nameBook, String author, String category, LocalDateTime createDate, User user) {
-        this.nameBook = nameBook;
+    public WishlistDTO(String bookName, String author, String studyField, LocalDateTime createDate, User user) {
+        this.bookName = bookName;
         this.author = author;
-        this.category = category;
+        this.studyField = studyField;
         this.createDate = createDate;
         this.user = user;
     }
 
-    public String getNameBook() {
-        return nameBook;
+    public String getBookName() {
+        return bookName;
     }
 
-    public void setNameBook(String nameBook) {
-        this.nameBook = nameBook;
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
     }
 
     public User getUser() {
@@ -58,8 +58,8 @@ public class WishlistDTO {
     public String getAuthor() {
         return author;
     }
-    public String getCategory() {
-        return category;
+    public String getStudyField() {
+        return studyField;
     }
     public LocalDateTime getCreateDate() {
         return createDate;
@@ -70,11 +70,11 @@ public class WishlistDTO {
     public void setAuthor(String author) {
         this.author = author;
     }
-    public void setCategory(String category) {
-        this.category = category;
+    public void setStudyField(String studyField) {
+        this.studyField = studyField;
     }
 
     public Wishlist returnWishlist() {
-        return new Wishlist(nameBook, author, category, createDate, user);
+        return new Wishlist(bookName, author, studyField, createDate, user);
     }
 }
