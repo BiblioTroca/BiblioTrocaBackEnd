@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.CONFLICT)
 
-public class ReviewAlreadyInUseException extends  Exception{
+public class ReviewAlreadyExists extends  Exception{
     private static final long serialVersionUID = 1L;
 
-    public ReviewAlreadyInUseException() {
+    public ReviewAlreadyExists() {
         super(String.format("A avaliação já foi adicionada"), null, false, false);
     }
 }

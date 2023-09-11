@@ -25,13 +25,13 @@ public class Wishlist {
     @NotBlank(message = "Nome do campo de estudo é obrigatório")
     private String studyField;
 
-    private User user;
+    private String user;
 
 
     @CreatedDate
     private LocalDateTime createDate;
 
-    public Wishlist(String bookName, String author, String studyField, LocalDateTime createDate, User user) {
+    public Wishlist(String bookName, String author, String studyField, LocalDateTime createDate, String user) {
         this.bookName = bookName;
         this.author = author;
         this.studyField = studyField;
@@ -58,11 +58,11 @@ public class Wishlist {
         this.bookName = bookName;
     }
 
-    public User getUser() {
+    public String getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(String user) {
         this.user = user;
     }
 

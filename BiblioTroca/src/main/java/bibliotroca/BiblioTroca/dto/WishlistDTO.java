@@ -19,7 +19,7 @@ public class WishlistDTO {
     @NotBlank(message = "Nome do campo de estudo é obrigatório")
     private String studyField;
 
-    private User user;
+    private String user;
 
 
     @CreatedDate
@@ -31,7 +31,7 @@ public class WishlistDTO {
     }
 
 
-    public WishlistDTO(String bookName, String author, String studyField, LocalDateTime createDate, User user) {
+    public WishlistDTO(String bookName, String author, String studyField, LocalDateTime createDate, String user) {
         this.bookName = bookName;
         this.author = author;
         this.studyField = studyField;
@@ -47,11 +47,11 @@ public class WishlistDTO {
         this.bookName = bookName;
     }
 
-    public User getUser() {
+    public String getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(String user) {
         this.user = user;
     }
 
