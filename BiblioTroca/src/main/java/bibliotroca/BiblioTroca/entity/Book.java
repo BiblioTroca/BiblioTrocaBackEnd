@@ -42,6 +42,17 @@ public class Book {
 		this.state = newState;
 	}
 
+	public Book(String newTitle, String newAuthor, String newField, String newLanguage, String newEdition, String newDescription, String newPublishingCompany, State newState) {
+		this.title = newTitle;
+		this.author = newAuthor;
+		this.field = newField;
+		this.language = newLanguage;
+		this.edition = newEdition;
+		this.description = newDescription;
+		this.publishingCompany = newPublishingCompany;
+		this.state = newState;
+	}
+	
 	public String getId() {
 		return id;
 	}
