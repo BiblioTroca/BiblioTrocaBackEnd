@@ -10,7 +10,6 @@ import jakarta.validation.constraints.NotBlank;
 public class Book {
 	@Id
 	private String id;
-	@NotBlank(message="O código é obrigatório")
 	private Long registry;
 	@NotBlank(message="O título é obrigatório")
 	private String title;

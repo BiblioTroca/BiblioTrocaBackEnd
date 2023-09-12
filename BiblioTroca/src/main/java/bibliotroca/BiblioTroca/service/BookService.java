@@ -13,6 +13,7 @@ public class BookService {
 	BookRepository bookRepository;
 	
 	public Book createBook(Book book) {
+		book.setRegistry(generateRegistry());
 		return this.bookRepository.save(book);
 	}
 	
@@ -67,5 +68,12 @@ public class BookService {
 		} else {
 			throw new RegistryNotFoundException(registry);
 		}
+	}
+	
+	private Long generateRegistry() {
+		if(returnAllBooks().isEmpty()) {
+			return (long) 1;
+		}
+		return (long) returnAllBooks().get(returnAllBooks().size()-1).getRegistry() + 1;
 	}
 }
