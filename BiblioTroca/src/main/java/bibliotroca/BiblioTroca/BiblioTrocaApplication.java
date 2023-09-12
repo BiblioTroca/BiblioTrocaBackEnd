@@ -1,4 +1,4 @@
-package com.BiblioTroca.BiblioTroca;
+package bibliotroca.BiblioTroca;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

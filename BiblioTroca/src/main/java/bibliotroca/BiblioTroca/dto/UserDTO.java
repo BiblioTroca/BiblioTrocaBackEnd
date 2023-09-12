@@ -1,46 +1,27 @@
-package entity;
+package bibliotroca.BiblioTroca.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.validation.constraints.NotBlank;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.MongoId;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-@Entity
-@Document(collection="Usuarios")
-public class User {
-	@Id
-	@MongoId
-	private String id;
-	@NotBlank(message="O CPF é obrigatório")
+import bibliotroca.BiblioTroca.entity.User;
+
+public class UserDTO {
+	@JsonInclude(Include.NON_NULL)
 	private String cpf;
-	@NotBlank(message="O nome é obrigatório")
 	private String name;
-	@NotBlank(message="O sobrenome é obrigatório")
 	private String surname;
-	@NotBlank(message="O email é obrigatório")
 	private String email;
-	@NotBlank(message="O número de telefone é obrigatório")
 	private String telephone;
-	@NotBlank(message="O CEP é obrigatório")
 	private String cep;
 	
-	public User() {	}
+	public UserDTO() {	}
 	
-	public User(String newCpf, String newName, String newSurname, String newEmail, String newTelephone, String newCep) {
-		this.cpf = newCpf;
+	public UserDTO(String newName, String newSurname, String newEmail, String newTelephone, String newCep) {
 		this.name = newName;
 		this.surname = newSurname;
 		this.email = newEmail;
 		this.telephone = newTelephone;
 		this.cep = newCep;
-	}
-
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	public String getCpf() {
@@ -49,7 +30,7 @@ public class User {
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
 	}
-
+	
 	public String getName() {
 		return name;
 	}
@@ -83,5 +64,13 @@ public class User {
 	}
 	public void setCep(String cep) {
 		this.cep = cep;
+	}
+	
+	public static UserDTO returnUserDTO(User user) {
+		return new UserDTO(user.getName(), user.getSurname(), user.getEmail(), user.getTelephone(), user.getCep());
+	}
+	
+	public static User returnUser(UserDTO userDTO) {
+		return new User(userDTO.getName(), userDTO.getSurname(), userDTO.getEmail(), userDTO.getTelephone(), userDTO.getCep());
 	}
 }
