@@ -44,14 +44,18 @@ public class UserController {
 	
 	@GetMapping("/{cpf}")
 	public UserDTO returnUserByCPF(@PathVariable String cpf) throws CpfNotFoundException {
-		return UserDTO.returnUserDTO(userService.returnUserByCPF(cpf));
+		UserDTO user = UserDTO.returnUserDTO(userService.returnUserByCPF(cpf));
+		user.setCpf(cpf);
+		return user;
 	}
 	
 	@PutMapping("/{cpf}")
 	public UserDTO updateUserByCPF(@PathVariable String cpf, @RequestBody @Valid UserDTO userDTO) throws CpfNotFoundException {
 		User userRequest = UserDTO.returnUser(userDTO);
 		User userUpdated = this.userService.updateUser(cpf, userRequest);
-		return UserDTO.returnUserDTO(userUpdated);
+		UserDTO user = UserDTO.returnUserDTO(userUpdated);
+		user.setCpf(cpf);
+		return user;
 	}
 	
 	@DeleteMapping("/{cpf}")

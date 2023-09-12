@@ -1,8 +1,13 @@
 package bibliotroca.BiblioTroca.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import bibliotroca.BiblioTroca.entity.User;
 
 public class UserDTO {
+	@JsonInclude(Include.NON_NULL)
+	private String cpf;
 	private String name;
 	private String surname;
 	private String email;
@@ -19,6 +24,13 @@ public class UserDTO {
 		this.cep = newCep;
 	}
 
+	public String getCpf() {
+		return cpf;
+	}
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
+	
 	public String getName() {
 		return name;
 	}
