@@ -28,8 +28,11 @@ public class UserController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public User createUser(@RequestBody @Valid User user) throws CpfAlreadyInUseException {
-		return this.userService.createUser(user);
+	public UserDTO createUser(@RequestBody @Valid User user) throws CpfAlreadyInUseException {
+		User userCreated = this.userService.createUser(user);
+		UserDTO userDTO = UserDTO.returnUserDTO(userCreated);
+		userDTO.setCpf(user.getCpf());
+		return userDTO;
 	}
 
 	@GetMapping
