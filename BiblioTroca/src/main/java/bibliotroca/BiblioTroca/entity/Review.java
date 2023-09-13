@@ -12,7 +12,6 @@ public class Review {
     @Id
     private String id;
 
-
     //@NotBlank(message = "Nome do avaliador é obrigatório")
     private String nameEvaluator;
 
@@ -22,7 +21,8 @@ public class Review {
     @NotNull(message = "Pontuação necessária")
     private int score;
 
-
+    @CreatedDate
+    private LocalDateTime createDate;
 
     public Review() {
     }
