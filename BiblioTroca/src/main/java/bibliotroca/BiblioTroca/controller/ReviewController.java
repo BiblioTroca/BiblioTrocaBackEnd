@@ -4,6 +4,7 @@ import bibliotroca.BiblioTroca.dto.ReviewDTO;
 import bibliotroca.BiblioTroca.dto.WishlistDTO;
 import bibliotroca.BiblioTroca.entity.Review;
 import bibliotroca.BiblioTroca.entity.Wishlist;
+import bibliotroca.BiblioTroca.exception.ReviewAlreadyExists;
 import bibliotroca.BiblioTroca.service.ReviewService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class ReviewController {
 
     @CrossOrigin
     @PostMapping
-    public ResponseEntity<Object> createReview(@RequestBody @Valid ReviewDTO reviewDTO, BindingResult result) {
+    public ResponseEntity<Object> createReview(@RequestBody @Valid ReviewDTO reviewDTO, BindingResult result) throws ReviewAlreadyExists {
         this.review = new Review();
         if (result.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dados inválidos.");

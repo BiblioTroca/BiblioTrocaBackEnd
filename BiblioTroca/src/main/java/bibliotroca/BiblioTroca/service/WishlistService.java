@@ -38,7 +38,6 @@ public class WishlistService {
 
 
         public Optional<Wishlist> updates(String id, Wishlist wishlist) {
-                //public Optional<Wishlist> update(Long id, Wishlist updatedWishlist) {
 
                 Optional<Wishlist> existingWishlist = this.repository.findById(id);
 
@@ -47,7 +46,6 @@ public class WishlistService {
                         wishlistToUpdate.setBookName(wishlist.getBookName());
                         wishlistToUpdate.setAuthor(wishlist.getAuthor());
                         wishlistToUpdate.setStudyField(wishlist.getStudyField());
-                       // wishlistToUpdate.setUser(wishlist.getUser());
 
                         return Optional.ofNullable(repository.save(wishlistToUpdate));
                 } else {

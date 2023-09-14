@@ -2,6 +2,9 @@ package bibliotroca.BiblioTroca.controller;
 
 import java.util.List;
 import java.util.Optional;
+
+import bibliotroca.BiblioTroca.exception.BookAlreadyRegistered;
+import bibliotroca.BiblioTroca.exception.BookNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,16 +36,13 @@ public class WishlistController {
     }
     @CrossOrigin
     @PostMapping
-    public ResponseEntity<Object> saveWishlist(@RequestBody @Valid WishlistDTO wishlistDTO, BindingResult result) {
+    public ResponseEntity<Object> saveWishlist(@RequestBody @Valid WishlistDTO wishlistDTO, BindingResult result) throws BookAlreadyRegistered {
         this.wish = new Wishlist();
-       // User user = UserService.findByCpf(wishlistDTO.getUser());
 
         if (result.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dados inválidos.");
         } else {
             try {
-               // Wishlist.setUser(user);
-                //Wishlist.setUser(UserService.findByCpf(wishlistDTO.getUser()));
                 return ResponseEntity.status(HttpStatus.CREATED).body(this.wishlistService.save(wishlistDTO.returnWishlist()));
             } catch (Exception var4) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro não esperado ");
@@ -58,7 +58,7 @@ public class WishlistController {
 
     @CrossOrigin
     @DeleteMapping({"/{id}"})
-    public ResponseEntity<Object> deleteById(@PathVariable("id") String id) {
+    public ResponseEntity<Object> deleteById(@PathVariable("id") String id) throws BookNotFoundException {
         Optional<Wishlist> wishDelete = this.wishlistService.searchById(id);
         if (wishDelete.isPresent()) {
             this.wishlistService.delete(id);
@@ -70,7 +70,7 @@ public class WishlistController {
 
     @CrossOrigin
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateWishlist(@PathVariable("id") String id, @RequestBody @Valid WishlistDTO wishlistDTO, BindingResult result) {
+    public ResponseEntity<Object> updateWishlist(@PathVariable("id") String id, @RequestBody @Valid WishlistDTO wishlistDTO, BindingResult result) throws BookNotFoundException{
         if (result.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dados inválidos.");
         } else {
@@ -86,7 +86,7 @@ public class WishlistController {
 
     @CrossOrigin
         @GetMapping({"/{id}"})
-        public ResponseEntity<Object> searchById (@PathVariable String id){
+        public ResponseEntity<Object> searchById (@PathVariable String id) throws BookNotFoundException{
         Optional<Wishlist> wishFound = this.wishlistService.searchById(id);
         return wishFound.isPresent() ? ResponseEntity.status(HttpStatus.OK).body(wishFound.get()) : this.wishlistIsEmpty(wishFound);
     }
