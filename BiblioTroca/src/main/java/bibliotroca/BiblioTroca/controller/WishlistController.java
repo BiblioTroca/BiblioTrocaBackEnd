@@ -3,7 +3,7 @@ package bibliotroca.BiblioTroca.controller;
 import java.util.List;
 import java.util.Optional;
 
-import bibliotroca.BiblioTroca.exception.BookAlreadyRegistered;
+import bibliotroca.BiblioTroca.exception.BookAlreadyRegisteredException;
 import bibliotroca.BiblioTroca.exception.BookNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,14 +35,14 @@ public class WishlistController {
     }
     @CrossOrigin
     @PostMapping
-    public ResponseEntity<Object> saveWishlist(@RequestBody @Valid WishlistDTO wishlistDTO) throws BookAlreadyRegistered {
+    public ResponseEntity<Object> saveWishlist(@RequestBody @Valid WishlistDTO wishlistDTO) throws BookAlreadyRegisteredException {
         String bookName = wishlistDTO.getBookName();
         Optional<Wishlist> existingWishlist = wishlistService.searchByBookName(bookName);
         if (existingWishlist.isPresent()) {
-            throw new BookAlreadyRegistered();
+            throw new BookAlreadyRegisteredException();
         }
         Wishlist wishlist = wishlistDTO.returnWishlist();
-        Optional<Wishlist> savedWishlist = wishlistService.saveWishlist(wishlist);
+        Optional<Wishlist> savedWishlist = Optional.ofNullable(wishlistService.saveWishlist(wishlist));
         return ResponseEntity.status(HttpStatus.CREATED).body(savedWishlist);
     }
 
@@ -70,7 +70,7 @@ public class WishlistController {
         if (!wishUpdate.isPresent()) {
             throw new BookNotFoundException();
         }
-        Optional<Wishlist> updatedWishlist = wishlistService.updates(id, wishlistDTO.returnWishlist());
+        Optional<Wishlist> updatedWishlist = Optional.ofNullable(wishlistService.updateWishlist(id, wishlistDTO.returnWishlist()));
         return ResponseEntity.status(HttpStatus.OK).body(updatedWishlist);
     }
 
