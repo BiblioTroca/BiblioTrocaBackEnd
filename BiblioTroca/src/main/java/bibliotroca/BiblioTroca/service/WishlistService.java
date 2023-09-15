@@ -24,17 +24,20 @@ public class WishlistService {
                 return repository.findById(id);
         }
 
+
         public Optional<Wishlist> searchByBookName(String bookName) {
+
                 return repository.findByBookName(bookName);
         }
          /* public Optional<Wishlist> searchByNameBook(String bookName) {
             return Optional.empty();
         }*/
 
-        public Optional<Wishlist> save(Wishlist wishlist) {
+        public Optional<Wishlist> saveWishlist(Wishlist wishlist) {
                 wishlist.setCreateDate(LocalDateTime.now()); // Não é necessário definir manualmente
                 return Optional.ofNullable(repository.save(wishlist));
         }
+
 
 
         public Optional<Wishlist> updates(String id, Wishlist wishlist) {
@@ -54,14 +57,12 @@ public class WishlistService {
         }
 
 
-        public void delete(String id) {
+        public void deleteBook (String id) {
                 Optional<Wishlist> wishToDelete = repository.findById(id);
                 if (wishToDelete.isPresent()) {
                         repository.delete(wishToDelete.get());
                 } else {
                         throw new RuntimeException("Não foi possível excluir o registro");
                 }
-
                 }
-
         }
