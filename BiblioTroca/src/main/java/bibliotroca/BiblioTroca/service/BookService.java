@@ -76,4 +76,11 @@ public class BookService {
 		}
 		return (long) returnAllBooks().get(returnAllBooks().size()-1).getRegistry() + 1;
 	}
+	
+	protected Boolean existsByRegistry(Long registry) {
+		if(this.bookRepository.existsByRegistry(registry)) {
+			return true;
+		}
+		return false;
+	}
 }

@@ -1,7 +1,13 @@
 package bibliotroca.BiblioTroca.entity;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import jakarta.validation.constraints.NotBlank;
 
 @Document(collection="Usuarios")
@@ -20,6 +26,10 @@ public class User {
 	private String telephone;
 	@NotBlank(message="O CEP é obrigatório")
 	private String cep;
+	@JsonInclude(Include.NON_NULL)
+	private List<Long> booksRegistry;
+	@JsonInclude(Include.NON_NULL)
+	private List<Book> books;
 	
 	public User() {	}
 	
@@ -97,5 +107,19 @@ public class User {
 	}
 	public void setCep(String cep) {
 		this.cep = cep;
+	}
+	
+	public List<Long> getBooksRegistry() {
+		return this.booksRegistry;
+	}
+	public void setBooksRegistry(List<Long> booksRegistry) {
+		this.booksRegistry = booksRegistry;
+	}
+	
+	public List<Book> getBooks() {
+		return this.books;
+	}
+	public void setBooks(List<Book> books) {
+		this.books = books;
 	}
 }

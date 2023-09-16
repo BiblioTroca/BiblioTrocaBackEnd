@@ -1,18 +1,22 @@
 package bibliotroca.BiblioTroca.service;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.ArrayList;
+import bibliotroca.BiblioTroca.entity.Book;
 import bibliotroca.BiblioTroca.entity.User;
 import bibliotroca.BiblioTroca.exception.CpfAlreadyInUseException;
 import bibliotroca.BiblioTroca.exception.CpfNotFoundException;
+import bibliotroca.BiblioTroca.exception.RegistryNotFoundException;
 import bibliotroca.BiblioTroca.repository.UserRepository;
 
 @Service
 public class UserService {
 	@Autowired
 	UserRepository userRepository;
+	@Autowired
+	BookService bookService;
 	
 	public User createUser(User user) throws CpfAlreadyInUseException {
 		if(this.userRepository.existsByCpf(user.getCpf())) {
@@ -54,6 +58,12 @@ public class UserService {
 		if(user.getCep() == null) {
 			user.setCep(userRequest.getCep());
 		}
+		if(user.getBooksRegistry() == null) {
+			user.setBooksRegistry(userRequest.getBooksRegistry());
+		}
+		if(user.getBooks() == null) {
+			user.setBooks(userRequest.getBooks());
+		}
 		return this.userRepository.save(user);
 	}
 	
@@ -63,5 +73,32 @@ public class UserService {
 		} else {
 			throw new CpfNotFoundException(cpf);
 		}
+	}
+	
+	public User addBook(String cpf, Long registry) throws CpfNotFoundException {
+		User userRequest = returnUserByCPF(cpf);
+		List<Long> booksRegistryRequest = new ArrayList<>();
+		if(userRequest.getBooksRegistry()!=null) {
+			booksRegistryRequest = userRequest.getBooksRegistry();
+		}
+		booksRegistryRequest.add(registry);
+		userRequest.setBooksRegistry(booksRegistryRequest);
+		return updateUser(cpf, userRequest);
+	}
+	
+	public User returnUserBooks(String cpf) throws CpfNotFoundException, RegistryNotFoundException {
+		User userRequest = returnUserByCPF(cpf);
+		List<Long> booksRegistryRequest = new ArrayList<>();
+		if(userRequest.getBooksRegistry()!=null) {
+			booksRegistryRequest = userRequest.getBooksRegistry();
+		}
+		ArrayList<Book> books = new ArrayList<>();
+		for(Long bookRegistry : booksRegistryRequest) {
+			if(this.bookService.existsByRegistry(bookRegistry)) {
+				books.add(this.bookService.returnBookByRegistry(bookRegistry));
+			}
+		}
+		userRequest.setBooks(books);
+		return userRequest;
 	}
 }
