@@ -2,8 +2,11 @@ package bibliotroca.BiblioTroca.entity;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDateTime;
 
 
 @Document(collection="Avaliacao")
@@ -21,6 +24,11 @@ public class Review {
     @NotNull(message = "Pontuação necessária")
     private int score;
 
+    @CreatedDate
+    private LocalDateTime createDate;
+
+    private String transactionId;
+
 
     public Review() {
     }
@@ -31,11 +39,13 @@ public class Review {
         this.score = score;
     }
 
-    public Review(String id, String nameEvaluator, String nameEvaluated, int score) {
+    public Review(String id, String nameEvaluator, String nameEvaluated, int score, LocalDateTime createDate, String transactionId) {
         this.id = id;
         this.nameEvaluator = nameEvaluator;
         this.nameEvaluated = nameEvaluated;
         this.score = score;
+        this.createDate = createDate;
+        this.transactionId = transactionId;
     }
 
     public String getId() {
@@ -68,6 +78,22 @@ public class Review {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public LocalDateTime getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
     }
 }
 
