@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import bibliotroca.BiblioTroca.exception.BookAlreadyRegisteredException;
 import bibliotroca.BiblioTroca.exception.BookNotFoundException;
+import bibliotroca.BiblioTroca.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,14 +36,14 @@ public class WishlistController {
     }
     @CrossOrigin
     @PostMapping
-    public ResponseEntity<Object> saveWishlist(@RequestBody @Valid WishlistDTO wishlistDTO) throws BookAlreadyRegisteredException {
+    public ResponseEntity<Object> saveWishlist(@RequestBody @Valid WishlistDTO wishlistDTO) throws BookAlreadyRegisteredException, UserNotFoundException {
         String bookName = wishlistDTO.getBookName();
         Optional<Wishlist> existingWishlist = wishlistService.searchByBookName(bookName);
         if (existingWishlist.isPresent()) {
             throw new BookAlreadyRegisteredException();
         }
         Wishlist wishlist = wishlistDTO.returnWishlist();
-        Optional<Wishlist> savedWishlist = Optional.ofNullable(wishlistService.saveWishlist(wishlist));
+        Optional<Wishlist> savedWishlist = Optional.ofNullable(wishlistService.saveWishlist(wishlist, wishlistDTO.getUser()));
         return ResponseEntity.status(HttpStatus.CREATED).body(savedWishlist);
     }
 
@@ -74,7 +75,6 @@ public class WishlistController {
         return ResponseEntity.status(HttpStatus.OK).body(updatedWishlist);
     }
 
-
     @CrossOrigin
         @GetMapping({"/{id}"})
         public ResponseEntity<Object> searchById (@PathVariable String id) throws BookNotFoundException{
@@ -84,5 +84,5 @@ public class WishlistController {
 
         public ResponseEntity<Object> wishlistIsEmpty (Optional < Wishlist > wish) {
         return wish.isEmpty() ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("Id não encontrado.") : ResponseEntity.status(HttpStatus.OK).body(wish.get());
-    }
+        }
     }

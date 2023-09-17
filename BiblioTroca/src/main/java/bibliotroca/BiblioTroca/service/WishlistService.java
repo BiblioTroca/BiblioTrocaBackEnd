@@ -1,7 +1,10 @@
 package bibliotroca.BiblioTroca.service;
 
+import bibliotroca.BiblioTroca.entity.User;
 import bibliotroca.BiblioTroca.exception.BookAlreadyRegisteredException;
 import bibliotroca.BiblioTroca.exception.BookNotFoundException;
+import bibliotroca.BiblioTroca.exception.UserNotFoundException;
+import bibliotroca.BiblioTroca.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +17,11 @@ import java.util.Optional;
 
 @Service
 public class WishlistService {
-
         @Autowired
         WishlistRepository repository;
+
+        @Autowired
+        UserRepository userRepository;
 
         public List<Wishlist> searchAll() {
                 return repository.findAll();
@@ -24,7 +29,6 @@ public class WishlistService {
 
         public Optional<Wishlist> searchById(String id) throws BookNotFoundException {
             Optional<Wishlist> wishFound = repository.findById(id);
-
             if (wishFound.isPresent()) {
                     return Optional.of(wishFound.get());
             } else {
@@ -32,24 +36,25 @@ public class WishlistService {
             }
         }
 
-
         public Optional<Wishlist> searchByBookName(String bookName) {
                 return repository.findByBookName(bookName);
-
         }
 
-
-         /* public Optional<Wishlist> searchByNameBook(String bookName) {
-            return Optional.empty();
-        }*/
-
-        public Wishlist saveWishlist(Wishlist wishlist) throws  BookAlreadyRegisteredException{
+        public Wishlist saveWishlist(Wishlist wishlist, String cpf) throws  BookAlreadyRegisteredException, UserNotFoundException{
                 wishlist.setCreateDate(LocalDateTime.now());
                 Optional<Wishlist> existingWishlist = repository.findByBookName(wishlist.getBookName());
                 if (existingWishlist.isPresent()) {
                         throw new BookAlreadyRegisteredException();
                 }
-                return repository.save(wishlist);
+                Optional<User> user = Optional.ofNullable(userRepository.findByCpf(cpf));
+
+                if (user.isPresent()) {
+                        wishlist.setUser(user.get().getName());
+                        return repository.save(wishlist);
+                }
+                else {
+                        throw new UserNotFoundException();
+                }
         }
 
 
@@ -68,8 +73,6 @@ public class WishlistService {
                 }
         }
 
-
-
         public void deleteBook (String id) throws BookNotFoundException {
                 Optional<Wishlist> wishToDelete = repository.findById(id);
                 if (wishToDelete.isPresent()) {
@@ -78,6 +81,4 @@ public class WishlistService {
                         throw new BookNotFoundException();
                         }
                 }
-
-
         }
