@@ -39,15 +39,13 @@ public class Review {
         this.score = score;
     }
 
-    public Review(String id, String nameEvaluator, String nameEvaluated, int score, LocalDateTime createDate, String transactionId) {
-        this.id = id;
+    public Review(String nameEvaluator, String nameEvaluated, int score, LocalDateTime createDate, String transactionId) {
         this.nameEvaluator = nameEvaluator;
         this.nameEvaluated = nameEvaluated;
         this.score = score;
         this.createDate = createDate;
         this.transactionId = transactionId;
     }
-
     public String getId() {
         return id;
     }

@@ -6,6 +6,4 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 @Repository
 public interface ReviewRepository extends MongoRepository<Review, String> {
-
-
 }

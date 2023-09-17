@@ -1,9 +1,8 @@
 package bibliotroca.BiblioTroca.controller;
 
 import bibliotroca.BiblioTroca.dto.ReviewDTO;
-import bibliotroca.BiblioTroca.dto.WishlistDTO;
 import bibliotroca.BiblioTroca.entity.Review;
-import bibliotroca.BiblioTroca.entity.Wishlist;
+import bibliotroca.BiblioTroca.exception.BookNotFoundException;
 import bibliotroca.BiblioTroca.exception.ReviewAlreadyExists;
 import bibliotroca.BiblioTroca.service.ReviewService;
 import jakarta.validation.Valid;
@@ -31,7 +30,11 @@ public class ReviewController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dados inválidos.");
         } else {
             try {
-               return ResponseEntity.status(HttpStatus.CREATED).body(this.reviewService.createReview(reviewDTO.returnReview(reviewDTO)));
+                int score = reviewDTO.getScore();
+                if (score < 0 || score > 5) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Pontuação inválida.");
+                }
+                return ResponseEntity.status(HttpStatus.CREATED).body(this.reviewService.createReview(reviewDTO.returnReview(reviewDTO)));
             } catch (Exception var4) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro não esperado ");
             }
@@ -66,6 +69,18 @@ public class ReviewController {
             }
         }
     }
+
+    @CrossOrigin
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteById(@PathVariable("id") String id) throws BookNotFoundException {
+        Optional<Review> review1 = reviewService.returnReviewById(id);
+        if (review1.isPresent()) {
+            reviewService.deleteReview(id);
+            return ResponseEntity.status(HttpStatus.OK).body("Avaliação excluída");
+        }
+        throw new BookNotFoundException();
+    }
+
 
     public ResponseEntity<Object> reviewIsEmpty (Optional < Review > review) {
         return review.isEmpty() ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("Id não encontrado.") : ResponseEntity.status(HttpStatus.OK).body(review.get());
