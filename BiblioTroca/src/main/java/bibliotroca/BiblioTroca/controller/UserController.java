@@ -20,6 +20,7 @@ import bibliotroca.BiblioTroca.entity.User;
 import bibliotroca.BiblioTroca.exception.CpfAlreadyInUseException;
 import bibliotroca.BiblioTroca.exception.CpfNotFoundException;
 import bibliotroca.BiblioTroca.exception.RegistryNotFoundException;
+import bibliotroca.BiblioTroca.exception.StateNotValidException;
 import bibliotroca.BiblioTroca.service.BookService;
 import bibliotroca.BiblioTroca.service.UserService;
 import jakarta.validation.Valid;
@@ -72,7 +73,7 @@ public class UserController {
 	}
 	
 	@PutMapping("/{cpf}/cadastrar-livro")
-	public UserDTO updateUserBooksByCPF(@PathVariable String cpf, @RequestBody Book book) throws CpfNotFoundException, RegistryNotFoundException {
+	public UserDTO updateUserBooksByCPF(@PathVariable String cpf, @RequestBody Book book) throws CpfNotFoundException, RegistryNotFoundException, StateNotValidException {
 		this.bookService.createBook(book);
 		User userRequest = this.userService.addBook(cpf, book.getRegistry());
 		userRequest = this.userService.returnUserBooks(cpf);
