@@ -64,7 +64,7 @@ public class ReviewService {
         Optional<Review> existingReview = this.reviewRepository.findById(id);
         if (existingReview.isPresent()) {
             Review reviewToUpdate = existingReview.get();
-            reviewToUpdate.setScore(review.getScore());
+            // reviewToUpdate.setScore(review.getScore());
 
             return Optional.ofNullable(reviewRepository.save(reviewToUpdate));
         } else {
