@@ -24,14 +24,17 @@ public class ReviewController {
 
     @CrossOrigin
     @PostMapping
-    public ResponseEntity<Object> createReview(@RequestBody @Valid ReviewDTO reviewDTO) throws ReviewAlreadyExists {
+    public ResponseEntity<Object> createReview(@RequestBody @Valid ReviewDTO reviewDTO) throws ReviewAlreadyExists, ReviewNotFoundException {
         int score = reviewDTO.getScore();
         if (score < 1 || score > 5) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Pontuação inválida.");
         }
-        Optional<Review> existingReview = reviewService.returnReviewById(review.getId());
-        if (existingReview.isPresent()) {
-            throw new ReviewAlreadyExists();
+        String transactionId = reviewDTO.getTransactionId();
+        if (transactionId != null) {
+            Optional<Review> existingReview = reviewService.findReviewByTransactionId(transactionId);
+            if (existingReview.isPresent()) {
+                throw new ReviewAlreadyExists();
+            }
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(this.reviewService.createReview(reviewDTO.returnReview(reviewDTO)));
     }

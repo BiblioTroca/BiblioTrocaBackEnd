@@ -5,6 +5,7 @@ import bibliotroca.BiblioTroca.entity.Review;
 import bibliotroca.BiblioTroca.entity.Transaction;
 import bibliotroca.BiblioTroca.entity.User;
 
+import bibliotroca.BiblioTroca.exception.ReviewNotFoundException;
 import bibliotroca.BiblioTroca.repository.ReviewRepository;
 import bibliotroca.BiblioTroca.repository.TransactionRepository;
 import bibliotroca.BiblioTroca.repository.UserRepository;
@@ -56,9 +57,19 @@ public class ReviewService {
         return reviewRepository.findAll();
     }
 
-    public Optional<Review> returnReviewById(String id) {
-        return reviewRepository.findById(id);
+
+    public Optional<Review> returnReviewById(String id) throws ReviewNotFoundException{
+        Optional<Review> reviewFound = reviewRepository.findById(id);
+        if (reviewFound.isPresent()) {
+            return reviewFound;
+        } else {
+            throw new ReviewNotFoundException();
+        }
     }
+    public Optional<Review> findReviewByTransactionId(String transactionId) {
+        return reviewRepository.findByTransactionId(transactionId);
+    }
+
 
     public Optional<Review> updateReview(String id, Review review) {
         Optional<Review> existingReview = this.reviewRepository.findById(id);
