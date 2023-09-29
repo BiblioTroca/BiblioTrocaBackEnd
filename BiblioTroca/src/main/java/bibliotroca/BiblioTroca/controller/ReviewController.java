@@ -79,7 +79,22 @@ public class ReviewController {
         }
     }
 
-    public ResponseEntity<Object> reviewIsEmpty (Optional < Review > review) {
-        return review.isEmpty() ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("Id não encontrado.") : ResponseEntity.status(HttpStatus.OK).body(review.get());
+    @GetMapping("/score/{userIdEvaluated}")
+    public ResponseEntity<Double> getUserScoreRatings(@PathVariable String userIdEvaluated) {
+        double average = reviewService.calculateUserScoreRatings(userIdEvaluated);
+
+        return ResponseEntity.ok(average);
     }
+
+     /*
+   @DeleteMapping("/excluir-todos")
+    public ResponseEntity<String> excluirTodosDocumentos() {
+        reviewService.excluirTodosDocumentos();
+        return new ResponseEntity<>("Todos os documentos foram excluídos com sucesso.", HttpStatus.OK);
+    }
+    public void excluirTodosDocumentos() {
+        reviewRepository.deleteAll();
+    }
+  */
+
 }

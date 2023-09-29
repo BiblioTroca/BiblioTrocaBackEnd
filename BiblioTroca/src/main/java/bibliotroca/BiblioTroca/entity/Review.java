@@ -29,6 +29,8 @@ public class Review {
 
     private String transactionId;
 
+    private String userIdEvaluated;
+
 
     public Review() {
     }
@@ -46,6 +48,16 @@ public class Review {
         this.createDate = createDate;
         this.transactionId = transactionId;
     }
+
+    public Review(String userIdEvaluated, String nameEvaluator, String nameEvaluated, int score, LocalDateTime createDate, String transactionId) {
+        this.userIdEvaluated = userIdEvaluated;
+        this.nameEvaluator = nameEvaluator;
+        this.nameEvaluated = nameEvaluated;
+        this.score = score;
+        this.createDate = createDate;
+        this.transactionId = transactionId;
+    }
+
     public String getId() {
         return id;
     }
@@ -92,6 +104,14 @@ public class Review {
 
     public void setTransactionId(String transactionId) {
         this.transactionId = transactionId;
+    }
+
+    public void setUserIdEvaluated(String userIdEvaluated) {
+        this.userIdEvaluated = userIdEvaluated;
+    }
+
+    public String getUserIdEvaluated() {
+        return userIdEvaluated;
     }
 }
 

@@ -6,6 +6,7 @@ import bibliotroca.BiblioTroca.entity.Transaction;
 import bibliotroca.BiblioTroca.entity.User;
 
 import bibliotroca.BiblioTroca.exception.ReviewNotFoundException;
+import bibliotroca.BiblioTroca.exception.UserNotFoundException;
 import bibliotroca.BiblioTroca.repository.ReviewRepository;
 import bibliotroca.BiblioTroca.repository.TransactionRepository;
 import bibliotroca.BiblioTroca.repository.UserRepository;
@@ -13,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -28,6 +31,7 @@ public class ReviewService {
     @Autowired
     UserRepository userRepository;
 
+
     public Optional<Review> createReview (Review review)  {
         review.setCreateDate(LocalDateTime.now());
 
@@ -37,8 +41,8 @@ public class ReviewService {
         }*/
         Transaction transaction = transactionOptional.get();
 
-        Optional<User> evaluatorOptional = Optional.ofNullable(userRepository.findByCpf(review.getNameEvaluator()));
-        Optional<User> evaluatedOptional = Optional.ofNullable(userRepository.findByCpf(review.getNameEvaluated()));
+        Optional<User> evaluatorOptional = (userRepository.findById(review.getNameEvaluator()));
+        Optional<User> evaluatedOptional = (userRepository.findById(review.getNameEvaluated()));
 
         //.orElseThrow(() -> new UserNotFoundException());
         //  .orElseThrow(() -> new UserNotFoundException());
@@ -49,14 +53,33 @@ public class ReviewService {
         review.setTransactionId(transaction.getId());
         review.setNameEvaluated(evaluated.getName());
         review.setNameEvaluator(evaluator.getName());
+        review.setUserIdEvaluated(evaluated.getId());
+
         return Optional.ofNullable(reviewRepository.save(review));
+    }
+
+
+    public double calculateUserScoreRatings(String userIdEvaluated) {
+        List<Review> reviews = reviewRepository.findByUserIdEvaluated(userIdEvaluated);
+
+        if (reviews.isEmpty()) {
+          return 0.0;
+        }
+
+        double totalScore = 0.0;
+        int totalReviews = reviews.size();
+
+        for (Review review : reviews) {
+            totalScore += review.getScore();
+        }
+
+        return totalScore / totalReviews;
     }
 
 
     public List<Review> returnAllReviews() {
         return reviewRepository.findAll();
     }
-
 
     public Optional<Review> returnReviewById(String id) throws ReviewNotFoundException{
         Optional<Review> reviewFound = reviewRepository.findById(id);
@@ -69,7 +92,6 @@ public class ReviewService {
     public Optional<Review> findReviewByTransactionId(String transactionId) {
         return reviewRepository.findByTransactionId(transactionId);
     }
-
 
     public Optional<Review> updateReview(String id, Review review) {
         Optional<Review> existingReview = this.reviewRepository.findById(id);
@@ -89,6 +111,4 @@ public class ReviewService {
             reviewRepository.delete(review.get());
         }
     }
-
-
 }

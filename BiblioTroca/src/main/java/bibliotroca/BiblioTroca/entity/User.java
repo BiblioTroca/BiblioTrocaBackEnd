@@ -26,6 +26,10 @@ public class User {
 	private String telephone;
 	@NotBlank(message="O CEP é obrigatório")
 	private String cep;
+
+	// @NotBlank (message="A nota é obrigatória")
+	// private String note;
+
 	private List<Long> booksRegistry;
 	@JsonInclude(Include.NON_NULL)
 	private List<Book> books;

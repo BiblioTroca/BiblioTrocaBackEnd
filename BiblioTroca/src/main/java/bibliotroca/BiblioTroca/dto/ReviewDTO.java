@@ -25,6 +25,7 @@ public class ReviewDTO {
 
     private String transactionId;
 
+    private String userIdEvaluated;
 
     public ReviewDTO() {
     }
@@ -75,6 +76,14 @@ public class ReviewDTO {
 
     public void setTransactionId(String transactionId) {
         this.transactionId = transactionId;
+    }
+
+    public String getUserIdEvaluated() {
+        return userIdEvaluated;
+    }
+
+    public void setUserIdEvaluated(String userIdEvaluated) {
+        this.userIdEvaluated = userIdEvaluated;
     }
 
     public Review returnReview(ReviewDTO reviewDTO) {
