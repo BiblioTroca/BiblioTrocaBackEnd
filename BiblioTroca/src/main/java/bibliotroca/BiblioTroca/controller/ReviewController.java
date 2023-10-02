@@ -79,7 +79,7 @@ public class ReviewController {
         }
     }
 
-    @GetMapping("/score/{userIdEvaluated}")
+    @GetMapping("/pontuacao/{userIdEvaluated}")
     public ResponseEntity<Double> getUserScoreRatings(@PathVariable String userIdEvaluated) {
         double average = reviewService.calculateUserScoreRatings(userIdEvaluated);
 
