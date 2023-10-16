@@ -86,17 +86,21 @@ public class BookService {
 	}
 
 	public List<Book> returnFilteredBooks(String search) {
-		if(!this.bookRepository.findAllByTitle(search).isEmpty()) {
-			return this.bookRepository.findAllByTitle(search);
+		search.replace("+", " ");
+		List<Book> books = new ArrayList<>();
+		List<Book> filteredBooks = new ArrayList<>();
+		books = this.returnAllBooks();
+		for(Book book : books) {
+			if(book.getTitle().toLowerCase().contains(search.toLowerCase()) ||
+			   book.getAuthor().toLowerCase().contains(search.toLowerCase()) ||
+			   book.getField().toLowerCase().contains(search.toLowerCase()) ||
+			   book.getDescription().toLowerCase().contains(search.toLowerCase()) ||
+			   book.getPublishingCompany().toLowerCase().contains(search.toLowerCase())) {
+				filteredBooks.add(book);
+			}
 		}
-		if(!this.bookRepository.findAllByAuthor(search).isEmpty()) {
-			return this.bookRepository.findAllByAuthor(search);
-		}
-		if(!this.bookRepository.findAllByField(search).isEmpty()) {
-			return this.bookRepository.findAllByField(search);
-		}
-		if(!this.bookRepository.findAllByDescription(search).isEmpty()) {
-			return this.bookRepository.findAllByDescription(search);
+		if(!filteredBooks.isEmpty()) {
+			return filteredBooks;
 		}
 		return new ArrayList<>();
 	}
