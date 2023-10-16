@@ -1,6 +1,7 @@
 package bibliotroca.BiblioTroca.service;
 
 import java.util.List;
+import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import bibliotroca.BiblioTroca.entity.Book;
@@ -82,5 +83,21 @@ public class BookService {
 			return true;
 		}
 		return false;
+	}
+
+	public List<Book> returnFilteredBooks(String search) {
+		if(!this.bookRepository.findAllByTitle(search).isEmpty()) {
+			return this.bookRepository.findAllByTitle(search);
+		}
+		if(!this.bookRepository.findAllByAuthor(search).isEmpty()) {
+			return this.bookRepository.findAllByAuthor(search);
+		}
+		if(!this.bookRepository.findAllByField(search).isEmpty()) {
+			return this.bookRepository.findAllByField(search);
+		}
+		if(!this.bookRepository.findAllByDescription(search).isEmpty()) {
+			return this.bookRepository.findAllByDescription(search);
+		}
+		return new ArrayList<>();
 	}
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import bibliotroca.BiblioTroca.dto.BookDTO;
@@ -47,8 +48,13 @@ public class BookController {
 	}
 	
 	@GetMapping
-	public ArrayList<BookDTO> returnAllBooks() {
-		List<Book> books = this.bookService.returnAllBooks();
+	public ArrayList<BookDTO> returnAllBooks(@RequestParam(required=false) String q) {
+		List<Book> books = new ArrayList<>();
+		if(q == null) {
+			books = this.bookService.returnAllBooks();
+		} else {
+			books = this.bookService.returnFilteredBooks(q);
+		}
 		ArrayList<BookDTO> booksDTO = new ArrayList<>();
 		for(Book book : books) {
 			booksDTO.add(BookDTO.returnBookDTO(book));
