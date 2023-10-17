@@ -6,7 +6,6 @@ import bibliotroca.BiblioTroca.entity.User;
 public class PointDTO {
 	
 	private int walletPoints;
-	
 	private User user;
 	
 	public PointDTO() { }
