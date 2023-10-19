@@ -9,8 +9,11 @@
 </head>
 <body>
 
-<div> Seja Bem Vindo <span th:text="${name}"></span> </div>
-<div> Seja Bem Vindo <span th:text="${email}"></span> </div>
-
+<div> Seja Bem Vindo, <span th:text="${name}"></span> </div>
+<div> Email: <span th:text="${email}"></span> </div>
+<div>
+	<img th:src="${picture}" referrerpolicy="no-referrer">
+</div>
+<a href="/logout">Logout</a>
 </body>
 </html>

@@ -19,9 +19,11 @@ public class LoginController {
 
         String name = attributes.getOrDefault("localizedFirstName", attributes.get("given_name")).toString();
         String email = attributes.get("email").toString();
+        String picture = attributes.get("picture").toString();
 
         model.addAttribute("name", name);
         model.addAttribute("email", email);
+        model.addAttribute("picture", picture);
 
         return "index";
     }
