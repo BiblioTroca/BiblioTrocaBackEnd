@@ -11,12 +11,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import bibliotroca.BiblioTroca.dto.BookDTO;
+import bibliotroca.BiblioTroca.dto.UserDTO;
 import bibliotroca.BiblioTroca.entity.Book;
+import bibliotroca.BiblioTroca.exception.CpfNotFoundException;
 import bibliotroca.BiblioTroca.exception.RegistryNotFoundException;
 import bibliotroca.BiblioTroca.service.BookService;
+import bibliotroca.BiblioTroca.service.UserBooksService;
+import bibliotroca.BiblioTroca.service.UserService;
 import jakarta.validation.Valid;
 
 @RestController
@@ -24,19 +29,32 @@ import jakarta.validation.Valid;
 public class BookController {
 	@Autowired
 	BookService bookService;
+	@Autowired
+	UserService userService;
+	@Autowired
+	UserBooksService userBooksService;
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public BookDTO createBook(@RequestBody @Valid Book book) {
+	public BookDTO createBook(@RequestBody @Valid Book book) throws CpfNotFoundException {
 		Book createdBook = this.bookService.createBook(book);
+		this.userBooksService.addUserBook(createdBook.getUserCpf(), createdBook.getRegistry());
 		BookDTO createdBookDTO = BookDTO.returnBookDTO(createdBook);
 		createdBookDTO.setRegistry(book.getRegistry());
+		UserDTO user = UserDTO.returnUserDTO(this.userService.returnUserByCPF(createdBook.getUserCpf()));
+		user.setCpf(createdBook.getUserCpf());
+		createdBookDTO.setUser(user);
 		return createdBookDTO;
 	}
 	
 	@GetMapping
-	public ArrayList<BookDTO> returnAllBooks() {
-		List<Book> books = this.bookService.returnAllBooks();
+	public ArrayList<BookDTO> returnAllBooks(@RequestParam(required=false) String q) {
+		List<Book> books = new ArrayList<>();
+		if(q == null) {
+			books = this.bookService.returnAllBooks();
+		} else {
+			books = this.bookService.returnFilteredBooks(q);
+		}
 		ArrayList<BookDTO> booksDTO = new ArrayList<>();
 		for(Book book : books) {
 			booksDTO.add(BookDTO.returnBookDTO(book));

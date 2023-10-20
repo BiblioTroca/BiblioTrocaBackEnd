@@ -2,7 +2,6 @@ package bibliotroca.BiblioTroca.entity;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
 import bibliotroca.BiblioTroca.strategy.State;
 import jakarta.validation.constraints.NotBlank;
 
@@ -25,12 +24,14 @@ public class Book {
 	private String description;
 	@NotBlank(message="A editora é obrigatória")
 	private String publishingCompany;
-	@NotBlank(message="A condição do livro é obrigatória")
+	//@NotBlank(message="A condição do livro é obrigatória")
 	private State state;
+	@NotBlank(message="O CPF do usuário dono do livro é obrigatório")
+	private String userCpf;
 	
 	public Book() {	}
 	
-	public Book(Long newRegistry, String newTitle, String newAuthor, String newField, String newLanguage, String newEdition, String newDescription, String newPublishingCompany, State newState) {
+	public Book(Long newRegistry, String newTitle, String newAuthor, String newField, String newLanguage, String newEdition, String newDescription, String newPublishingCompany, State newState, String newUserCpf) {
 		this.registry = newRegistry;
 		this.title = newTitle;
 		this.author = newAuthor;
@@ -40,6 +41,7 @@ public class Book {
 		this.description = newDescription;
 		this.publishingCompany = newPublishingCompany;
 		this.state = newState;
+		this.userCpf = newUserCpf;
 	}
 
 	public Book(String newTitle, String newAuthor, String newField, String newLanguage, String newEdition, String newDescription, String newPublishingCompany, State newState) {
@@ -121,5 +123,12 @@ public class Book {
 	}
 	public void setState(State state) {
 		this.state = state;
+	}
+	
+	public String getUserCpf() {
+		return userCpf;
+	}
+	public void setUserCpf(String userCpf) {
+		this.userCpf = userCpf;
 	}
 }

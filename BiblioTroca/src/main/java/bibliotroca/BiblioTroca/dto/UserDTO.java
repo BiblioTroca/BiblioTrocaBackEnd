@@ -1,8 +1,9 @@
 package bibliotroca.BiblioTroca.dto;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 import bibliotroca.BiblioTroca.entity.User;
 
 public class UserDTO {
@@ -13,6 +14,8 @@ public class UserDTO {
 	private String email;
 	private String telephone;
 	private String cep;
+	@JsonInclude(Include.NON_NULL)
+	private List<BookDTO> books;
 	
 	public UserDTO() {	}
 	
@@ -64,6 +67,13 @@ public class UserDTO {
 	}
 	public void setCep(String cep) {
 		this.cep = cep;
+	}
+	
+	public List<BookDTO> getBooks() {
+		return this.books;
+	}
+	public void setBooks(List<BookDTO> books) {
+		this.books = books;
 	}
 	
 	public static UserDTO returnUserDTO(User user) {

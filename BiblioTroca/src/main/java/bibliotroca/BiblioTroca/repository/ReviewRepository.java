@@ -4,8 +4,17 @@ import bibliotroca.BiblioTroca.entity.Review;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface ReviewRepository extends MongoRepository<Review, String> {
+    Optional<Review> findByTransactionId(String transactionId);
 
+
+    List<Review> findByUserIdEvaluated(String userIdEvaluated);
+
+
+    // void deleteAllBy();
 
 }

@@ -3,14 +3,15 @@ package bibliotroca.BiblioTroca.entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import jakarta.persistence.Entity;
+
 @Document(collection="Points")
+@Entity
 public class Point {
 	
 	@Id
 	private String id;
-	//@NotNull
-	private int walletPoints;
-	
+	private int walletPoints;	
 	private User user;
 
 	public Point() { }

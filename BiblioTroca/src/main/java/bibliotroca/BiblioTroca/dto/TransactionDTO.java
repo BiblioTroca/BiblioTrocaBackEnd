@@ -2,6 +2,9 @@ package bibliotroca.BiblioTroca.dto;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import bibliotroca.BiblioTroca.entity.Book;
 import bibliotroca.BiblioTroca.entity.Transaction;
 import bibliotroca.BiblioTroca.entity.User;
@@ -9,47 +12,48 @@ import bibliotroca.BiblioTroca.strategy.TransactionStatus;
 
 public class TransactionDTO {
 	
-	private String seller;
-	private String buyer;
+	@JsonInclude(Include.NON_NULL)
+	private UserDTO seller;
+	@JsonInclude(Include.NON_NULL)
+	private UserDTO buyer;
+	@JsonInclude(Include.NON_NULL)
+	private BookDTO book;
 	private int paymentPoints;
 	private boolean bookReceived;
-	private boolean pointsTransferred;
 	private LocalDateTime startDate;
 	private LocalDateTime completionDate;
-	
 	private TransactionStatus transactionStatus;
-	private User user;
-	private Book book;
 	
 	public TransactionDTO() { }
 	
-	public TransactionDTO(String newSeller, String newBuyer, int newPaymentPoints, boolean newBookReceived, boolean newPointsTransferred,
-			LocalDateTime newStartDate, LocalDateTime newCompletionDate, TransactionStatus newTransactionStatus, 
-			User newUser, Book newBook) {
-		this.seller = newSeller;
-		this.buyer = newBuyer;
+	public TransactionDTO(int newPaymentPoints, boolean newBookReceived, LocalDateTime newStartDate, LocalDateTime newCompletionDate, 
+			TransactionStatus newTransactionStatus) {
 		this.paymentPoints = newPaymentPoints;
 		this.bookReceived = newBookReceived;
-		this.pointsTransferred = newPointsTransferred;
 		this.startDate = newStartDate;
 		this.completionDate = newCompletionDate;
 		this.transactionStatus = newTransactionStatus;
-		this.user = newUser;
-		this.book = newBook;
 	}
 	
-	public String getSeller() {
+	public UserDTO getSeller() {
 		return seller;
 	}
-	public void setSeller(String seller) {
+	public void setSeller(UserDTO seller) {
 		this.seller = seller;
 	}
 	
-	public String getBuyer() {
+	public UserDTO getBuyer() {
 		return buyer;
 	}
-	public void setBuyer(String buyer) {
+	public void setBuyer(UserDTO buyer) {
 		this.buyer = buyer;
+	}
+	
+	public BookDTO getBook() {
+		return book;
+	}
+	public void setBook(BookDTO book) {
+		this.book = book;
 	}
 	
 	public int getPaymentPoints() {
@@ -64,13 +68,6 @@ public class TransactionDTO {
 	}
 	public void setBookReceived(boolean bookReceived) {
 		this.bookReceived = bookReceived;
-	}
-	
-	public boolean getPointsTransferred() {
-		return pointsTransferred;
-	}
-	public void setPointsTransferred(boolean pointsTransferred) {
-		this.pointsTransferred = pointsTransferred;
 	}
 	
 	public LocalDateTime getStartDate() {
@@ -94,31 +91,14 @@ public class TransactionDTO {
 		this.transactionStatus = transactionStatus;
 	}
 	
-	public User getUser() {
-		return user;
-	}
-	public void setUser(User user) {
-		this.user = user;
-	}
-	
-	public Book getBook() {
-		return book;
-	}
-	public void setBook(Book book) {
-		this.book = book;
-	}
-	
 	public static TransactionDTO returnTransactionDTO(Transaction transaction) {
-		return new TransactionDTO(transaction.getSeller(), transaction.getBuyer(), transaction.getPaymentPoints(),
-				transaction.getBookReceived(), transaction.getPointsTransferred(), transaction.getStartDate(),
-				transaction.getCompletionDate(), transaction.getTransactionStatus(), transaction.getUser(), transaction.getBook());
+		return new TransactionDTO(transaction.getPaymentPoints(), transaction.getBookReceived(), 
+				transaction.getStartDate(), transaction.getCompletionDate(), transaction.getTransactionStatus());
 	}
 	
 	public static Transaction returnTransaction(TransactionDTO transactionDTO) {
-		return new Transaction(transactionDTO.getSeller(), transactionDTO.getBuyer(), transactionDTO.getPaymentPoints(),
-				transactionDTO.getBookReceived(), transactionDTO.getPointsTransferred(), transactionDTO.getStartDate(),
-				transactionDTO.getCompletionDate(), transactionDTO.getTransactionStatus(), 
-				transactionDTO.getUser(), transactionDTO.getBook());
+		return new Transaction(transactionDTO.getPaymentPoints(), transactionDTO.getBookReceived(), 
+				transactionDTO.getStartDate(), transactionDTO.getCompletionDate(), transactionDTO.getTransactionStatus());
 	}
 
 }

@@ -7,46 +7,56 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import bibliotroca.BiblioTroca.strategy.TransactionStatus;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 @Document(collection="Transacoes")
+@Entity
 public class Transaction {
 	
 	@Id
 	private String id;	
-	//@NotBlank ???
+	@NotBlank(message = "Campo não pode ser vazio.")
 	private String seller;	
-	//@NotBlank ???
+	@NotBlank(message = "Campo não pode ser vazio.")
 	private String buyer;
-	//@NotNull ???
+	private Long book;
+	@NotNull(message = "Campo não pode ser vazio.")
 	private int paymentPoints;	
-	//@Getter ???
 	private boolean bookReceived;
-	//@Getter ???
-	private boolean pointsTransferred;
 	@CreatedDate
 	private LocalDateTime startDate;	
 	@CreatedDate
 	private LocalDateTime completionDate;
-	
-	//@NotBlank ???
+	@Enumerated(EnumType.STRING)
 	private TransactionStatus transactionStatus;
-	private User user;
-	private Book book;
 	
 	public Transaction() { }
 	
-	public Transaction(String seller, String buyer, int paymentPoints, boolean bookReceived, boolean pointsTransferred,
-			LocalDateTime startDate, LocalDateTime completionDate, TransactionStatus transactionStatus, User user, Book book) {
+	public Transaction(String id, String seller, String buyer, Long book, int paymentPoints, boolean bookReceived,
+			LocalDateTime startDate, LocalDateTime completionDate, TransactionStatus transactionStatus) {
+		this.id = id;
 		this.seller = seller;
 		this.buyer = buyer;
+		this.book = book;
 		this.paymentPoints = paymentPoints;
 		this.bookReceived = bookReceived;
-		this.pointsTransferred = pointsTransferred;
 		this.startDate = startDate;
 		this.completionDate = completionDate;
 		this.transactionStatus = transactionStatus;
-		this.user = user;
-		this.book = book;
+	}
+	
+	public Transaction(int paymentPoints, boolean bookReceived, LocalDateTime startDate, LocalDateTime completionDate, 
+			TransactionStatus transactionStatus) {
+		this.paymentPoints = paymentPoints;
+		this.bookReceived = bookReceived;
+		this.startDate = startDate;
+		this.completionDate = completionDate;
+		this.transactionStatus = transactionStatus;
 	}
 	
 	public String getId() {
@@ -70,6 +80,13 @@ public class Transaction {
 		this.buyer = buyer;
 	}
 	
+	public Long getBook() {
+		return book;
+	}
+	public void setBook(Long book) {
+		this.book = book;
+	}
+	
 	public int getPaymentPoints() {
 		return paymentPoints;
 	}
@@ -82,13 +99,6 @@ public class Transaction {
 	}
 	public void setBookReceived(boolean bookReceived) {
 		this.bookReceived = bookReceived;
-	}
-	
-	public boolean getPointsTransferred() {
-		return pointsTransferred;
-	}
-	public void setPointsTransferred(boolean pointsTransferred) {
-		this.pointsTransferred = pointsTransferred;
 	}
 	
 	public LocalDateTime getStartDate() {
@@ -110,20 +120,6 @@ public class Transaction {
 	}
 	public void setTransactionStatus(TransactionStatus transactionStatus) {
 		this.transactionStatus = transactionStatus;
-	}
-	
-	public User getUser() {
-		return user;
-	}
-	public void setUser(User user) {
-		this.user = user;
-	}
-	
-	public Book getBook() {
-		return book;
-	}
-	public void setBook(Book book) {
-		this.book = book;
 	}
 
 }

@@ -14,9 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import bibliotroca.BiblioTroca.dto.UserDTO;
+import bibliotroca.BiblioTroca.dto.BookDTO;
+import bibliotroca.BiblioTroca.entity.Book;
 import bibliotroca.BiblioTroca.entity.User;
 import bibliotroca.BiblioTroca.exception.CpfAlreadyInUseException;
 import bibliotroca.BiblioTroca.exception.CpfNotFoundException;
+import bibliotroca.BiblioTroca.exception.RegistryNotFoundException;
+import bibliotroca.BiblioTroca.exception.StateNotValidException;
+import bibliotroca.BiblioTroca.service.BookService;
 import bibliotroca.BiblioTroca.service.UserService;
 import jakarta.validation.Valid;
 
@@ -25,11 +30,16 @@ import jakarta.validation.Valid;
 public class UserController {
 	@Autowired
 	UserService userService;
+	@Autowired
+	BookService bookService;
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public User createUser(@RequestBody @Valid User user) throws CpfAlreadyInUseException {
-		return this.userService.createUser(user);
+	public UserDTO createUser(@RequestBody @Valid User user) throws CpfAlreadyInUseException {
+		User userCreated = this.userService.createUser(user);
+		UserDTO userDTO = UserDTO.returnUserDTO(userCreated);
+		userDTO.setCpf(user.getCpf());
+		return userDTO;
 	}
 
 	@GetMapping
@@ -47,6 +57,33 @@ public class UserController {
 		UserDTO user = UserDTO.returnUserDTO(userService.returnUserByCPF(cpf));
 		user.setCpf(cpf);
 		return user;
+	}
+	
+	@GetMapping("/{cpf}/livros")
+	public UserDTO returnUserWithBooksByCPF(@PathVariable String cpf) throws CpfNotFoundException, RegistryNotFoundException {
+		User userRequest = this.userService.returnUserBooks(cpf);
+		UserDTO userResponse = UserDTO.returnUserDTO(userRequest);
+		List<BookDTO> booksDTO = new ArrayList<>();
+		for(Book bookRequest : userRequest.getBooks()) {
+			booksDTO.add(BookDTO.returnBookDTO(bookRequest));
+		}
+		userResponse.setCpf(cpf);
+		userResponse.setBooks(booksDTO);
+		return userResponse;
+	}
+	
+	@PutMapping("/{cpf}/cadastrar-livro")
+	public UserDTO updateUserBooksByCPF(@PathVariable String cpf, @RequestBody Book book) throws CpfNotFoundException, RegistryNotFoundException, StateNotValidException {
+		this.bookService.createBook(book);
+		User userRequest = this.userService.addBook(cpf, book.getRegistry());
+		userRequest = this.userService.returnUserBooks(cpf);
+		UserDTO userResponse = UserDTO.returnUserDTO(userRequest);
+		List<BookDTO> booksDTO = new ArrayList<>();
+		for(Book bookRequest : userRequest.getBooks()) {
+			booksDTO.add(BookDTO.returnBookDTO(bookRequest));
+		}
+		userResponse.setBooks(booksDTO);
+		return userResponse;
 	}
 	
 	@PutMapping("/{cpf}")

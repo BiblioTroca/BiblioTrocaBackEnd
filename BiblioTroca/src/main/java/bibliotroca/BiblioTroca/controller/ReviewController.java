@@ -1,9 +1,9 @@
 package bibliotroca.BiblioTroca.controller;
 
 import bibliotroca.BiblioTroca.dto.ReviewDTO;
-import bibliotroca.BiblioTroca.dto.WishlistDTO;
 import bibliotroca.BiblioTroca.entity.Review;
-import bibliotroca.BiblioTroca.entity.Wishlist;
+import bibliotroca.BiblioTroca.exception.ReviewAlreadyExists;
+import bibliotroca.BiblioTroca.exception.ReviewNotFoundException;
 import bibliotroca.BiblioTroca.service.ReviewService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,17 +24,19 @@ public class ReviewController {
 
     @CrossOrigin
     @PostMapping
-    public ResponseEntity<Object> createReview(@RequestBody @Valid ReviewDTO reviewDTO, BindingResult result) {
-        this.review = new Review();
-        if (result.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dados inválidos.");
-        } else {
-            try {
-               return ResponseEntity.status(HttpStatus.CREATED).body(this.reviewService.createReview(reviewDTO.returnReview(reviewDTO)));
-            } catch (Exception var4) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro não esperado ");
+    public ResponseEntity<Object> createReview(@RequestBody @Valid ReviewDTO reviewDTO) throws ReviewAlreadyExists, ReviewNotFoundException {
+        int score = reviewDTO.getScore();
+        if (score < 1 || score > 5) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Pontuação inválida.");
+        }
+        String transactionId = reviewDTO.getTransactionId();
+        if (transactionId != null) {
+            Optional<Review> existingReview = reviewService.findReviewByTransactionId(transactionId);
+            if (existingReview.isPresent()) {
+                throw new ReviewAlreadyExists();
             }
         }
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.reviewService.createReview(reviewDTO.returnReview(reviewDTO)));
     }
 
     @CrossOrigin
@@ -44,30 +46,55 @@ public class ReviewController {
     }
 
     @CrossOrigin
-    @GetMapping({"/{id}"})
-    public ResponseEntity<Object> returnReviewById (@PathVariable String id){
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> returnReviewById(@PathVariable String id) throws ReviewNotFoundException {
         Optional<Review> reviewFound = this.reviewService.returnReviewById(id);
-        return reviewFound.isPresent() ? ResponseEntity.status(HttpStatus.OK).body(reviewFound.get()) : this.reviewIsEmpty(reviewFound);
+        if (reviewFound.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(reviewFound.get());
+        } else {
+            throw new ReviewNotFoundException();
+        }
     }
 
     @CrossOrigin
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateReviewById(@PathVariable("id") String id, @RequestBody @Valid ReviewDTO reviewDTO, BindingResult result) {
-        if (result.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dados inválidos.");
+    public ResponseEntity<Object> updateReviewById(@PathVariable("id") String id, @RequestBody @Valid ReviewDTO reviewDTO) throws ReviewNotFoundException {
+        Optional<Review> reviewUpdate = reviewService.returnReviewById(id);
+        if (!reviewUpdate.isPresent()) {
+            throw new ReviewNotFoundException();
+        }
+        Optional<Review> updateReview = reviewService.updateReview(id, reviewDTO.returnReview(reviewDTO));
+        return ResponseEntity.status(HttpStatus.OK).body(updateReview);
+    }
+
+    @CrossOrigin
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteById(@PathVariable("id") String id) throws ReviewNotFoundException {
+        Optional<Review> review1 = reviewService.returnReviewById(id);
+        if (review1.isPresent()) {
+            reviewService.deleteReview(id);
+            return ResponseEntity.status(HttpStatus.OK).body("Avaliação excluída");
         } else {
-            Optional<Review> reviewUpdate = reviewService.returnReviewById(id);
-            if (reviewUpdate.isPresent()) {
-                Optional<Review> updateReview = reviewService.updateReview(id, reviewDTO.returnReview(reviewDTO));
-                return ResponseEntity.status(HttpStatus.OK).body(updateReview);
-            } else {
-                return reviewIsEmpty(reviewUpdate);
-            }
+            throw new ReviewNotFoundException();
         }
     }
 
-    public ResponseEntity<Object> reviewIsEmpty (Optional < Review > review) {
-        return review.isEmpty() ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("Id não encontrado.") : ResponseEntity.status(HttpStatus.OK).body(review.get());
+    @GetMapping("/pontuacao/{userIdEvaluated}")
+    public ResponseEntity<Double> getUserScoreRatings(@PathVariable String userIdEvaluated) {
+        double average = reviewService.calculateUserScoreRatings(userIdEvaluated);
+
+        return ResponseEntity.ok(average);
     }
+
+     /*
+   @DeleteMapping("/excluir-todos")
+    public ResponseEntity<String> excluirTodosDocumentos() {
+        reviewService.excluirTodosDocumentos();
+        return new ResponseEntity<>("Todos os documentos foram excluídos com sucesso.", HttpStatus.OK);
+    }
+    public void excluirTodosDocumentos() {
+        reviewRepository.deleteAll();
+    }
+  */
 
 }

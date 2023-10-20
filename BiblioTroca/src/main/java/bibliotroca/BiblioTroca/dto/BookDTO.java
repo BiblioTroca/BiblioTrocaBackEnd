@@ -16,6 +16,8 @@ public class BookDTO {
 	private String description;
 	private String publishingCompany;
 	private State state;
+	@JsonInclude(Include.NON_NULL)
+	private UserDTO user;
 	
 	public BookDTO( ) {	}
 	
@@ -91,6 +93,13 @@ public class BookDTO {
 	}
 	public void setState(State state) {
 		this.state = state;
+	}
+	
+	public UserDTO getUser() {
+		return user;
+	}
+	public void setUser(UserDTO user) {
+		this.user = user;
 	}
 	
 	public static BookDTO returnBookDTO(Book book) {
