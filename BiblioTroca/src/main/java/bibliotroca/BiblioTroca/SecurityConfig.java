@@ -16,7 +16,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(request ->
                         request
-                                .requestMatchers("/login", "/resources/**", "/logout").permitAll()
+                                .requestMatchers("/login", "/logout", "/api/**").permitAll()
                                 .anyRequest().authenticated())
                 .oauth2Login(oauth ->
                         oauth.loginPage("/login"))
