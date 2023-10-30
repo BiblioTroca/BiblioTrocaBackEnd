@@ -63,6 +63,12 @@ public class User {
 		this.cep = cep;
 	}
 
+	public User(String name, String surname, String email) {
+		this.name = name;
+		this.surname = surname;
+		this.email = email;
+	}
+
 	public String getId() {
 		return id;
 	}

@@ -101,4 +101,11 @@ public class UserService {
 		userRequest.setBooks(books);
 		return userRequest;
 	}
+
+	public boolean existsByEmail(String email) {
+		if(this.userRepository.existsByEmail(email)) {
+			return true;
+		}
+		return false;
+	}
 }
