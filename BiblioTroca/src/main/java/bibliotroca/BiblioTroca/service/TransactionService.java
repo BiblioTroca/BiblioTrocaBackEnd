@@ -1,18 +1,10 @@
 package bibliotroca.BiblioTroca.service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import bibliotroca.BiblioTroca.dto.TransactionDTO;
-import bibliotroca.BiblioTroca.entity.Book;
 import bibliotroca.BiblioTroca.entity.Transaction;
-import bibliotroca.BiblioTroca.entity.User;
-import bibliotroca.BiblioTroca.exception.CpfNotFoundException;
-import bibliotroca.BiblioTroca.exception.RegistryNotFoundException;
+import bibliotroca.BiblioTroca.exception.InsuficientPointsException;
 import bibliotroca.BiblioTroca.exception.TransactionNotFoundException;
 import bibliotroca.BiblioTroca.repository.TransactionRepository;
 import bibliotroca.BiblioTroca.strategy.TransactionStatus;
@@ -21,8 +13,11 @@ import bibliotroca.BiblioTroca.strategy.TransactionStatus;
 public class TransactionService {
     @Autowired
     private TransactionRepository transactionRepository;
+    @Autowired
+    private PointService pointService;
     
     public Transaction createTransaction(Transaction transaction) {
+    	transaction.setRegistry(this.generateRegistry());
         return transactionRepository.save(transaction);
     }
     
@@ -30,44 +25,46 @@ public class TransactionService {
 		return this.transactionRepository.findAll();
 	}
     
-    public Optional<Transaction> returnTransactionById(String id) throws TransactionNotFoundException {
-    	if(!this.transactionRepository.existsById(id)) {
+    public Transaction returnTransactionByRegistry(Long registry) throws TransactionNotFoundException {
+    	if(!this.transactionRepository.existsByRegistry(registry)) {
     		throw new TransactionNotFoundException();
     	}
-    	return this.transactionRepository.findById(id);
+    	return this.transactionRepository.findByRegistry(registry);
     }
     
-    public Transaction returnByTransactionStatus(
-    		TransactionStatus transactionStatus) throws TransactionNotFoundException {
-		return null; 
+    public List<Transaction> returnByTransactionStatus(String transactionStatus) throws TransactionNotFoundException {
+		return this.transactionRepository.findAllByTransactionStatus(TransactionStatus.getByTransactionStatus(transactionStatus)); 
     }
     
-    public Transaction updateTransaction(String id, Transaction transaction, TransactionStatus transactionStatus) 
-    		throws TransactionNotFoundException {
-    	if(!this.transactionRepository.existsById(id)) {
+    public Transaction updateTransaction(Long registry, Transaction transaction, String transactionStatus) throws TransactionNotFoundException, InsuficientPointsException {
+    	if(!this.transactionRepository.existsByRegistry(registry)) {
 			throw new TransactionNotFoundException();
 		}
-    	Optional<Transaction> transactionRequest = this.transactionRepository.findById(id);
-    	if(transactionRequest.isPresent() ) {
-    		Transaction existingTransaction = transactionRequest.get();
-        	transaction.setId(existingTransaction.getId());
+    	Transaction transactionRequest = this.transactionRepository.findByRegistry(registry);
+    	if(transactionRequest != null) {
+        	transaction.setRegistry(transactionRequest.getRegistry());
     	}
-    	transaction.setTransactionStatus(transactionStatus);
-    	if(transaction.getBookReceived() == true) {
-    		transaction.setTransactionStatus(transactionStatus.CONCLUDED);
-    	}
-    	if(transaction.getTransactionStatus() == transactionStatus.CONCLUDED) {
-    		transaction.setCompletionDate(transaction.getCompletionDate());
+    	transaction.setTransactionStatus(TransactionStatus.getByTransactionStatus(transactionStatus));
+    	if(transaction.getTransactionStatus() == TransactionStatus.CONCLUDED) {
+    		this.pointService.addPoints(20, transaction.getSellerCpf());
+    		this.pointService.deducePoints(20, transaction.getBuyerCpf());
+    		transaction.setCompletionDate(transaction.getCurrentDate());
     	}
 		return this.transactionRepository.save(transaction);
     }
     
-    public void deleteTransaction(String id) throws TransactionNotFoundException {
-    	if(this.transactionRepository.existsById(id)) {
-    		this.transactionRepository.deleteById(id);
+    public void deleteTransaction(Long registry) throws TransactionNotFoundException {
+    	if(this.transactionRepository.existsByRegistry(registry)) {
+    		this.transactionRepository.deleteByRegistry(registry);
     	} else {
     		throw new TransactionNotFoundException();
     	}
     }
     
+    private Long generateRegistry() {
+		if(returnAllTransactions().isEmpty()) {
+			return (long) 1;
+		}
+		return (long) returnAllTransactions().get(returnAllTransactions().size()-1).getRegistry() + 1;
+	}
 }
