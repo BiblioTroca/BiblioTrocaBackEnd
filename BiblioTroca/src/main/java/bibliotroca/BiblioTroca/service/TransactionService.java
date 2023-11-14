@@ -18,6 +18,8 @@ public class TransactionService {
     
     public Transaction createTransaction(Transaction transaction) {
     	transaction.setRegistry(this.generateRegistry());
+    	transaction.setStartDate(transaction.getCurrentDate());
+    	transaction.setTransactionStatus(TransactionStatus.PENDING);
         return transactionRepository.save(transaction);
     }
     

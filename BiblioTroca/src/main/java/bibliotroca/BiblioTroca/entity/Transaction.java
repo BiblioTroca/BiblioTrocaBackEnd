@@ -9,6 +9,7 @@ import bibliotroca.BiblioTroca.strategy.TransactionStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Document(collection="Transacoes")
 public class Transaction {
@@ -20,9 +21,8 @@ public class Transaction {
 	private String sellerCpf;	
 	@NotBlank(message = "Campo não pode ser vazio.")
 	private String buyerCpf;
-	@NotBlank(message = "O número de registro do livro é obrigatório.")
+	@NotNull(message = "O número de registro do livro é obrigatório.")
 	private Long bookRegistry;
-	@NotBlank(message = "A data de início da transação é obrigatória.")
 	private String startDate;	
 	private String completionDate;
 	@Enumerated(EnumType.STRING)
