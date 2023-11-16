@@ -20,6 +20,7 @@ import bibliotroca.BiblioTroca.entity.Transaction;
 import bibliotroca.BiblioTroca.exception.CpfNotFoundException;
 import bibliotroca.BiblioTroca.exception.InsuficientPointsException;
 import bibliotroca.BiblioTroca.exception.RegistryNotFoundException;
+import bibliotroca.BiblioTroca.exception.TransactionAlreadyClosedException;
 import bibliotroca.BiblioTroca.exception.TransactionNotFoundException;
 import bibliotroca.BiblioTroca.service.BookService;
 import bibliotroca.BiblioTroca.service.TransactionService;
@@ -79,6 +80,20 @@ public class TransactionController {
 		return transactionDTO;
 	}
 	
+	@GetMapping("usuario/{cpf}")
+	public List<TransactionDTO> returnUserTransactions(@PathVariable String cpf) throws TransactionNotFoundException, CpfNotFoundException, RegistryNotFoundException {
+		List<Transaction> transactions = this.transactionService.returnUserTransactions(cpf);
+		List<TransactionDTO> transactionsDTO = new ArrayList<>();
+		for(Transaction transaction : transactions) {
+			TransactionDTO transactionDTO = TransactionDTO.returnTransactionDTO(transaction);
+			transactionDTO.setSeller(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transaction.getSellerCpf())));
+			transactionDTO.setBuyer(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transaction.getBuyerCpf())));
+			transactionDTO.setBook(BookDTO.returnBookDTO(this.bookService.returnBookByRegistry(transaction.getBookRegistry())));
+			transactionsDTO.add(transactionDTO);
+		}
+		return transactionsDTO;
+	}
+	
 	@GetMapping("/status/{transactionStatus}")
 	public List<TransactionDTO> returnByTransactionStatus(@PathVariable String transactionStatus) throws TransactionNotFoundException, CpfNotFoundException, RegistryNotFoundException {
 		List<Transaction> transactions = transactionService.returnByTransactionStatus(transactionStatus);
@@ -94,7 +109,7 @@ public class TransactionController {
 	}
 	
 	@PutMapping("/{registry}/{status}")
-	public TransactionDTO updateTransaction(@PathVariable("registry") String registry, @PathVariable("status") String transactionStatus) throws TransactionNotFoundException, InsuficientPointsException, CpfNotFoundException, RegistryNotFoundException {
+	public TransactionDTO updateTransaction(@PathVariable("registry") String registry, @PathVariable("status") String transactionStatus) throws TransactionNotFoundException, InsuficientPointsException, CpfNotFoundException, RegistryNotFoundException, NumberFormatException, TransactionAlreadyClosedException {
 		Transaction transactionRequest = this.transactionService.returnTransactionByRegistry(Long.parseLong(registry));
 		Transaction transactionUpdated = this.transactionService.updateTransaction(Long.parseLong(registry), transactionRequest, transactionStatus);
 		TransactionDTO transactionDTO = TransactionDTO.returnTransactionDTO(transactionUpdated);
