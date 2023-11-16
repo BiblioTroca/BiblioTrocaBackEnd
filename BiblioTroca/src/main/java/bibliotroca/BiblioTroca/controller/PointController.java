@@ -33,6 +33,7 @@ public class PointController {
     @GetMapping("/{cpf}")
     public PointDTO getPoints(@PathVariable String cpf) throws CpfNotFoundException {
         Point point = pointService.returnPointsByCpf(cpf);
+        this.pointService.verifyLoggedToday(point);
         if (point != null) {
             PointDTO pointDTO = new PointDTO(point.getWalletPoints());
             return pointDTO;

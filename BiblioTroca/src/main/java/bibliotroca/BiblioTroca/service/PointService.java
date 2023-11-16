@@ -38,4 +38,8 @@ public class PointService {
         }
         throw new InsuficientPointsException();
     }
+    
+    public void verifyLoggedToday(Point point) {
+    	point.increasePointsIfLoggedToday();
+    }
 }
