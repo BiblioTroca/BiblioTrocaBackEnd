@@ -11,6 +11,8 @@ public interface PointRepository extends MongoRepository<Point, String> {
 	Optional<Point> findById(String id);	  
 
 	Point findByUserCpf(String userCpf);
+
+	boolean existsByUserCpf(String userCpf);
   
 }
  

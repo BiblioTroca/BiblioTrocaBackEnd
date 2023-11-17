@@ -62,11 +62,13 @@ public class Point {
 	    return Instant.now().atZone(ZoneId.of("GMT-3")).format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 	}
 	
-	public void increasePointsIfLoggedToday() {
+	public boolean increasePointsIfLoggedToday() {
 		String today = this.getCurrentDate();
-		if(this.lastLogin != today) {
-			this.walletPoints++;
-			this.lastLogin = today;
+		if(this.lastLogin.equals(today)) {
+			return false;
 		}
+		this.walletPoints++;
+		this.lastLogin = today;
+		return true;
 	}
 }
