@@ -17,4 +17,6 @@ public interface UserRepository extends MongoRepository<User, String> {
 
 	void deleteByCpf(String cpf);
 
+	boolean existsByEmail(String email);
+
 }

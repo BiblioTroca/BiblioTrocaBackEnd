@@ -59,11 +59,14 @@ public class ReviewService {
     }
 
 
-    public double calculateUserScoreRatings(String userIdEvaluated) {
+    public  Map<String, Object> calculateUserScoreRatings(String userIdEvaluated) {
         List<Review> reviews = reviewRepository.findByUserIdEvaluated(userIdEvaluated);
 
         if (reviews.isEmpty()) {
-          return 0.0;
+            Map<String, Object> result = new HashMap<>();
+            result.put("totalScore", 0.0);
+            result.put("totalReviews", 0);
+            return result;
         }
 
         double totalScore = 0.0;
@@ -72,8 +75,13 @@ public class ReviewService {
         for (Review review : reviews) {
             totalScore += review.getScore();
         }
+       double average = totalScore / totalReviews;
 
-        return totalScore / totalReviews;
+        Map<String, Object> result = new HashMap<>();
+        result.put("Nota" , average);
+        result.put("Avaliações" , totalReviews);
+        return result;
+
     }
 
 

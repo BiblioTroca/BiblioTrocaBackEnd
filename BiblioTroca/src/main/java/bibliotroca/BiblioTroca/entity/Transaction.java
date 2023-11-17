@@ -1,59 +1,60 @@
 package bibliotroca.BiblioTroca.entity;
 
-import java.time.LocalDateTime;
-
-import org.springframework.data.annotation.CreatedDate;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
 import bibliotroca.BiblioTroca.strategy.TransactionStatus;
-import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 @Document(collection="Transacoes")
-@Entity
 public class Transaction {
 	
 	@Id
-	private String id;	
+	private String id;
+	private Long registry;
 	@NotBlank(message = "Campo não pode ser vazio.")
-	private String seller;	
+	private String sellerCpf;	
 	@NotBlank(message = "Campo não pode ser vazio.")
-	private String buyer;
-	private Long book;
-	@NotNull(message = "Campo não pode ser vazio.")
-	private int paymentPoints;	
-	private boolean bookReceived;
-	@CreatedDate
-	private LocalDateTime startDate;	
-	@CreatedDate
-	private LocalDateTime completionDate;
+	private String buyerCpf;
+	@NotNull(message = "O número de registro do livro é obrigatório.")
+	private Long bookRegistry;
+	private String startDate;	
+	private String completionDate;
 	@Enumerated(EnumType.STRING)
 	private TransactionStatus transactionStatus;
 	
 	public Transaction() { }
 	
-	public Transaction(String id, String seller, String buyer, Long book, int paymentPoints, boolean bookReceived,
-			LocalDateTime startDate, LocalDateTime completionDate, TransactionStatus transactionStatus) {
+	public Transaction(String id, Long registry, String sellerCpf, String buyerCpf, Long bookRegistry, String startDate,
+			String completionDate, TransactionStatus transactionStatus) {
 		this.id = id;
-		this.seller = seller;
-		this.buyer = buyer;
-		this.book = book;
-		this.paymentPoints = paymentPoints;
-		this.bookReceived = bookReceived;
+		this.registry = registry;
+		this.sellerCpf = sellerCpf;
+		this.buyerCpf = buyerCpf;
+		this.bookRegistry = bookRegistry;
 		this.startDate = startDate;
 		this.completionDate = completionDate;
 		this.transactionStatus = transactionStatus;
 	}
 	
-	public Transaction(int paymentPoints, boolean bookReceived, LocalDateTime startDate, LocalDateTime completionDate, 
-			TransactionStatus transactionStatus) {
-		this.paymentPoints = paymentPoints;
-		this.bookReceived = bookReceived;
+	public Transaction(Long registry, String sellerCpf, String buyerCpf, Long bookRegistry, String startDate,
+			String completionDate, TransactionStatus transactionStatus) {
+		this.registry = registry;
+		this.sellerCpf = sellerCpf;
+		this.buyerCpf = buyerCpf;
+		this.bookRegistry = bookRegistry;
+		this.startDate = startDate;
+		this.completionDate = completionDate;
+		this.transactionStatus = transactionStatus;
+	}
+	
+	public Transaction(Long registry, String startDate, String completionDate, TransactionStatus transactionStatus) {
+		this.registry = registry;
 		this.startDate = startDate;
 		this.completionDate = completionDate;
 		this.transactionStatus = transactionStatus;
@@ -66,52 +67,45 @@ public class Transaction {
 		this.id = id;
 	}
 	
-	public String getSeller() {
-		return seller;
+	public Long getRegistry() {
+		return registry;
 	}
-	public void setSeller(String seller) {
-		this.seller = seller;
-	}
-	
-	public String getBuyer() {
-		return buyer;
-	}
-	public void setBuyer(String buyer) {
-		this.buyer = buyer;
+	public void setRegistry(Long registry) {
+		this.registry = registry;
 	}
 	
-	public Long getBook() {
-		return book;
+	public String getSellerCpf() {
+		return sellerCpf;
 	}
-	public void setBook(Long book) {
-		this.book = book;
-	}
-	
-	public int getPaymentPoints() {
-		return paymentPoints;
-	}
-	public void setPaymentPoints(int paymentPoints) {
-		this.paymentPoints = paymentPoints;
+	public void setSellerCpf(String sellerCpf) {
+		this.sellerCpf = sellerCpf;
 	}
 	
-	public boolean getBookReceived() {
-		return bookReceived;
+	public String getBuyerCpf() {
+		return buyerCpf;
 	}
-	public void setBookReceived(boolean bookReceived) {
-		this.bookReceived = bookReceived;
+	public void setBuyerCpf(String buyerCpf) {
+		this.buyerCpf = buyerCpf;
 	}
 	
-	public LocalDateTime getStartDate() {
+	public Long getBookRegistry() {
+		return bookRegistry;
+	}
+	public void setBookRegistry(Long bookRegistry) {
+		this.bookRegistry = bookRegistry;
+	}
+	
+	public String getStartDate() {
 		return startDate;
 	}
-	public void setStartDate(LocalDateTime startDate) {
+	public void setStartDate(String startDate) {
 		this.startDate = startDate;
 	}
 	
-	public LocalDateTime getCompletionDate() {
+	public String getCompletionDate() {
 		return completionDate;
 	}
-	public void setCompletionDate(LocalDateTime completionDate) {
+	public void setCompletionDate(String completionDate) {
 		this.completionDate = completionDate;
 	}
 	
@@ -122,4 +116,8 @@ public class Transaction {
 		this.transactionStatus = transactionStatus;
 	}
 
+	
+	public String getCurrentDate() {
+		return Instant.now().atZone(ZoneId.of("GMT-3")).format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+	}
 }

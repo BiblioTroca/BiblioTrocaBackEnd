@@ -9,10 +9,10 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -80,8 +80,8 @@ public class ReviewController {
     }
 
     @GetMapping("/pontuacao/{userIdEvaluated}")
-    public ResponseEntity<Double> getUserScoreRatings(@PathVariable String userIdEvaluated) {
-        double average = reviewService.calculateUserScoreRatings(userIdEvaluated);
+    public ResponseEntity<Map<String, Object>> getUserScoreRatings(@PathVariable String userIdEvaluated) {
+        Map<String, Object> average = reviewService.calculateUserScoreRatings(userIdEvaluated);
 
         return ResponseEntity.ok(average);
     }

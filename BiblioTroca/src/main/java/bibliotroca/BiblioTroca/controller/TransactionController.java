@@ -2,11 +2,8 @@ package bibliotroca.BiblioTroca.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,17 +11,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
 import bibliotroca.BiblioTroca.dto.BookDTO;
 import bibliotroca.BiblioTroca.dto.TransactionDTO;
 import bibliotroca.BiblioTroca.dto.UserDTO;
-import bibliotroca.BiblioTroca.entity.Book;
 import bibliotroca.BiblioTroca.entity.Transaction;
 import bibliotroca.BiblioTroca.exception.CpfNotFoundException;
+import bibliotroca.BiblioTroca.exception.InsuficientPointsException;
 import bibliotroca.BiblioTroca.exception.RegistryNotFoundException;
+import bibliotroca.BiblioTroca.exception.TransactionAlreadyClosedException;
 import bibliotroca.BiblioTroca.exception.TransactionNotFoundException;
 import bibliotroca.BiblioTroca.service.BookService;
 import bibliotroca.BiblioTroca.service.TransactionService;
@@ -45,16 +41,15 @@ public class TransactionController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public TransactionDTO createTransaction(@RequestBody @Valid Transaction transaction) 
-			throws CpfNotFoundException, RegistryNotFoundException {
+	public TransactionDTO createTransaction(@RequestBody @Valid Transaction transaction) throws CpfNotFoundException, RegistryNotFoundException {
 		Transaction createdTransaction = this.transactionService.createTransaction(transaction);
+		UserDTO seller = UserDTO.returnUserDTO(this.userService.returnUserByCPF(createdTransaction.getSellerCpf()));
+		UserDTO buyer = UserDTO.returnUserDTO(this.userService.returnUserByCPF(createdTransaction.getBuyerCpf()));
+		BookDTO book = BookDTO.returnBookDTO(this.bookService.returnBookByRegistry(createdTransaction.getBookRegistry()));
+		seller.setCpf(createdTransaction.getSellerCpf());
+		buyer.setCpf(createdTransaction.getBuyerCpf());
+		book.setRegistry(createdTransaction.getBookRegistry());
 		TransactionDTO createdTransactionDTO = TransactionDTO.returnTransactionDTO(createdTransaction);
-		UserDTO seller = UserDTO.returnUserDTO(this.userService.returnUserByCPF(createdTransaction.getSeller()));
-		UserDTO buyer = UserDTO.returnUserDTO(this.userService.returnUserByCPF(createdTransaction.getBuyer()));
-		BookDTO book = BookDTO.returnBookDTO(this.bookService.returnBookByRegistry(createdTransaction.getBook()));
-		seller.setCpf(createdTransaction.getSeller());
-		buyer.setCpf(createdTransaction.getBuyer());
-		book.setRegistry(createdTransaction.getBook());
 		createdTransactionDTO.setSeller(seller);
 		createdTransactionDTO.setBuyer(buyer);
 		createdTransactionDTO.setBook(book);
@@ -62,46 +57,73 @@ public class TransactionController {
 	}
 	
 	@GetMapping
-	public ArrayList<TransactionDTO> returnAllTransactions() {
+	public List<TransactionDTO> returnAllTransactions() throws CpfNotFoundException, RegistryNotFoundException {
 		List<Transaction> transactions = this.transactionService.returnAllTransactions();
-		ArrayList<TransactionDTO> transactionsDTO = new ArrayList<>();
+		List<TransactionDTO> transactionsDTO = new ArrayList<>();
 		for(Transaction transaction : transactions) {
-			transactionsDTO.add(TransactionDTO.returnTransactionDTO(transaction));
+			TransactionDTO transactionDTO = TransactionDTO.returnTransactionDTO(transaction);
+			transactionDTO.setSeller(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transaction.getSellerCpf())));
+			transactionDTO.setBuyer(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transaction.getBuyerCpf())));
+			transactionDTO.setBook(BookDTO.returnBookDTO(this.bookService.returnBookByRegistry(transaction.getBookRegistry())));
+			transactionsDTO.add(transactionDTO);
 		}
 		return transactionsDTO;
 	}
 	
-	/*
-	@GetMapping("/{id}")
-	public TransactionDTO returnTransactionById(@PathVariable String id) throws TransactionNotFoundException {
-		TransactionDTO transaction = TransactionDTO.returnTransactionDTO(transactionService.returnTransactionById(id));
-		transaction.setId(id);
-		return transaction;
-	}
-	*/
-	
-	@GetMapping("/{transactionStatus}")
-	public TransactionDTO returnByTransactionStatus(
-			TransactionStatus transactionStatus) throws TransactionNotFoundException {
-		return null;
+	@GetMapping("/{registry}")
+	public TransactionDTO returnTransactionById(@PathVariable Long registry) throws TransactionNotFoundException, CpfNotFoundException, RegistryNotFoundException {
+		Transaction transaction = this.transactionService.returnTransactionByRegistry(registry);
+		TransactionDTO transactionDTO = TransactionDTO.returnTransactionDTO(transaction);
+		transactionDTO.setSeller(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transaction.getSellerCpf())));
+		transactionDTO.setBuyer(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transaction.getBuyerCpf())));
+		transactionDTO.setBook(BookDTO.returnBookDTO(this.bookService.returnBookByRegistry(transaction.getBookRegistry())));
+		return transactionDTO;
 	}
 	
-	@PutMapping("/{transactionStatus}")
-	public TransactionDTO updateTransaction(
-			@PathVariable String id, 
-			@PathVariable TransactionStatus transactionStatus,
-			@RequestBody @Valid TransactionDTO transactionDTO) throws TransactionNotFoundException {
-		Transaction transactionRequest = TransactionDTO.returnTransaction(transactionDTO);
-		Transaction transactionUpdated = this.transactionService.updateTransaction(id, transactionRequest, transactionStatus);
-		TransactionDTO transaction = TransactionDTO.returnTransactionDTO(transactionUpdated);
-		transaction.setTransactionStatus(transactionStatus);
-		return transaction;
+	@GetMapping("usuario/{cpf}")
+	public List<TransactionDTO> returnUserTransactions(@PathVariable String cpf) throws TransactionNotFoundException, CpfNotFoundException, RegistryNotFoundException {
+		List<Transaction> transactions = this.transactionService.returnUserTransactions(cpf);
+		List<TransactionDTO> transactionsDTO = new ArrayList<>();
+		for(Transaction transaction : transactions) {
+			TransactionDTO transactionDTO = TransactionDTO.returnTransactionDTO(transaction);
+			transactionDTO.setSeller(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transaction.getSellerCpf())));
+			transactionDTO.setBuyer(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transaction.getBuyerCpf())));
+			transactionDTO.setBook(BookDTO.returnBookDTO(this.bookService.returnBookByRegistry(transaction.getBookRegistry())));
+			transactionsDTO.add(transactionDTO);
+		}
+		return transactionsDTO;
 	}
 	
-	@DeleteMapping
+	@GetMapping("/status/{transactionStatus}")
+	public List<TransactionDTO> returnByTransactionStatus(@PathVariable String transactionStatus) throws TransactionNotFoundException, CpfNotFoundException, RegistryNotFoundException {
+		List<Transaction> transactions = transactionService.returnByTransactionStatus(transactionStatus);
+		List<TransactionDTO> transactionsDTO = new ArrayList<>();
+		for(Transaction transactionRequest : transactions) {
+			TransactionDTO transactionDTO = TransactionDTO.returnTransactionDTO(transactionRequest);
+			transactionDTO.setSeller(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transactionRequest.getSellerCpf())));
+			transactionDTO.setBuyer(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transactionRequest.getBuyerCpf())));
+			transactionDTO.setBook(BookDTO.returnBookDTO(this.bookService.returnBookByRegistry(transactionRequest.getBookRegistry())));
+			transactionsDTO.add(transactionDTO);
+		}
+		return transactionsDTO;
+	}
+	
+	@PutMapping("/{registry}/{status}")
+	public TransactionDTO updateTransaction(@PathVariable("registry") String registry, @PathVariable("status") String transactionStatus) throws TransactionNotFoundException, InsuficientPointsException, CpfNotFoundException, RegistryNotFoundException, NumberFormatException, TransactionAlreadyClosedException {
+		Transaction transactionRequest = this.transactionService.returnTransactionByRegistry(Long.parseLong(registry));
+		Transaction transactionUpdated = this.transactionService.updateTransaction(Long.parseLong(registry), transactionRequest, transactionStatus);
+		TransactionDTO transactionDTO = TransactionDTO.returnTransactionDTO(transactionUpdated);
+		transactionDTO.setTransactionStatus(TransactionStatus.getByTransactionStatus(transactionStatus));
+		transactionDTO.setSeller(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transactionUpdated.getSellerCpf())));
+		transactionDTO.setBuyer(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transactionUpdated.getBuyerCpf())));
+		transactionDTO.setBook(BookDTO.returnBookDTO(this.bookService.returnBookByRegistry(transactionUpdated.getBookRegistry())));
+		return transactionDTO;
+	}
+	
+	@DeleteMapping("/{registry}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteTransaction(@PathVariable String id) throws TransactionNotFoundException {
-		this.transactionService.deleteTransaction(id);
+	public void deleteTransaction(@PathVariable String registry) throws TransactionNotFoundException {
+		this.transactionService.deleteTransaction(Long.parseLong(registry));
 	}
 	
 }
