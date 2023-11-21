@@ -42,6 +42,17 @@ public class TransactionService {
 		return transactions;
 	}
     
+    public List<Transaction> returnUserTransactionsByStatus(String cpf, String status) {
+    	List<Transaction> transactions = new ArrayList<>();
+    	List<Transaction> userTransactions = this.returnUserTransactions(cpf);
+    	for(Transaction transaction : userTransactions ) {
+    		if(transaction.getTransactionStatus().equals(TransactionStatus.getByTransactionStatus(status))) {
+    			transactions.add(transaction);
+    		}	
+    	}
+		return transactions;
+	}
+    
     public Transaction returnTransactionByRegistry(Long registry) throws TransactionNotFoundException {
     	if(!this.transactionRepository.existsByRegistry(registry)) {
     		throw new TransactionNotFoundException();
