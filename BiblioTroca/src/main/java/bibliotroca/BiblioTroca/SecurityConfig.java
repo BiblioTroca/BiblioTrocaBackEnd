@@ -18,7 +18,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(request ->
                         request
                                 .requestMatchers("/login", "/logout").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/v1/bibliotroca/livros").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/bibliotroca/livros", "/api/v1/bibliotroca/livros/ponto-de-coleta").permitAll()
                                 .anyRequest().authenticated())
                 .oauth2Login(oauth ->
                         oauth.loginPage("/login"))

@@ -83,4 +83,13 @@ public class BookController {
 	public void deleteBook(@PathVariable Long registry) throws RegistryNotFoundException {
 		this.bookService.deleteBook(registry);
 	}
+	
+	@GetMapping("/ponto-de-coleta")
+	@ResponseStatus(HttpStatus.CREATED)
+	public BookDTO createBookFromCollectPoint() {
+		Book createdBook = this.bookService.createBookFromCollectPoint();
+		BookDTO createdBookDTO = BookDTO.returnBookDTO(createdBook);
+		createdBookDTO.setRegistry(createdBook.getRegistry());
+		return createdBookDTO;
+	}
 }
