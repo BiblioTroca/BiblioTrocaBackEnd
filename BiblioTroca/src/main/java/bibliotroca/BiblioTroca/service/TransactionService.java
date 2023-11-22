@@ -1,5 +1,6 @@
 package bibliotroca.BiblioTroca.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class TransactionService {
     
     public Transaction createTransaction(Transaction transaction) {
     	transaction.setRegistry(this.generateRegistry());
-    	transaction.setStartDate(transaction.getCurrentDate());
+    	transaction.setStartDate(LocalDateTime.now());
     	transaction.setTransactionStatus(TransactionStatus.PENDING);
         return transactionRepository.save(transaction);
     }
@@ -72,17 +73,17 @@ public class TransactionService {
     	if(transactionRequest != null) {
         	transaction.setRegistry(transactionRequest.getRegistry());
     	}
-    	if(!transaction.getCompletionDate().isEmpty()) {
+    	if(transaction.getCompletionDate() != null) {
     		throw new TransactionAlreadyClosedException();
     	}
     	transaction.setTransactionStatus(TransactionStatus.getByTransactionStatus(transactionStatus));
     	if(transaction.getTransactionStatus() == TransactionStatus.CONCLUDED) {
     		this.pointService.addPoints(20, transaction.getSellerCpf());
     		this.pointService.deducePoints(20, transaction.getBuyerCpf());
-    		transaction.setCompletionDate(transaction.getCurrentDate());
+    		transaction.setCompletionDate(LocalDateTime.now());
     	}
     	if(transaction.getTransactionStatus() == TransactionStatus.CANCELLED) {
-    		transaction.setCompletionDate(transaction.getCurrentDate());
+    		transaction.setCompletionDate(LocalDateTime.now());
     	}
 		return this.transactionRepository.save(transaction);
     }

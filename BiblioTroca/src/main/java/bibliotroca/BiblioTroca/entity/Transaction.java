@@ -1,8 +1,6 @@
 package bibliotroca.BiblioTroca.entity;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import bibliotroca.BiblioTroca.strategy.TransactionStatus;
@@ -23,15 +21,15 @@ public class Transaction {
 	private String buyerCpf;
 	@NotNull(message = "O número de registro do livro é obrigatório.")
 	private Long bookRegistry;
-	private String startDate;	
-	private String completionDate;
+	private LocalDateTime startDate;	
+	private LocalDateTime completionDate;
 	@Enumerated(EnumType.STRING)
 	private TransactionStatus transactionStatus;
 	
 	public Transaction() { }
 	
-	public Transaction(String id, Long registry, String sellerCpf, String buyerCpf, Long bookRegistry, String startDate,
-			String completionDate, TransactionStatus transactionStatus) {
+	public Transaction(String id, Long registry, String sellerCpf, String buyerCpf, Long bookRegistry, LocalDateTime startDate,
+			LocalDateTime completionDate, TransactionStatus transactionStatus) {
 		this.id = id;
 		this.registry = registry;
 		this.sellerCpf = sellerCpf;
@@ -42,8 +40,8 @@ public class Transaction {
 		this.transactionStatus = transactionStatus;
 	}
 	
-	public Transaction(Long registry, String sellerCpf, String buyerCpf, Long bookRegistry, String startDate,
-			String completionDate, TransactionStatus transactionStatus) {
+	public Transaction(Long registry, String sellerCpf, String buyerCpf, Long bookRegistry, LocalDateTime startDate,
+			LocalDateTime completionDate, TransactionStatus transactionStatus) {
 		this.registry = registry;
 		this.sellerCpf = sellerCpf;
 		this.buyerCpf = buyerCpf;
@@ -53,7 +51,7 @@ public class Transaction {
 		this.transactionStatus = transactionStatus;
 	}
 	
-	public Transaction(Long registry, String startDate, String completionDate, TransactionStatus transactionStatus) {
+	public Transaction(Long registry, LocalDateTime startDate, LocalDateTime completionDate, TransactionStatus transactionStatus) {
 		this.registry = registry;
 		this.startDate = startDate;
 		this.completionDate = completionDate;
@@ -95,17 +93,17 @@ public class Transaction {
 		this.bookRegistry = bookRegistry;
 	}
 	
-	public String getStartDate() {
+	public LocalDateTime getStartDate() {
 		return startDate;
 	}
-	public void setStartDate(String startDate) {
+	public void setStartDate(LocalDateTime startDate) {
 		this.startDate = startDate;
 	}
 	
-	public String getCompletionDate() {
+	public LocalDateTime getCompletionDate() {
 		return completionDate;
 	}
-	public void setCompletionDate(String completionDate) {
+	public void setCompletionDate(LocalDateTime completionDate) {
 		this.completionDate = completionDate;
 	}
 	
@@ -114,10 +112,5 @@ public class Transaction {
 	}
 	public void setTransactionStatus(TransactionStatus transactionStatus) {
 		this.transactionStatus = transactionStatus;
-	}
-
-	
-	public String getCurrentDate() {
-		return Instant.now().atZone(ZoneId.of("GMT-3")).format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 	}
 }
