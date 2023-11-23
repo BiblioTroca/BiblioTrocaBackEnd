@@ -1,5 +1,7 @@
 package bibliotroca.BiblioTroca.dto;
 
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import bibliotroca.BiblioTroca.entity.Transaction;
@@ -14,13 +16,13 @@ public class TransactionDTO {
 	private UserDTO buyer;
 	@JsonInclude(Include.NON_NULL)
 	private BookDTO book;
-	private String startDate;
-	private String completionDate;
+	private LocalDateTime startDate;
+	private LocalDateTime completionDate;
 	private TransactionStatus transactionStatus;
 	
 	public TransactionDTO() { }
 	
-	public TransactionDTO(Long registry, String newStartDate, String newCompletionDate, TransactionStatus newTransactionStatus) {
+	public TransactionDTO(Long registry, LocalDateTime newStartDate, LocalDateTime newCompletionDate, TransactionStatus newTransactionStatus) {
 		this.registry = registry;
 		this.startDate = newStartDate;
 		this.completionDate = newCompletionDate;
@@ -55,17 +57,17 @@ public class TransactionDTO {
 		this.book = book;
 	}
 	
-	public String getStartDate() {
+	public LocalDateTime getStartDate() {
 		return startDate;
 	}
-	public void setStartDate(String startDate) {
+	public void setStartDate(LocalDateTime startDate) {
 		this.startDate = startDate;
 	}
 	
-	public String getCompletionDate() {
+	public LocalDateTime getCompletionDate() {
 		return completionDate;
 	}
-	public void setCompletionDate(String completionDate) {
+	public void setCompletionDate(LocalDateTime completionDate) {
 		this.completionDate = completionDate;
 	}
 	

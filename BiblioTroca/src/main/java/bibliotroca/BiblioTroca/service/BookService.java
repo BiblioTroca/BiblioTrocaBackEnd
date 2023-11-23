@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import bibliotroca.BiblioTroca.entity.Book;
 import bibliotroca.BiblioTroca.exception.RegistryNotFoundException;
 import bibliotroca.BiblioTroca.repository.BookRepository;
+import bibliotroca.BiblioTroca.strategy.State;
 
 @Service
 public class BookService {
@@ -103,5 +104,14 @@ public class BookService {
 			return filteredBooks;
 		}
 		return new ArrayList<>();
+	}
+
+	public Book createBookFromCollectPoint() {
+		Book book = new Book("Livro cadastrado pelo funcionário BiblioTroca", "Livro cadastrado pelo funcionário BiblioTroca",
+				"Livro cadastrado pelo funcionário BiblioTroca", "Livro cadastrado pelo funcionário BiblioTroca",
+				"Livro cadastrado pelo funcionário BiblioTroca", "Livro cadastrado pelo funcionário BiblioTroca",
+				"Livro cadastrado pelo funcionário BiblioTroca", State.Seminovo);
+		book.setRegistry(generateRegistry());
+		return this.bookRepository.save(book);
 	}
 }

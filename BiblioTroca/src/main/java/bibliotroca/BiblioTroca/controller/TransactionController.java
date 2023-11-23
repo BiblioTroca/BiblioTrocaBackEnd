@@ -94,6 +94,20 @@ public class TransactionController {
 		return transactionsDTO;
 	}
 	
+	@GetMapping("usuario/{cpf}/status/{transactionStatus}")
+	public List<TransactionDTO> returnUserTransactionsByStatus(@PathVariable("cpf") String cpf, @PathVariable("transactionStatus") String status) throws TransactionNotFoundException, CpfNotFoundException, RegistryNotFoundException {
+		List<Transaction> transactions = this.transactionService.returnUserTransactionsByStatus(cpf, status);
+		List<TransactionDTO> transactionsDTO = new ArrayList<>();
+		for(Transaction transaction : transactions) {
+			TransactionDTO transactionDTO = TransactionDTO.returnTransactionDTO(transaction);
+			transactionDTO.setSeller(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transaction.getSellerCpf())));
+			transactionDTO.setBuyer(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transaction.getBuyerCpf())));
+			transactionDTO.setBook(BookDTO.returnBookDTO(this.bookService.returnBookByRegistry(transaction.getBookRegistry())));
+			transactionsDTO.add(transactionDTO);
+		}
+		return transactionsDTO;
+	}
+	
 	@GetMapping("/status/{transactionStatus}")
 	public List<TransactionDTO> returnByTransactionStatus(@PathVariable String transactionStatus) throws TransactionNotFoundException, CpfNotFoundException, RegistryNotFoundException {
 		List<Transaction> transactions = transactionService.returnByTransactionStatus(transactionStatus);
