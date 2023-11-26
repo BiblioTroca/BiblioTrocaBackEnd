@@ -30,6 +30,7 @@ public class TransactionService {
     public List<Transaction> returnAllTransactions() {
     	List<Transaction> transactionList = this.transactionRepository.findAll();
     	Collections.sort(transactionList, (o1, o2) -> (o1.getStartDate().compareTo(o2.getStartDate())));
+    	Collections.reverse(transactionList);
 		return transactionList;
 	}
     
@@ -44,6 +45,7 @@ public class TransactionService {
     		transactions.add(transaction);
     	}
     	Collections.sort(transactions, (o1, o2) -> (o1.getStartDate().compareTo(o2.getStartDate())));
+    	Collections.reverse(transactions);
 		return transactions;
 	}
     
@@ -56,6 +58,7 @@ public class TransactionService {
     		}	
     	}
     	Collections.sort(transactions, (o1, o2) -> (o1.getStartDate().compareTo(o2.getStartDate())));
+    	Collections.reverse(transactions);
 		return transactions;
 	}
     
@@ -69,6 +72,7 @@ public class TransactionService {
     public List<Transaction> returnByTransactionStatus(String transactionStatus) throws TransactionNotFoundException {
     	List<Transaction> transactionList = this.transactionRepository.findAllByTransactionStatus(TransactionStatus.getByTransactionStatus(transactionStatus));
     	Collections.sort(transactionList, (o1, o2) -> (o1.getStartDate().compareTo(o2.getStartDate())));
+    	Collections.reverse(transactionList);
 		return transactionList;
     }
     

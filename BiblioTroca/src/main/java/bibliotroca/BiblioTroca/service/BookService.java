@@ -24,6 +24,7 @@ public class BookService {
 	public List<Book> returnAllBooks() {
 		List<Book> bookList = this.bookRepository.findAll();
 		Collections.sort(bookList, (o1, o2) -> (o1.getCreatedAt().compareTo(o2.getCreatedAt())));
+		Collections.reverse(bookList);
 		return bookList;
 	}
 	
@@ -106,6 +107,7 @@ public class BookService {
 		}
 		if(!filteredBooks.isEmpty()) {
 			Collections.sort(filteredBooks, (o1, o2) -> (o1.getCreatedAt().compareTo(o2.getCreatedAt())));
+			Collections.reverse(filteredBooks);
 			return filteredBooks;
 		}
 		return new ArrayList<>();
