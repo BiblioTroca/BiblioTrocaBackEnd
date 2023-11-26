@@ -7,24 +7,37 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import bibliotroca.BiblioTroca.entity.User;
 
 public class UserDTO {
-	@JsonInclude(Include.NON_NULL)
 	private String cpf;
 	private String name;
 	private String surname;
 	private String email;
-	private String telephone;
-	private String cep;
+	private String phoneNumber;
+	private String location;
 	@JsonInclude(Include.NON_NULL)
 	private List<BookDTO> books;
+	private Number averageRating;
+	private Number avaliationsNumber;
 	
 	public UserDTO() {	}
 	
-	public UserDTO(String newName, String newSurname, String newEmail, String newTelephone, String newCep) {
+	public UserDTO(String newCpf, String newName, String newSurname, String newEmail, String newTelephone, String newCep) {
+		this.cpf = newCpf;
 		this.name = newName;
 		this.surname = newSurname;
 		this.email = newEmail;
-		this.telephone = newTelephone;
-		this.cep = newCep;
+		this.phoneNumber = newTelephone;
+		this.location = newCep;
+	}
+	
+	public UserDTO(String newCpf, String newName, String newSurname, String newEmail, String newTelephone, String newCep, Integer avaliationsNumber, Double averageRating) {
+		this.cpf = newCpf;
+		this.name = newName;
+		this.surname = newSurname;
+		this.email = newEmail;
+		this.phoneNumber = newTelephone;
+		this.location = newCep;
+		this.avaliationsNumber = avaliationsNumber;
+		this.averageRating = averageRating;
 	}
 
 	public String getCpf() {
@@ -55,18 +68,18 @@ public class UserDTO {
 		this.email = email;
 	}
 
-	public String getTelephone() {
-		return telephone;
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
-	public void setTelephone(String telephone) {
-		this.telephone = telephone;
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
-	public String getCep() {
-		return cep;
+	public String getLocation() {
+		return location;
 	}
-	public void setCep(String cep) {
-		this.cep = cep;
+	public void setLocation(String location) {
+		this.location = location;
 	}
 	
 	public List<BookDTO> getBooks() {
@@ -76,11 +89,25 @@ public class UserDTO {
 		this.books = books;
 	}
 	
+	public Number getAverageRating() {
+		return averageRating;
+	}
+	public void setAverageRating(Number averageRating) {
+		this.averageRating = averageRating;
+	}
+	
+	public Number getAvaliationsNumber() {
+		return avaliationsNumber;
+	}
+	public void setAvaliationsNumber(Number avaliationsNumber) {
+		this.avaliationsNumber = avaliationsNumber;
+	}
+	
 	public static UserDTO returnUserDTO(User user) {
-		return new UserDTO(user.getName(), user.getSurname(), user.getEmail(), user.getTelephone(), user.getCep());
+		return new UserDTO(user.getCpf(), user.getName(), user.getSurname(), user.getEmail(), user.getTelephone(), user.getCep(), user.getAvaliationsNumber(), user.getAverageRating());
 	}
 	
 	public static User returnUser(UserDTO userDTO) {
-		return new User(userDTO.getName(), userDTO.getSurname(), userDTO.getEmail(), userDTO.getTelephone(), userDTO.getCep());
+		return new User(userDTO.getCpf(), userDTO.getName(), userDTO.getSurname(), userDTO.getEmail(), userDTO.getPhoneNumber(), userDTO.getLocation(), userDTO.getAvaliationsNumber().intValue(), userDTO.getAverageRating().doubleValue());
 	}
 }

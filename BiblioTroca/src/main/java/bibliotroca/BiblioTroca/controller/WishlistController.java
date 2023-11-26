@@ -1,5 +1,6 @@
 package bibliotroca.BiblioTroca.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,20 +38,25 @@ public class WishlistController {
     @CrossOrigin
     @PostMapping
     public ResponseEntity<Object> saveWishlist(@RequestBody @Valid WishlistDTO wishlistDTO) throws BookAlreadyRegisteredException, UserNotFoundException {
-        String bookName = wishlistDTO.getBookName();
+        String bookName = wishlistDTO.getName();
         Optional<Wishlist> existingWishlist = wishlistService.searchByBookName(bookName);
         if (existingWishlist.isPresent()) {
             throw new BookAlreadyRegisteredException();
         }
         Wishlist wishlist = wishlistDTO.returnWishlist();
-        Optional<Wishlist> savedWishlist = Optional.ofNullable(wishlistService.saveWishlist(wishlist, wishlistDTO.getUser()));
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedWishlist);
+        Wishlist savedWishlist = wishlistService.saveWishlist(wishlist, wishlistDTO.getUser());
+        return ResponseEntity.status(HttpStatus.CREATED).body(WishlistDTO.returnWishlistDTO(savedWishlist));
     }
 
     @CrossOrigin
     @GetMapping
-    public ResponseEntity<List<Wishlist>> findAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(this.wishlistService.searchAll());
+    public ResponseEntity<List<WishlistDTO>> findAll() {
+    	List<WishlistDTO> wishlistDTO = new ArrayList<>();
+    	List<Wishlist> wishlistList = this.wishlistService.searchAll();
+    	for(Wishlist wishlist : wishlistList) {
+    		wishlistDTO.add(WishlistDTO.returnWishlistDTO(wishlist));
+    	}
+        return ResponseEntity.status(HttpStatus.OK).body(wishlistDTO);
     }
 
     @CrossOrigin
@@ -71,18 +77,18 @@ public class WishlistController {
         if (!wishUpdate.isPresent()) {
             throw new BookNotFoundException();
         }
-        Optional<Wishlist> updatedWishlist = Optional.ofNullable(wishlistService.updateWishlist(id, wishlistDTO.returnWishlist()));
-        return ResponseEntity.status(HttpStatus.OK).body(updatedWishlist);
+        Wishlist updatedWishlist = wishlistService.updateWishlist(id, wishlistDTO.returnWishlist());
+        return ResponseEntity.status(HttpStatus.OK).body(WishlistDTO.returnWishlistDTO(updatedWishlist));
     }
 
     @CrossOrigin
         @GetMapping({"/{id}"})
         public ResponseEntity<Object> searchById (@PathVariable String id) throws BookNotFoundException{
         Optional<Wishlist> wishFound = this.wishlistService.searchById(id);
-        return wishFound.isPresent() ? ResponseEntity.status(HttpStatus.OK).body(wishFound.get()) : this.wishlistIsEmpty(wishFound);
+        return wishFound.isPresent() ? ResponseEntity.status(HttpStatus.OK).body(WishlistDTO.returnWishlistDTOOptional(wishFound.get())) : this.wishlistIsEmpty(wishFound);
     }
 
         public ResponseEntity<Object> wishlistIsEmpty (Optional < Wishlist > wish) {
-        return wish.isEmpty() ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("Id não encontrado.") : ResponseEntity.status(HttpStatus.OK).body(wish.get());
+        return wish.isEmpty() ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("Id não encontrado.") : ResponseEntity.status(HttpStatus.OK).body(WishlistDTO.returnWishlistDTOOptional(wish.get()));
         }
     }

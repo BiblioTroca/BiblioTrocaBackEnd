@@ -7,23 +7,25 @@ import bibliotroca.BiblioTroca.entity.Wishlist;
 import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public class WishlistDTO {
 
+	private String id;
     @NotBlank(message = "Nome do livro é obrigatório")
-    private String bookName;
+    private String name;
 
     @NotBlank(message = "Nome do autor é obrigatório")
     private String author;
 
     @NotBlank(message = "Nome do campo de estudo é obrigatório")
-    private String studyField;
+    private String category;
 
     private String user;
 
 
     @CreatedDate
-    private LocalDateTime createDate;
+    private LocalDateTime createAt;
 
 
     public WishlistDTO() {
@@ -31,20 +33,28 @@ public class WishlistDTO {
     }
 
 
-    public WishlistDTO(String bookName, String author, String studyField, LocalDateTime createDate, String user) {
-        this.bookName = bookName;
+    public WishlistDTO(String id, String bookName, String author, String studyField, LocalDateTime createDate, String user) {
+    	this.id = id;
+        this.name = bookName;
         this.author = author;
-        this.studyField = studyField;
-        this.createDate = createDate;
+        this.category = studyField;
+        this.createAt = createDate;
         this.user = user;
     }
 
-    public String getBookName() {
-        return bookName;
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
+    
+    public String getName() {
+        return name;
     }
 
-    public void setBookName(String bookName) {
-        this.bookName = bookName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getUser() {
@@ -58,23 +68,32 @@ public class WishlistDTO {
     public String getAuthor() {
         return author;
     }
-    public String getStudyField() {
-        return studyField;
+    public String getCategory() {
+        return category;
     }
-    public LocalDateTime getCreateDate() {
-        return createDate;
+    public LocalDateTime getCreateAt() {
+        return createAt;
     }
-    public void setCreateDate(LocalDateTime createDate) {
-        this.createDate = createDate;
+    public void setCreateAt(LocalDateTime createAt) {
+        this.createAt = createAt;
     }
     public void setAuthor(String author) {
         this.author = author;
     }
-    public void setStudyField(String studyField) {
-        this.studyField = studyField;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public Wishlist returnWishlist() {
-        return new Wishlist(bookName, author, studyField, createDate, user);
+        return new Wishlist(name, author, category, createAt, user);
     }
+    
+    public static WishlistDTO returnWishlistDTO(Wishlist wishlist) {
+        return new WishlistDTO(wishlist.getId(), wishlist.getBookName(), wishlist.getAuthor(), wishlist.getStudyField(), wishlist.getCreateDate(), wishlist.getUser());
+    }
+
+
+	public static Optional<WishlistDTO> returnWishlistDTOOptional(Wishlist wishlist) {
+		return Optional.ofNullable(new WishlistDTO(wishlist.getId(), wishlist.getBookName(), wishlist.getAuthor(), wishlist.getStudyField(), wishlist.getCreateDate(), wishlist.getUser()));
+	}
 }

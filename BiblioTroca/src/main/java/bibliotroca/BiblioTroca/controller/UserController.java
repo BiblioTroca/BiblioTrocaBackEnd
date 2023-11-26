@@ -38,7 +38,6 @@ public class UserController {
 	public UserDTO createUser(@RequestBody @Valid User user) throws CpfAlreadyInUseException {
 		User userCreated = this.userService.createUser(user);
 		UserDTO userDTO = UserDTO.returnUserDTO(userCreated);
-		userDTO.setCpf(user.getCpf());
 		return userDTO;
 	}
 
@@ -54,9 +53,7 @@ public class UserController {
 	
 	@GetMapping("/{cpf}")
 	public UserDTO returnUserByCPF(@PathVariable String cpf) throws CpfNotFoundException {
-		UserDTO user = UserDTO.returnUserDTO(userService.returnUserByCPF(cpf));
-		user.setCpf(cpf);
-		return user;
+		return UserDTO.returnUserDTO(userService.returnUserByCPF(cpf));
 	}
 	
 	@GetMapping("/{cpf}/livros")
@@ -67,7 +64,6 @@ public class UserController {
 		for(Book bookRequest : userRequest.getBooks()) {
 			booksDTO.add(BookDTO.returnBookDTO(bookRequest));
 		}
-		userResponse.setCpf(cpf);
 		userResponse.setBooks(booksDTO);
 		return userResponse;
 	}
@@ -90,9 +86,7 @@ public class UserController {
 	public UserDTO updateUserByCPF(@PathVariable String cpf, @RequestBody @Valid UserDTO userDTO) throws CpfNotFoundException {
 		User userRequest = UserDTO.returnUser(userDTO);
 		User userUpdated = this.userService.updateUser(cpf, userRequest);
-		UserDTO user = UserDTO.returnUserDTO(userUpdated);
-		user.setCpf(cpf);
-		return user;
+		return UserDTO.returnUserDTO(userUpdated);
 	}
 	
 	@DeleteMapping("/{cpf}")
