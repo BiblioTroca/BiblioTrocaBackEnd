@@ -2,6 +2,7 @@ package bibliotroca.BiblioTroca.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,9 @@ public class TransactionService {
     }
     
     public List<Transaction> returnAllTransactions() {
-		return this.transactionRepository.findAll();
+    	List<Transaction> transactionList = this.transactionRepository.findAll();
+    	Collections.sort(transactionList, (o1, o2) -> (o1.getStartDate().compareTo(o2.getStartDate())));
+		return transactionList;
 	}
     
     public List<Transaction> returnUserTransactions(String cpf) {
@@ -40,6 +43,7 @@ public class TransactionService {
     	for(Transaction transaction : buyerTransactions ) {
     		transactions.add(transaction);
     	}
+    	Collections.sort(transactions, (o1, o2) -> (o1.getStartDate().compareTo(o2.getStartDate())));
 		return transactions;
 	}
     
@@ -51,6 +55,7 @@ public class TransactionService {
     			transactions.add(transaction);
     		}	
     	}
+    	Collections.sort(transactions, (o1, o2) -> (o1.getStartDate().compareTo(o2.getStartDate())));
 		return transactions;
 	}
     
@@ -62,7 +67,9 @@ public class TransactionService {
     }
     
     public List<Transaction> returnByTransactionStatus(String transactionStatus) throws TransactionNotFoundException {
-		return this.transactionRepository.findAllByTransactionStatus(TransactionStatus.getByTransactionStatus(transactionStatus)); 
+    	List<Transaction> transactionList = this.transactionRepository.findAllByTransactionStatus(TransactionStatus.getByTransactionStatus(transactionStatus));
+    	Collections.sort(transactionList, (o1, o2) -> (o1.getStartDate().compareTo(o2.getStartDate())));
+		return transactionList;
     }
     
     public Transaction updateTransaction(Long registry, Transaction transaction, String transactionStatus) throws TransactionNotFoundException, InsuficientPointsException, TransactionAlreadyClosedException {
