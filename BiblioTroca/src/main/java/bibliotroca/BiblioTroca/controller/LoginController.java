@@ -1,4 +1,4 @@
-package bibliotroca.BiblioTroca;
+package bibliotroca.BiblioTroca.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -7,9 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import bibliotroca.BiblioTroca.controller.UserController;
 import bibliotroca.BiblioTroca.entity.User;
 import bibliotroca.BiblioTroca.exception.CpfAlreadyInUseException;
+import bibliotroca.BiblioTroca.service.LoginService;
 import bibliotroca.BiblioTroca.service.UserService;
 
 import java.util.Map;
@@ -20,6 +20,8 @@ public class LoginController {
 	UserService userService;
 	@Autowired
 	UserController userController;
+	@Autowired
+	LoginService loginService;
 
     @GetMapping("/")
     public String getHomePage(Authentication authentication, Model model) throws CpfAlreadyInUseException{
@@ -36,11 +38,15 @@ public class LoginController {
         	User newUser = new User(name, surname, email);
         	this.userService.createUser(newUser);
         }
+        User newUser = new User(name, surname, email);
+        System.out.print(loginService.generateToken(newUser));
         
         model.addAttribute("name", name);
         model.addAttribute("email", email);
         model.addAttribute("picture", picture);
-
+        
+        
+        
         return "index";
     }
 
