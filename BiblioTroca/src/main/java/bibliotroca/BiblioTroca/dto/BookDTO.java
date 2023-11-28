@@ -39,6 +39,20 @@ public class BookDTO {
 		this.state = newState.toString();
 		this.createdAt = createdAt;
 	}
+	
+	public BookDTO(String newTitle, String newAuthor, String newField, String newLanguage, String newEdition,
+			String newDescription, String newPublishingCompany, State newState, LocalDateTime createdAt) {
+		this.name = newTitle;
+		this.author = newAuthor;
+		this.category = newField;
+		this.language = newLanguage;
+		this.year = newEdition;
+		this.description = newDescription;
+		this.shortDescription = newDescription.substring(0, 96) + "...";
+		this.publishingCompany = newPublishingCompany;
+		this.state = newState.toString();
+		this.createdAt = createdAt != null ? createdAt.toString() : null;
+	}
 
 	public String getId() {
 		return id;
@@ -138,20 +152,6 @@ public class BookDTO {
 
 	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
-	}
-
-	public BookDTO(String newTitle, String newAuthor, String newField, String newLanguage, String newEdition,
-			String newDescription, String newPublishingCompany, State newState, LocalDateTime createdAt) {
-		this.name = newTitle;
-		this.author = newAuthor;
-		this.category = newField;
-		this.language = newLanguage;
-		this.year = newEdition;
-		this.description = newDescription;
-		this.shortDescription = newDescription.substring(0, Math.min(newDescription.length(), 50));
-		this.publishingCompany = newPublishingCompany;
-		this.state = newState.toString();
-		this.createdAt = createdAt != null ? createdAt.toString() : null;
 	}
 
 	public static BookDTO returnBookDTO(Book book) {
