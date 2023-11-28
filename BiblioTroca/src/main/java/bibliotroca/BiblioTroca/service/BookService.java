@@ -1,6 +1,7 @@
 package bibliotroca.BiblioTroca.service;
 
 import java.util.List;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -18,6 +19,7 @@ public class BookService {
 
 	public Book createBook(Book book) {
 		book.setRegistry(generateRegistry());
+		book.setCreatedAt(LocalDateTime.now());
 		return this.bookRepository.save(book);
 	}
 
@@ -78,10 +80,10 @@ public class BookService {
 	}
 
 	private Long generateRegistry() {
-		if (returnAllBooks().isEmpty()) {
+		if (this.bookRepository.findAll().isEmpty()) {
 			return (long) 1;
 		}
-		return (long) returnAllBooks().get(returnAllBooks().size() - 1).getRegistry() + 1;
+		return (long) this.bookRepository.findAll().get(this.bookRepository.findAll().size() - 1).getRegistry() + 1;
 	}
 
 	protected Boolean existsByRegistry(Long registry) {
@@ -106,9 +108,8 @@ public class BookService {
 			}
 		}
 		if (!filteredBooks.isEmpty()) {
-			Collections.sort(filteredBooks, (o1, o2) -> (o1.getCreatedAt().compareTo(o2.getCreatedAt())));
-			Collections.reverse(filteredBooks);
-			return filteredBooks;
+			filteredBooks.removeIf(book -> book.getCreatedAt() == null);
+			Collections.sort(filteredBooks, (o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()));
 		}
 		return new ArrayList<>();
 	}

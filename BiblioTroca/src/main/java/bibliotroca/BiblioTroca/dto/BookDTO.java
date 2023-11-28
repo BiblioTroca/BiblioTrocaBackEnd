@@ -34,7 +34,7 @@ public class BookDTO {
 		this.language = newLanguage;
 		this.year = newEdition;
 		this.description = newDescription;
-		this.shortDescription = newDescription.substring(0, 50);
+		this.shortDescription = newDescription.substring(0, 96) + "...";
 		this.publishingCompany = newPublishingCompany;
 		this.state = newState.toString();
 		this.createdAt = createdAt;
