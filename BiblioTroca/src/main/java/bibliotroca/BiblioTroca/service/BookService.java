@@ -110,6 +110,7 @@ public class BookService {
 		if (!filteredBooks.isEmpty()) {
 			filteredBooks.removeIf(book -> book.getCreatedAt() == null);
 			Collections.sort(filteredBooks, (o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()));
+			return filteredBooks;
 		}
 		return new ArrayList<>();
 	}
