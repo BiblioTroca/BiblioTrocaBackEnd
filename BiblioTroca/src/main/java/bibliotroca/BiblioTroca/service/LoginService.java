@@ -14,13 +14,16 @@ import bibliotroca.BiblioTroca.entity.User;
 
 @Service
 public class LoginService {
-	public String generateToken(User user) {
+	public String generateToken(User user, String picture) {
 		try {
 		    var algorithm = Algorithm.HMAC256("teste");
 		    return JWT.create()
 		        .withIssuer("BiblioTroca-API")
 		        .withSubject(user.getEmail())
+		        .withClaim("firstName", user.getName())
+		        .withClaim("lastName", user.getSurname())
 		        .withClaim("email", user.getEmail())
+		        .withClaim("picture", picture)
 		        .withExpiresAt(expirationDate())
 		        .sign(algorithm);
 		} catch (JWTCreationException exception){
