@@ -11,6 +11,8 @@ import bibliotroca.BiblioTroca.entity.User;
 import bibliotroca.BiblioTroca.exception.CpfAlreadyInUseException;
 import bibliotroca.BiblioTroca.service.LoginService;
 import bibliotroca.BiblioTroca.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Map;
 
@@ -24,7 +26,7 @@ public class LoginController {
 	LoginService loginService;
 
     @GetMapping("/")
-    public String getHomePage(Authentication authentication, Model model) throws CpfAlreadyInUseException{
+    public String getHomePage(Authentication authentication, Model model, HttpServletResponse res) throws CpfAlreadyInUseException{
     	DefaultOAuth2User user = (DefaultOAuth2User) authentication.getPrincipal();
         Map<String, Object> attributes = user.getAttributes();
         
@@ -39,19 +41,27 @@ public class LoginController {
         	this.userService.createUser(newUser);
         }
         User newUser = new User(name, surname, email);
-        System.out.print(loginService.generateToken(newUser));
         
         model.addAttribute("name", name);
         model.addAttribute("email", email);
         model.addAttribute("picture", picture);
         
+        String token = loginService.generateToken(newUser, picture);
         
+        Cookie tokenCookie = new Cookie("token", token);
+        res.addCookie(tokenCookie);
+        tokenCookie.setMaxAge(60*60);
+        tokenCookie.setDomain("BiblioTroca");
+        tokenCookie.setPath("/token");
         
-        return "index";
+        return "redirect:/api/v1/bibliotroca/livros";
     }
 
     @GetMapping("/login")
-    public String getLoginPage(){
+    public String getLoginPage(HttpServletResponse res){
+    	Cookie tokenCookieRemove = new Cookie("token", "");
+    	tokenCookieRemove.setMaxAge(0);
+    	res.addCookie(tokenCookieRemove);
         return "login";
     }
 
