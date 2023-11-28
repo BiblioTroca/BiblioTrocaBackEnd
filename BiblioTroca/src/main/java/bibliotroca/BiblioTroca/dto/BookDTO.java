@@ -1,5 +1,7 @@
 package bibliotroca.BiblioTroca.dto;
 
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import bibliotroca.BiblioTroca.entity.Book;
@@ -20,29 +22,46 @@ public class BookDTO {
 	@JsonInclude(Include.NON_NULL)
 	private UserDTO user;
 	private String createdAt;
-	
-	public BookDTO( ) {	}
-	
-	public BookDTO(String newTitle, String nweAuthor, String newField, String newLanguage, String newEdition, String newDescription, String newPublishingCompany, State newState, String createdAt) {
+
+	public BookDTO() {
+	}
+
+	public BookDTO(String newTitle, String nweAuthor, String newField, String newLanguage, String newEdition,
+			String newDescription, String newPublishingCompany, State newState, String createdAt) {
 		this.name = newTitle;
 		this.author = nweAuthor;
 		this.category = newField;
 		this.language = newLanguage;
 		this.year = newEdition;
 		this.description = newDescription;
-		this.shortDescription = newDescription.substring(0, 50);
+		this.shortDescription = newDescription.substring(0, 96) + "...";
 		this.publishingCompany = newPublishingCompany;
 		this.state = newState.toString();
 		this.createdAt = createdAt;
+	}
+	
+	public BookDTO(String newTitle, String newAuthor, String newField, String newLanguage, String newEdition,
+			String newDescription, String newPublishingCompany, State newState, LocalDateTime createdAt) {
+		this.name = newTitle;
+		this.author = newAuthor;
+		this.category = newField;
+		this.language = newLanguage;
+		this.year = newEdition;
+		this.description = newDescription;
+		this.shortDescription = newDescription.substring(0, 96) + "...";
+		this.publishingCompany = newPublishingCompany;
+		this.state = newState.toString();
+		this.createdAt = createdAt != null ? createdAt.toString() : null;
 	}
 
 	public String getId() {
 		return id;
 	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
 	public void setRegistry(Long registry) {
 		this.id = registry.toString();
 	}
@@ -50,6 +69,7 @@ public class BookDTO {
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -57,6 +77,7 @@ public class BookDTO {
 	public String getAuthor() {
 		return author;
 	}
+
 	public void setAuthor(String author) {
 		this.author = author;
 	}
@@ -64,6 +85,7 @@ public class BookDTO {
 	public String getCategory() {
 		return category;
 	}
+
 	public void setCategory(String category) {
 		this.category = category;
 	}
@@ -71,6 +93,7 @@ public class BookDTO {
 	public String getLanguage() {
 		return language;
 	}
+
 	public void setLanguage(String language) {
 		this.language = language;
 	}
@@ -78,6 +101,7 @@ public class BookDTO {
 	public String getYear() {
 		return year;
 	}
+
 	public void setYear(String year) {
 		this.year = year;
 	}
@@ -85,13 +109,15 @@ public class BookDTO {
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	public String getShortDescription() {
 		return shortDescription;
 	}
+
 	public void setShortDescription(String shortDescription) {
 		this.shortDescription = shortDescription;
 	}
@@ -99,6 +125,7 @@ public class BookDTO {
 	public String getPublishingCompany() {
 		return publishingCompany;
 	}
+
 	public void setPublishingCompany(String publishingCompany) {
 		this.publishingCompany = publishingCompany;
 	}
@@ -106,29 +133,36 @@ public class BookDTO {
 	public String getState() {
 		return state;
 	}
+
 	public void setState(String state) {
 		this.state = state;
 	}
-	
+
 	public UserDTO getUser() {
 		return user;
 	}
+
 	public void setUser(UserDTO user) {
 		this.user = user;
 	}
-	
+
 	public String getCreatedAt() {
 		return createdAt;
 	}
+
 	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
 	}
-	
+
 	public static BookDTO returnBookDTO(Book book) {
-		return new BookDTO(book.getTitle(), book.getAuthor(), book.getField(), book.getLanguage(), book.getEdition(), book.getDescription(), book.getPublishingCompany(), book.getState(), book.getCreatedAt().toString());
+		return new BookDTO(book.getTitle(), book.getAuthor(), book.getField(), book.getLanguage(), book.getEdition(),
+				book.getDescription(), book.getPublishingCompany(), book.getState(), book.getCreatedAt());
 	}
-	
+
 	public static Book returnBook(BookDTO bookDTO) {
-		return new Book(bookDTO.getName(), bookDTO.getAuthor(), bookDTO.getCategory(), bookDTO.getLanguage(), bookDTO.getYear(), bookDTO.getDescription(), bookDTO.getPublishingCompany(), State.getByState(bookDTO.getState()), bookDTO.getCreatedAt());
+		return new Book(bookDTO.getName(), bookDTO.getAuthor(), bookDTO.getCategory(), bookDTO.getLanguage(),
+				bookDTO.getYear(), bookDTO.getDescription(), bookDTO.getPublishingCompany(),
+				State.getByState(bookDTO.getState()),
+				(bookDTO.getCreatedAt() != null) ? LocalDateTime.parse(bookDTO.getCreatedAt()) : null);
 	}
 }

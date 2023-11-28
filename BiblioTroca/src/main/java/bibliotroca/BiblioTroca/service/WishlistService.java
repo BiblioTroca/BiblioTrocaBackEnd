@@ -26,8 +26,8 @@ public class WishlistService {
 
         public List<Wishlist> searchAll() {
         	List<Wishlist> wishlist = repository.findAll();
-        	Collections.sort(wishlist, (o1, o2) -> (o1.getCreateDate().compareTo(o2.getCreateDate())));
-        	Collections.reverse(wishlist);
+        	wishlist.removeIf(wish -> wish.getCreateDate() == null);
+    		Collections.sort(wishlist, (o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate()));
                 return wishlist;
         }
 

@@ -29,8 +29,8 @@ public class TransactionService {
     
     public List<Transaction> returnAllTransactions() {
     	List<Transaction> transactionList = this.transactionRepository.findAll();
-    	Collections.sort(transactionList, (o1, o2) -> (o1.getStartDate().compareTo(o2.getStartDate())));
-    	Collections.reverse(transactionList);
+    	transactionList.removeIf(transaction -> transaction.getStartDate() == null);
+		Collections.sort(transactionList, (o1, o2) -> o2.getStartDate().compareTo(o1.getStartDate()));
 		return transactionList;
 	}
     
@@ -44,8 +44,8 @@ public class TransactionService {
     	for(Transaction transaction : buyerTransactions ) {
     		transactions.add(transaction);
     	}
-    	Collections.sort(transactions, (o1, o2) -> (o1.getStartDate().compareTo(o2.getStartDate())));
-    	Collections.reverse(transactions);
+    	transactions.removeIf(transaction -> transaction.getStartDate() == null);
+		Collections.sort(transactions, (o1, o2) -> o2.getStartDate().compareTo(o1.getStartDate()));
 		return transactions;
 	}
     
@@ -57,8 +57,8 @@ public class TransactionService {
     			transactions.add(transaction);
     		}	
     	}
-    	Collections.sort(transactions, (o1, o2) -> (o1.getStartDate().compareTo(o2.getStartDate())));
-    	Collections.reverse(transactions);
+    	transactions.removeIf(transaction -> transaction.getStartDate() == null);
+		Collections.sort(transactions, (o1, o2) -> o2.getStartDate().compareTo(o1.getStartDate()));
 		return transactions;
 	}
     
@@ -71,8 +71,8 @@ public class TransactionService {
     
     public List<Transaction> returnByTransactionStatus(String transactionStatus) throws TransactionNotFoundException {
     	List<Transaction> transactionList = this.transactionRepository.findAllByTransactionStatus(TransactionStatus.getByTransactionStatus(transactionStatus));
-    	Collections.sort(transactionList, (o1, o2) -> (o1.getStartDate().compareTo(o2.getStartDate())));
-    	Collections.reverse(transactionList);
+    	transactionList.removeIf(transaction -> transaction.getStartDate() == null);
+		Collections.sort(transactionList, (o1, o2) -> o2.getStartDate().compareTo(o1.getStartDate()));
 		return transactionList;
     }
     
