@@ -25,7 +25,7 @@ public class WishlistDTO {
 
 
     @CreatedDate
-    private LocalDateTime createAt;
+    private String createAt;
 
 
     public WishlistDTO() {
@@ -38,7 +38,7 @@ public class WishlistDTO {
         this.name = bookName;
         this.author = author;
         this.category = studyField;
-        this.createAt = createDate;
+        this.createAt = createAt != null ? createAt.toString() : null;
         this.user = user;
     }
 
@@ -71,10 +71,10 @@ public class WishlistDTO {
     public String getCategory() {
         return category;
     }
-    public LocalDateTime getCreateAt() {
+    public String getCreateAt() {
         return createAt;
     }
-    public void setCreateAt(LocalDateTime createAt) {
+    public void setCreateAt(String createAt) {
         this.createAt = createAt;
     }
     public void setAuthor(String author) {
@@ -85,7 +85,7 @@ public class WishlistDTO {
     }
 
     public Wishlist returnWishlist() {
-        return new Wishlist(name, author, category, createAt, user);
+        return new Wishlist(name, author, category, (createAt != null) ? LocalDateTime.parse(createAt) : null, user);
     }
     
     public static WishlistDTO returnWishlistDTO(Wishlist wishlist) {
