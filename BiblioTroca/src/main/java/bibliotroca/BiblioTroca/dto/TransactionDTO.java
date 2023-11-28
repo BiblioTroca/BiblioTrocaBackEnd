@@ -9,31 +9,36 @@ import bibliotroca.BiblioTroca.strategy.TransactionStatus;
 
 public class TransactionDTO {
 	
-	private Long registry;
+	private String id;
 	@JsonInclude(Include.NON_NULL)
 	private UserDTO seller;
 	@JsonInclude(Include.NON_NULL)
 	private UserDTO buyer;
 	@JsonInclude(Include.NON_NULL)
-	private BookDTO book;
-	private LocalDateTime startDate;
-	private LocalDateTime completionDate;
-	private TransactionStatus transactionStatus;
+	private BookDTO bookDetails;
+	private LocalDateTime createdAt;
+	private LocalDateTime endedAt;
+	private String status;
+	private String type;
 	
 	public TransactionDTO() { }
 	
 	public TransactionDTO(Long registry, LocalDateTime newStartDate, LocalDateTime newCompletionDate, TransactionStatus newTransactionStatus) {
-		this.registry = registry;
-		this.startDate = newStartDate;
-		this.completionDate = newCompletionDate;
-		this.transactionStatus = newTransactionStatus;
+		this.id = registry.toString();
+		this.createdAt = newStartDate;
+		this.endedAt = newCompletionDate;
+		this.status = newTransactionStatus.getTransactionStatus();
 	}
 	
-	public Long getRegistry() {
-		return registry;
-	}
 	public void setRegistry(Long registry) {
-		this.registry = registry;
+		this.id = registry.toString();
+	}
+	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 	public UserDTO getSeller() {
@@ -50,32 +55,39 @@ public class TransactionDTO {
 		this.buyer = buyer;
 	}
 	
-	public BookDTO getBook() {
-		return book;
+	public BookDTO getBookDetails() {
+		return bookDetails;
 	}
-	public void setBook(BookDTO book) {
-		this.book = book;
-	}
-	
-	public LocalDateTime getStartDate() {
-		return startDate;
-	}
-	public void setStartDate(LocalDateTime startDate) {
-		this.startDate = startDate;
+	public void setBookDetails(BookDTO bookDetails) {
+		this.bookDetails = bookDetails;
 	}
 	
-	public LocalDateTime getCompletionDate() {
-		return completionDate;
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
 	}
-	public void setCompletionDate(LocalDateTime completionDate) {
-		this.completionDate = completionDate;
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
 	}
 	
-	public TransactionStatus getTransactionStatus() {
-		return transactionStatus;
+	public LocalDateTime getEndedAt() {
+		return endedAt;
 	}
-	public void setTransactionStatus(TransactionStatus transactionStatus) {
-		this.transactionStatus = transactionStatus;
+	public void setEndedAt(LocalDateTime endedAt) {
+		this.endedAt = endedAt;
+	}
+	
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 	public static TransactionDTO returnTransactionDTO(Transaction transaction) {
@@ -83,7 +95,7 @@ public class TransactionDTO {
 	}
 	
 	public static Transaction returnTransaction(TransactionDTO transactionDTO) {
-		return new Transaction(transactionDTO.getRegistry(), transactionDTO.getStartDate(), transactionDTO.getCompletionDate(), transactionDTO.getTransactionStatus());
+		return new Transaction(Long.getLong(transactionDTO.getId()), transactionDTO.getCreatedAt(), transactionDTO.getEndedAt(), TransactionStatus.getByTransactionStatus(transactionDTO.getStatus()));
 	}
 
 }

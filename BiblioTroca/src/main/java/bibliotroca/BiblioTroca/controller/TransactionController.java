@@ -25,7 +25,6 @@ import bibliotroca.BiblioTroca.exception.TransactionNotFoundException;
 import bibliotroca.BiblioTroca.service.BookService;
 import bibliotroca.BiblioTroca.service.TransactionService;
 import bibliotroca.BiblioTroca.service.UserService;
-import bibliotroca.BiblioTroca.strategy.TransactionStatus;
 import jakarta.validation.Valid;
 
 @RestController
@@ -52,7 +51,7 @@ public class TransactionController {
 		TransactionDTO createdTransactionDTO = TransactionDTO.returnTransactionDTO(createdTransaction);
 		createdTransactionDTO.setSeller(seller);
 		createdTransactionDTO.setBuyer(buyer);
-		createdTransactionDTO.setBook(book);
+		createdTransactionDTO.setBookDetails(book);
 		return createdTransactionDTO;
 	}
 	
@@ -64,7 +63,7 @@ public class TransactionController {
 			TransactionDTO transactionDTO = TransactionDTO.returnTransactionDTO(transaction);
 			transactionDTO.setSeller(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transaction.getSellerCpf())));
 			transactionDTO.setBuyer(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transaction.getBuyerCpf())));
-			transactionDTO.setBook(BookDTO.returnBookDTO(this.bookService.returnBookByRegistry(transaction.getBookRegistry())));
+			transactionDTO.setBookDetails(BookDTO.returnBookDTO(this.bookService.returnBookByRegistry(transaction.getBookRegistry())));
 			transactionsDTO.add(transactionDTO);
 		}
 		return transactionsDTO;
@@ -76,7 +75,7 @@ public class TransactionController {
 		TransactionDTO transactionDTO = TransactionDTO.returnTransactionDTO(transaction);
 		transactionDTO.setSeller(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transaction.getSellerCpf())));
 		transactionDTO.setBuyer(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transaction.getBuyerCpf())));
-		transactionDTO.setBook(BookDTO.returnBookDTO(this.bookService.returnBookByRegistry(transaction.getBookRegistry())));
+		transactionDTO.setBookDetails(BookDTO.returnBookDTO(this.bookService.returnBookByRegistry(transaction.getBookRegistry())));
 		return transactionDTO;
 	}
 	
@@ -88,7 +87,12 @@ public class TransactionController {
 			TransactionDTO transactionDTO = TransactionDTO.returnTransactionDTO(transaction);
 			transactionDTO.setSeller(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transaction.getSellerCpf())));
 			transactionDTO.setBuyer(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transaction.getBuyerCpf())));
-			transactionDTO.setBook(BookDTO.returnBookDTO(this.bookService.returnBookByRegistry(transaction.getBookRegistry())));
+			transactionDTO.setBookDetails(BookDTO.returnBookDTO(this.bookService.returnBookByRegistry(transaction.getBookRegistry())));
+			if(cpf == transaction.getBuyerCpf()) {
+				transactionDTO.setType("receive");
+			} else {
+				transactionDTO.setType("send");
+			}
 			transactionsDTO.add(transactionDTO);
 		}
 		return transactionsDTO;
@@ -102,7 +106,12 @@ public class TransactionController {
 			TransactionDTO transactionDTO = TransactionDTO.returnTransactionDTO(transaction);
 			transactionDTO.setSeller(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transaction.getSellerCpf())));
 			transactionDTO.setBuyer(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transaction.getBuyerCpf())));
-			transactionDTO.setBook(BookDTO.returnBookDTO(this.bookService.returnBookByRegistry(transaction.getBookRegistry())));
+			transactionDTO.setBookDetails(BookDTO.returnBookDTO(this.bookService.returnBookByRegistry(transaction.getBookRegistry())));
+			if(cpf == transaction.getBuyerCpf()) {
+				transactionDTO.setType("receive");
+			} else {
+				transactionDTO.setType("send");
+			}
 			transactionsDTO.add(transactionDTO);
 		}
 		return transactionsDTO;
@@ -116,7 +125,7 @@ public class TransactionController {
 			TransactionDTO transactionDTO = TransactionDTO.returnTransactionDTO(transactionRequest);
 			transactionDTO.setSeller(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transactionRequest.getSellerCpf())));
 			transactionDTO.setBuyer(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transactionRequest.getBuyerCpf())));
-			transactionDTO.setBook(BookDTO.returnBookDTO(this.bookService.returnBookByRegistry(transactionRequest.getBookRegistry())));
+			transactionDTO.setBookDetails(BookDTO.returnBookDTO(this.bookService.returnBookByRegistry(transactionRequest.getBookRegistry())));
 			transactionsDTO.add(transactionDTO);
 		}
 		return transactionsDTO;
@@ -127,10 +136,10 @@ public class TransactionController {
 		Transaction transactionRequest = this.transactionService.returnTransactionByRegistry(Long.parseLong(registry));
 		Transaction transactionUpdated = this.transactionService.updateTransaction(Long.parseLong(registry), transactionRequest, transactionStatus);
 		TransactionDTO transactionDTO = TransactionDTO.returnTransactionDTO(transactionUpdated);
-		transactionDTO.setTransactionStatus(TransactionStatus.getByTransactionStatus(transactionStatus));
+		transactionDTO.setStatus(transactionStatus);
 		transactionDTO.setSeller(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transactionUpdated.getSellerCpf())));
 		transactionDTO.setBuyer(UserDTO.returnUserDTO(this.userService.returnUserByCPF(transactionUpdated.getBuyerCpf())));
-		transactionDTO.setBook(BookDTO.returnBookDTO(this.bookService.returnBookByRegistry(transactionUpdated.getBookRegistry())));
+		transactionDTO.setBookDetails(BookDTO.returnBookDTO(this.bookService.returnBookByRegistry(transactionUpdated.getBookRegistry())));
 		return transactionDTO;
 	}
 	

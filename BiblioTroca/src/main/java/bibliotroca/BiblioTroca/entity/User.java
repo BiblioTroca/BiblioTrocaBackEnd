@@ -26,6 +26,8 @@ public class User {
 	private String telephone;
 	@NotBlank(message="O CEP é obrigatório")
 	private String cep;
+	private Integer avaliationsNumber;
+	private Double averageRating;
 
 	// @NotBlank (message="A nota é obrigatória")
 	// private String note;
@@ -53,6 +55,17 @@ public class User {
 		this.email = email;
 		this.telephone = telephone;
 		this.cep = cep;
+	}
+	
+	public User(String cpf, String name, String surname, String email, String telephone, String cep, Integer avaliationsNumber, Double averageRating) {
+		this.cpf = cpf;
+		this.name = name;
+		this.surname = surname;
+		this.email = email;
+		this.telephone = telephone;
+		this.cep = cep;
+		this.avaliationsNumber = avaliationsNumber;
+		this.averageRating = averageRating;
 	}
 	
 	public User(String name, String surname, String email, String telephone, String cep) {
@@ -130,5 +143,19 @@ public class User {
 	}
 	public void setBooks(List<Book> books) {
 		this.books = books;
+	}
+	
+	public Integer getAvaliationsNumber() {
+		return avaliationsNumber;
+	}
+	public void setAvaliationsNumber(Integer avaliationsNumber) {
+		this.avaliationsNumber = avaliationsNumber;
+	}
+	
+	public Double getAverageRating() {
+		return averageRating;
+	}
+	public void setAverageRating(Double averageRating) {
+		this.averageRating = averageRating;
 	}
 }

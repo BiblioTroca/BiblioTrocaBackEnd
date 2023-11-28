@@ -48,7 +48,7 @@ public class BookController {
 	}
 	
 	@GetMapping
-	public ArrayList<BookDTO> returnAllBooks(@RequestParam(required=false) String q) {
+	public ArrayList<BookDTO> returnAllBooks(@RequestParam(required=false) String q) throws CpfNotFoundException {
 		List<Book> books = new ArrayList<>();
 		if(q == null) {
 			books = this.bookService.returnAllBooks();
@@ -57,24 +57,35 @@ public class BookController {
 		}
 		ArrayList<BookDTO> booksDTO = new ArrayList<>();
 		for(Book book : books) {
-			booksDTO.add(BookDTO.returnBookDTO(book));
+			BookDTO bookDTO = BookDTO.returnBookDTO(book);
+			UserDTO user = UserDTO.returnUserDTO(this.userService.returnUserByCPF(book.getUserCpf()));
+			user.setCpf(book.getUserCpf());
+			bookDTO.setUser(user);
+			booksDTO.add(bookDTO);
 		}
 		return booksDTO;
 	}
 	
 	@GetMapping("/{registry}")
-	public BookDTO returnBookByRegistry(@PathVariable Long registry) throws RegistryNotFoundException {
-		BookDTO book = BookDTO.returnBookDTO(bookService.returnBookByRegistry(registry));
-		book.setRegistry(registry);
-		return book;
+	public BookDTO returnBookByRegistry(@PathVariable Long registry) throws RegistryNotFoundException, CpfNotFoundException {
+		Book book = this.bookService.returnBookByRegistry(registry);
+		BookDTO bookDTO = BookDTO.returnBookDTO(book);
+		UserDTO user = UserDTO.returnUserDTO(this.userService.returnUserByCPF(book.getUserCpf()));
+		user.setCpf(book.getUserCpf());
+		bookDTO.setUser(user);
+		bookDTO.setRegistry(registry);	
+		return bookDTO;
 	}
 	
 	@PutMapping("/{registry}")
-	public BookDTO updateBook(@PathVariable Long registry, @RequestBody @Valid BookDTO bookDTO) throws RegistryNotFoundException {
+	public BookDTO updateBook(@PathVariable Long registry, @RequestBody @Valid BookDTO bookDTO) throws RegistryNotFoundException, CpfNotFoundException {
 		Book bookRequest = BookDTO.returnBook(bookDTO);
 		Book bookUpdated = this.bookService.updateBook(registry, bookRequest);
 		BookDTO book = BookDTO.returnBookDTO(bookUpdated);
 		book.setRegistry(registry);
+		UserDTO user = UserDTO.returnUserDTO(this.userService.returnUserByCPF(bookUpdated.getUserCpf()));
+		user.setCpf(bookUpdated.getUserCpf());
+		book.setUser(user);
 		return book;
 	}
 	

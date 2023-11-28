@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import bibliotroca.BiblioTroca.entity.Wishlist;
 import bibliotroca.BiblioTroca.repository.WishlistRepository;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +25,10 @@ public class WishlistService {
         UserRepository userRepository;
 
         public List<Wishlist> searchAll() {
-                return repository.findAll();
+        	List<Wishlist> wishlist = repository.findAll();
+        	Collections.sort(wishlist, (o1, o2) -> (o1.getCreateDate().compareTo(o2.getCreateDate())));
+        	Collections.reverse(wishlist);
+                return wishlist;
         }
 
         public Optional<Wishlist> searchById(String id) throws BookNotFoundException {

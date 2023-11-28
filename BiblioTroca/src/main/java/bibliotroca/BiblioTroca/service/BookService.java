@@ -2,6 +2,8 @@ package bibliotroca.BiblioTroca.service;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import bibliotroca.BiblioTroca.entity.Book;
@@ -20,7 +22,10 @@ public class BookService {
 	}
 	
 	public List<Book> returnAllBooks() {
-		return this.bookRepository.findAll();
+		List<Book> bookList = this.bookRepository.findAll();
+		Collections.sort(bookList, (o1, o2) -> (o1.getCreatedAt().compareTo(o2.getCreatedAt())));
+		Collections.reverse(bookList);
+		return bookList;
 	}
 	
 	public Book returnBookByRegistry(Long registry) throws RegistryNotFoundException {
@@ -101,6 +106,8 @@ public class BookService {
 			}
 		}
 		if(!filteredBooks.isEmpty()) {
+			Collections.sort(filteredBooks, (o1, o2) -> (o1.getCreatedAt().compareTo(o2.getCreatedAt())));
+			Collections.reverse(filteredBooks);
 			return filteredBooks;
 		}
 		return new ArrayList<>();

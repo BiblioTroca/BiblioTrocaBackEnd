@@ -1,5 +1,7 @@
 package bibliotroca.BiblioTroca.entity;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import bibliotroca.BiblioTroca.strategy.State;
@@ -28,6 +30,7 @@ public class Book {
 	private State state;
 	@NotBlank(message="O CPF do usuário dono do livro é obrigatório")
 	private String userCpf;
+	private LocalDateTime createdAt;
 	
 	public Book() {	}
 	
@@ -42,9 +45,22 @@ public class Book {
 		this.publishingCompany = newPublishingCompany;
 		this.state = newState;
 		this.userCpf = newUserCpf;
+		this.createdAt = LocalDateTime.now();
 	}
 
 	public Book(String newTitle, String newAuthor, String newField, String newLanguage, String newEdition, String newDescription, String newPublishingCompany, State newState) {
+		this.title = newTitle;
+		this.author = newAuthor;
+		this.field = newField;
+		this.language = newLanguage;
+		this.edition = newEdition;
+		this.description = newDescription;
+		this.publishingCompany = newPublishingCompany;
+		this.state = newState;
+		this.createdAt = LocalDateTime.now();
+	}
+	
+	public Book(String newTitle, String newAuthor, String newField, String newLanguage, String newEdition, String newDescription, String newPublishingCompany, State newState, String createdAt) {
 		this.title = newTitle;
 		this.author = newAuthor;
 		this.field = newField;
@@ -130,5 +146,12 @@ public class Book {
 	}
 	public void setUserCpf(String userCpf) {
 		this.userCpf = userCpf;
+	}
+	
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
 	}
 }
