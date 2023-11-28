@@ -26,8 +26,9 @@ public class BookDTO {
 	public BookDTO() {
 	}
 
-	public BookDTO(String newTitle, String nweAuthor, String newField, String newLanguage, String newEdition,
+	public BookDTO(String id, String newTitle, String nweAuthor, String newField, String newLanguage, String newEdition,
 			String newDescription, String newPublishingCompany, State newState, String createdAt) {
+		this.id = id;
 		this.name = newTitle;
 		this.author = nweAuthor;
 		this.category = newField;
@@ -40,8 +41,9 @@ public class BookDTO {
 		this.createdAt = createdAt;
 	}
 	
-	public BookDTO(String newTitle, String newAuthor, String newField, String newLanguage, String newEdition,
+	public BookDTO(String id,String newTitle, String newAuthor, String newField, String newLanguage, String newEdition,
 			String newDescription, String newPublishingCompany, State newState, LocalDateTime createdAt) {
+		this.id = id;
 		this.name = newTitle;
 		this.author = newAuthor;
 		this.category = newField;
@@ -155,7 +157,7 @@ public class BookDTO {
 	}
 
 	public static BookDTO returnBookDTO(Book book) {
-		return new BookDTO(book.getTitle(), book.getAuthor(), book.getField(), book.getLanguage(), book.getEdition(),
+		return new BookDTO(book.getRegistry().toString(), book.getTitle(), book.getAuthor(), book.getField(), book.getLanguage(), book.getEdition(),
 				book.getDescription(), book.getPublishingCompany(), book.getState(), book.getCreatedAt());
 	}
 
