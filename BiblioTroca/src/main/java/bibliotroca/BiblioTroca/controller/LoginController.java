@@ -67,7 +67,7 @@ public class LoginController {
     @PostMapping("/usuarios")
     @ResponseStatus(HttpStatus.CREATED)
     public String createUserFromMobile(@RequestBody User user) throws CpfAlreadyInUseException {
-    	User userCreated = this.userService.createUser(user);
+    	User userCreated = this.userService.createUserLogin(user);
 		return loginService.generateToken(userCreated);
     }
     
@@ -76,9 +76,8 @@ public class LoginController {
         if(!this.userService.existsByEmail(user.getEmail())) {
         	return "";
         }
-        User userRequest = this.userService.returnUserByEmail(user.getEmail());
-        System.out.println(userRequest);
-        if(this.userService.verifyCredentials(userRequest)) {
+        if(this.userService.verifyCredentials(user)) {
+        	User userRequest = this.userService.returnUserByEmail(user.getEmail());
             String token = loginService.generateToken(userRequest);
             return token;
         }

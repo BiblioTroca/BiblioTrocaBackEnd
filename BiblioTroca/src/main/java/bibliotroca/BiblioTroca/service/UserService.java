@@ -25,6 +25,13 @@ public class UserService {
 		return this.userRepository.save(user);
 	}
 	
+	public User createUserLogin(User user) {
+		if(this.userRepository.existsByEmail(user.getEmail())) {
+			throw new RuntimeException("Email já cadastrado.");
+		}
+		return this.userRepository.save(user);
+	}
+	
 	public List<User> returnAllUsers() {
 		return this.userRepository.findAll();
 	}
@@ -118,7 +125,7 @@ public class UserService {
 
 	public Boolean verifyCredentials(User user) {
 		User userRequest = returnUserByEmail(user.getEmail());
-		if((user.getEmail().equals(userRequest.getEmail())) && (user.getPassword().equals(userRequest.getPassword()))) {
+		if(userRequest.getPassword().equals(user.getPassword())) {
 			return true;
 		}
 		return false;
