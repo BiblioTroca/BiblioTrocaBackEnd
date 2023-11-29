@@ -1,6 +1,7 @@
 package bibliotroca.BiblioTroca.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -63,7 +65,14 @@ public class LoginController {
     }
 
     @PostMapping("/usuarios")
-    public String loginFromMobile(@RequestBody User user, HttpServletResponse res) throws CpfAlreadyInUseException {
+    @ResponseStatus(HttpStatus.CREATED)
+    public String createUserFromMobile(@RequestBody User user) throws CpfAlreadyInUseException {
+    	User userCreated = this.userService.createUser(user);
+		return loginService.generateToken(userCreated);
+    }
+    
+    @PostMapping("/autenticar")
+    public String loginFromMobile(@RequestBody User user) throws CpfAlreadyInUseException {
         if(!this.userService.existsByEmail(user.getEmail())) {
         	return "";
         }
@@ -76,4 +85,9 @@ public class LoginController {
         return "";
     }
     
+    @PostMapping("/alterar-senha")
+    public UserDTO updateLoginFromMobile(@RequestBody User user) throws CpfAlreadyInUseException {
+		User userUpdated = this.userService.updateUserMobile(user);
+		return UserDTO.returnUserLoginDTO(userUpdated);
+    }
 }

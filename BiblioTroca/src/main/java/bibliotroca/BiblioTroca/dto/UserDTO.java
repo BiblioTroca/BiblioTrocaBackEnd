@@ -41,8 +41,8 @@ public class UserDTO {
 		this.location = newCep;
 	}
 	
-	public UserDTO(String newCpf, String newName, String newSurname, String newEmail, String newTelephone, String newCep, Integer avaliationsNumber, Double averageRating) {
-		this.cpf = newCpf;
+	public UserDTO(String id, String newName, String newSurname, String newEmail, String newTelephone, String newCep, Integer avaliationsNumber, Double averageRating) {
+		this.id = id;
 		this.name = newName;
 		this.surname = newSurname;
 		this.email = newEmail;
