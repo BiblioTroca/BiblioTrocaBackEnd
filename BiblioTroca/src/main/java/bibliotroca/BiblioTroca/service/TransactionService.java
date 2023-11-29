@@ -108,9 +108,9 @@ public class TransactionService {
     }
     
     private Long generateRegistry() {
-		if(returnAllTransactions().isEmpty()) {
+		if(this.transactionRepository.findAll().isEmpty()) {
 			return (long) 1;
 		}
-		return (long) returnAllTransactions().get(returnAllTransactions().size()-1).getRegistry() + 1;
+		return (long) this.transactionRepository.findAll().get(this.transactionRepository.findAll().size()-1).getRegistry() + 1;
 	}
 }

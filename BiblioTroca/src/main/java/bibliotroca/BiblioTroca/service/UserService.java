@@ -108,4 +108,46 @@ public class UserService {
 		}
 		return false;
 	}
+
+	public User returnUserByEmail(String email) {
+		if(this.userRepository.existsByEmail(email)) {
+			return this.userRepository.findByEmail(email);
+		}
+		throw new RuntimeException("email não econtrado");
+	}
+
+	public Boolean verifyCredentials(User user) {
+		User userRequest = returnUserByEmail(user.getEmail());
+		if((user.getEmail().equals(userRequest.getEmail())) && (user.getPassword().equals(userRequest.getPassword()))) {
+			return true;
+		}
+		return false;
+	}
+	
+	public User updateUserMobile(User user) {
+		if(!this.userRepository.existsByEmail(user.getEmail())) {
+			throw new RuntimeException("Email não encontrado");
+		}
+		User userRequest = this.userRepository.findByEmail(user.getEmail());
+		user.setId(userRequest.getId());
+		if(user.getName() == null) {
+			user.setName(userRequest.getName());
+		}
+		if(user.getSurname() == null) {
+			user.setSurname(userRequest.getSurname());
+		}
+		if(user.getEmail() == null) {
+			user.setEmail(userRequest.getEmail());
+		}
+		if(user.getTelephone() == null) {
+			user.setTelephone(userRequest.getTelephone());
+		}
+		if(user.getCep() == null) {
+			user.setCep(userRequest.getCep());
+		}
+		if(user.getPassword() == null) {
+			user.setPassword(userRequest.getPassword());
+		}
+		return this.userRepository.save(user);
+	}
 }

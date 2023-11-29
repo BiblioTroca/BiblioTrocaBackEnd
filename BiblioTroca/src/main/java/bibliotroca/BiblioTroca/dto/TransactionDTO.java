@@ -16,8 +16,8 @@ public class TransactionDTO {
 	private UserDTO buyer;
 	@JsonInclude(Include.NON_NULL)
 	private BookDTO bookDetails;
-	private LocalDateTime createdAt;
-	private LocalDateTime endedAt;
+	private String createdAt;
+	private String endedAt;
 	private String status;
 	private String type;
 	
@@ -25,8 +25,8 @@ public class TransactionDTO {
 	
 	public TransactionDTO(Long registry, LocalDateTime newStartDate, LocalDateTime newCompletionDate, TransactionStatus newTransactionStatus) {
 		this.id = registry.toString();
-		this.createdAt = newStartDate;
-		this.endedAt = newCompletionDate;
+		this.createdAt = createdAt != null ? createdAt.toString() : null;
+		this.endedAt = endedAt != null ? endedAt.toString() : null;
 		this.status = newTransactionStatus.getTransactionStatus();
 	}
 	
@@ -62,17 +62,17 @@ public class TransactionDTO {
 		this.bookDetails = bookDetails;
 	}
 	
-	public LocalDateTime getCreatedAt() {
+	public String getCreatedAt() {
 		return createdAt;
 	}
-	public void setCreatedAt(LocalDateTime createdAt) {
+	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
 	}
 	
-	public LocalDateTime getEndedAt() {
+	public String getEndedAt() {
 		return endedAt;
 	}
-	public void setEndedAt(LocalDateTime endedAt) {
+	public void setEndedAt(String endedAt) {
 		this.endedAt = endedAt;
 	}
 	
@@ -95,7 +95,7 @@ public class TransactionDTO {
 	}
 	
 	public static Transaction returnTransaction(TransactionDTO transactionDTO) {
-		return new Transaction(Long.getLong(transactionDTO.getId()), transactionDTO.getCreatedAt(), transactionDTO.getEndedAt(), TransactionStatus.getByTransactionStatus(transactionDTO.getStatus()));
+		return new Transaction(Long.getLong(transactionDTO.getId()), (transactionDTO.getCreatedAt() != null) ? LocalDateTime.parse(transactionDTO.getCreatedAt()) : null, (transactionDTO.getEndedAt() != null) ? LocalDateTime.parse(transactionDTO.getEndedAt()) : null, TransactionStatus.getByTransactionStatus(transactionDTO.getStatus()));
 	}
 
 }
