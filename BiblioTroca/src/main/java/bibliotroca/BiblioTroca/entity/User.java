@@ -28,6 +28,7 @@ public class User {
 	private String cep;
 	private Integer avaliationsNumber;
 	private Double averageRating;
+	private String password;
 
 	// @NotBlank (message="A nota é obrigatória")
 	// private String note;
@@ -38,14 +39,14 @@ public class User {
 	
 	public User() {	}
 	
-	public User(String id, String cpf, String name, String surname, String email, String telephone, String cep) {
+	public User(String id, String name, String surname, String email, String telephone, String cep, String password) {
 		this.id = id;
-		this.cpf = cpf;
 		this.name = name;
 		this.surname = surname;
 		this.email = email;
 		this.telephone = telephone;
 		this.cep = cep;
+		this.password = password;
 	}
 	
 	public User(String cpf, String name, String surname, String email, String telephone, String cep) {
@@ -157,5 +158,12 @@ public class User {
 	}
 	public void setAverageRating(Double averageRating) {
 		this.averageRating = averageRating;
+	}
+	
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
 	}
 }

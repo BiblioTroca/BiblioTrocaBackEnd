@@ -108,4 +108,19 @@ public class UserService {
 		}
 		return false;
 	}
+
+	public User returnUserByEmail(String email) {
+		if(this.userRepository.existsByEmail(email)) {
+			return this.userRepository.findByEmail(email);
+		}
+		throw new RuntimeException("email não econtrado");
+	}
+
+	public Boolean verifyCredentials(User user) {
+		User userRequest = returnUserByEmail(user.getEmail());
+		if((user.getEmail().equals(userRequest.getEmail())) && (user.getPassword().equals(userRequest.getPassword()))) {
+			return true;
+		}
+		return false;
+	}
 }

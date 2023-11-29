@@ -31,6 +31,24 @@ public class LoginService {
 		}
 	}
 	
+	public String generateToken(User user) {
+		try {
+		    var algorithm = Algorithm.HMAC256("teste");
+		    return JWT.create()
+		        .withIssuer("BiblioTroca-API")
+		        .withSubject(user.getEmail())
+		        .withClaim("id", user.getId())
+		        .withClaim("firstName", user.getName())
+		        .withClaim("lastName", user.getSurname())
+		        .withClaim("email", user.getEmail())
+		        .withClaim("phoneNumber", user.getTelephone())
+		        .withExpiresAt(expirationDate())
+		        .sign(algorithm);
+		} catch (JWTCreationException exception){
+			throw new RuntimeException("erro gerar token", exception);
+		}
+	}
+	
 	private Instant expirationDate() {
 		return LocalDateTime.now().plusDays(1).toInstant(ZoneOffset.of("-03:00"));
 	}
