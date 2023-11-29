@@ -35,7 +35,7 @@ public class BookDTO {
 		this.language = newLanguage;
 		this.year = newEdition;
 		this.description = newDescription;
-		this.shortDescription = newDescription.substring(0, 96) + "...";
+		this.shortDescription = returnShortDescription();
 		this.publishingCompany = newPublishingCompany;
 		this.state = newState.toString();
 		this.createdAt = createdAt;
@@ -50,7 +50,7 @@ public class BookDTO {
 		this.language = newLanguage;
 		this.year = newEdition;
 		this.description = newDescription;
-		this.shortDescription = newDescription.substring(0, 96) + "...";
+		this.shortDescription = returnShortDescription();
 		this.publishingCompany = newPublishingCompany;
 		this.state = newState.toString();
 		this.createdAt = createdAt != null ? createdAt.toString() : null;
@@ -156,6 +156,13 @@ public class BookDTO {
 		this.createdAt = createdAt;
 	}
 
+	private String returnShortDescription() {
+		if(this.description.length() <= 96) {
+			return this.description;
+		}
+		return this.description.substring(0, 96) + "...";
+	}
+	
 	public static BookDTO returnBookDTO(Book book) {
 		return new BookDTO(book.getRegistry().toString(), book.getTitle(), book.getAuthor(), book.getField(), book.getLanguage(), book.getEdition(),
 				book.getDescription(), book.getPublishingCompany(), book.getState(), book.getCreatedAt());
