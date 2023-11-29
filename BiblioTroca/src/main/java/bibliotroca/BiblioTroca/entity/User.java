@@ -14,7 +14,6 @@ import jakarta.validation.constraints.NotBlank;
 public class User {
 	@Id
 	private String id;
-	@NotBlank(message="O CPF é obrigatório")
 	private String cpf;
 	@NotBlank(message="O nome é obrigatório")
 	private String name;
