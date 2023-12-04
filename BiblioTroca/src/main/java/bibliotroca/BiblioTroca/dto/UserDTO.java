@@ -8,7 +8,6 @@ import bibliotroca.BiblioTroca.entity.User;
 
 public class UserDTO {
 	private String id;
-	private String cpf;
 	private String name;
 	private String surname;
 	private String email;
@@ -16,8 +15,11 @@ public class UserDTO {
 	private String location;
 	@JsonInclude(Include.NON_NULL)
 	private List<BookDTO> books;
+	@JsonInclude(Include.NON_NULL)
 	private Number averageRating;
+	@JsonInclude(Include.NON_NULL)
 	private Number avaliationsNumber;
+	@JsonInclude(Include.NON_NULL)
 	private String password;
 	
 	public UserDTO() {	}
@@ -41,7 +43,7 @@ public class UserDTO {
 		this.location = newCep;
 	}
 	
-	public UserDTO(String id, String newName, String newSurname, String newEmail, String newTelephone, String newCep, Integer avaliationsNumber, Double averageRating) {
+	public UserDTO(String id, String newName, String newSurname, String newEmail, String newTelephone, String newCep, Integer avaliationsNumber, Double averageRating, String password) {
 		this.id = id;
 		this.name = newName;
 		this.surname = newSurname;
@@ -50,6 +52,7 @@ public class UserDTO {
 		this.location = newCep;
 		this.avaliationsNumber = avaliationsNumber;
 		this.averageRating = averageRating;
+		this.password = password;
 	}
 
 	public String getId() {
@@ -57,13 +60,6 @@ public class UserDTO {
 	}
 	public void setId(String id) {
 		this.id = id;
-	}
-	
-	public String getCpf() {
-		return cpf;
-	}
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
 	}
 	
 	public String getName() {
@@ -130,18 +126,10 @@ public class UserDTO {
 	}
 	
 	public static UserDTO returnUserDTO(User user) {
-		return new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getTelephone(), user.getCep(), user.getAvaliationsNumber(), user.getAverageRating());
+		return new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getTelephone(), user.getCep(), user.getAvaliationsNumber(), user.getAverageRating(), user.getPassword());
 	}
 	
 	public static User returnUser(UserDTO userDTO) {
-		return new User(userDTO.getId(), userDTO.getName(), userDTO.getSurname(), userDTO.getEmail(), userDTO.getPhoneNumber(), userDTO.getLocation(), userDTO.getAvaliationsNumber().intValue(), userDTO.getAverageRating().doubleValue());
-	}
-	
-	public static UserDTO returnUserLoginDTO(User user) {
-		return new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getTelephone(), user.getCep(), user.getPassword());
-	}
-	
-	public static User returnUserFromLogin(UserDTO userDTO) {
-		return new User(userDTO.getId(), userDTO.getName(), userDTO.getSurname(), userDTO.getEmail(), userDTO.getPhoneNumber(), userDTO.getLocation(), userDTO.getPassword());
+		return new User(userDTO.getId(), userDTO.getName(), userDTO.getSurname(), userDTO.getEmail(), userDTO.getPhoneNumber(), userDTO.getLocation(), userDTO.getAvaliationsNumber().intValue(), userDTO.getAverageRating().doubleValue(), userDTO.getPassword());
 	}
 }

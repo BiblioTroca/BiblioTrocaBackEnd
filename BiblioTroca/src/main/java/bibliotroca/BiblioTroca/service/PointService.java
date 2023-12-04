@@ -3,7 +3,7 @@ package bibliotroca.BiblioTroca.service;
 import org.springframework.beans.factory.annotation.Autowired; 
 import org.springframework.stereotype.Service;
 import bibliotroca.BiblioTroca.entity.Point;
-import bibliotroca.BiblioTroca.exception.CpfNotFoundException;
+import bibliotroca.BiblioTroca.exception.EmailNotFoundException;
 import bibliotroca.BiblioTroca.exception.InsuficientPointsException;
 import bibliotroca.BiblioTroca.exception.PointAlreadyCreatedException;
 import bibliotroca.BiblioTroca.repository.PointRepository;
@@ -17,22 +17,22 @@ public class PointService {
     @Autowired
 	private UserRepository userRepository;
 
-    public Point returnPointsByCpf(String userCpf) {
-    	return this.pointRepository.findByUserCpf(userCpf);
+    public Point returnPointsByEmail(String email) {
+    	return this.pointRepository.findByUserEmail(email);
     }
     
-    public Point addPoints(int walletPoints, String userCpf) {
-        Point userPoints = pointRepository.findByUserCpf(userCpf);
+    public Point addPoints(int walletPoints, String email) {
+        Point userPoints = pointRepository.findByUserEmail(email);
         if (userPoints == null) {
-            userPoints = new Point(walletPoints, userCpf);
+            userPoints = new Point(walletPoints, email);
         } else {
             userPoints.setWalletPoints(userPoints.getWalletPoints() + walletPoints);
         }
         return pointRepository.save(userPoints);
     }
 
-    public Point deducePoints(int walletPoints, String userCpf) throws InsuficientPointsException {
-        Point userPoints = pointRepository.findByUserCpf(userCpf);
+    public Point deducePoints(int walletPoints, String email) throws InsuficientPointsException {
+        Point userPoints = pointRepository.findByUserEmail(email);
         if(userPoints == null) {
         	throw new InsuficientPointsException();
         }
@@ -50,18 +50,18 @@ public class PointService {
     	}
     }
 
-	public boolean existsByUserCpf(String userCpf) {
-		return this.pointRepository.existsByUserCpf(userCpf);
+	public boolean existsByUserCpf(String email) {
+		return this.pointRepository.existsByUserEmail(email);
 	}
 
-	public Point createPoint(String cpf) throws CpfNotFoundException, PointAlreadyCreatedException {
-		if(!this.userRepository.existsByCpf(cpf)) {
-    		throw new CpfNotFoundException(cpf);
+	public Point createPoint(String email) throws EmailNotFoundException, PointAlreadyCreatedException {
+		if(!this.userRepository.existsByEmail(email)) {
+    		throw new EmailNotFoundException(email);
     	}
-		if(this.pointRepository.existsByUserCpf(cpf)) {
+		if(this.pointRepository.existsByUserEmail(email)) {
     		throw new PointAlreadyCreatedException();
     	}
-		Point point = new Point(50, cpf);
+		Point point = new Point(50, email);
 		return this.pointRepository.save(point);
 	}
 }

@@ -3,11 +3,12 @@ package bibliotroca.BiblioTroca.service;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import java.util.ArrayList;
 import bibliotroca.BiblioTroca.entity.Book;
 import bibliotroca.BiblioTroca.entity.User;
-import bibliotroca.BiblioTroca.exception.CpfAlreadyInUseException;
-import bibliotroca.BiblioTroca.exception.CpfNotFoundException;
+import bibliotroca.BiblioTroca.exception.EmailAlreadyInUseException;
+import bibliotroca.BiblioTroca.exception.EmailNotFoundException;
 import bibliotroca.BiblioTroca.exception.RegistryNotFoundException;
 import bibliotroca.BiblioTroca.repository.UserRepository;
 
@@ -18,9 +19,9 @@ public class UserService {
 	@Autowired
 	BookService bookService;
 	
-	public User createUser(User user) throws CpfAlreadyInUseException {
-		if(this.userRepository.existsByCpf(user.getCpf())) {
-			throw new CpfAlreadyInUseException();
+	public User createUser(User user) throws EmailAlreadyInUseException {
+		if(this.userRepository.existsByEmail(user.getEmail())) {
+			throw new EmailAlreadyInUseException();
 		}
 		return this.userRepository.save(user);
 	}
@@ -29,6 +30,7 @@ public class UserService {
 		if(this.userRepository.existsByEmail(user.getEmail())) {
 			throw new RuntimeException("Email já cadastrado.");
 		}
+		user.setPassword(BCrypt.withDefaults().hashToString(12, user.getPassword().toCharArray()));
 		return this.userRepository.save(user);
 	}
 	
@@ -36,20 +38,19 @@ public class UserService {
 		return this.userRepository.findAll();
 	}
 	
-	public User returnUserByCPF(String cpf) throws CpfNotFoundException {
-		if(this.userRepository.existsByCpf(cpf)) {
-			return this.userRepository.findByCpf(cpf);
+	public User returnUserByEmail(String email) throws EmailNotFoundException {
+		if(this.userRepository.existsByEmail(email)) {
+			return this.userRepository.findByEmail(email);
 		}
-		throw new CpfNotFoundException(cpf);
+		throw new EmailNotFoundException(email);
 	}
 	
-	public User updateUser(String cpf, User user) throws CpfNotFoundException {
-		if(!this.userRepository.existsByCpf(cpf)) {
-			throw new CpfNotFoundException(cpf);
+	public User updateUser(String email, User user) throws EmailNotFoundException {
+		if(!this.userRepository.existsByEmail(email)) {
+			throw new EmailNotFoundException(email);
 		}
-		User userRequest = this.userRepository.findByCpf(cpf);
+		User userRequest = this.userRepository.findByEmail(email);
 		user.setId(userRequest.getId());
-		user.setCpf(cpf);
 		if(user.getName() == null) {
 			user.setName(userRequest.getName());
 		}
@@ -74,27 +75,27 @@ public class UserService {
 		return this.userRepository.save(user);
 	}
 	
-	public void deleteUser(String cpf) throws CpfNotFoundException {
-		if(this.userRepository.existsByCpf(cpf)) {
-			this.userRepository.deleteByCpf(cpf);
+	public void deleteUser(String email) throws EmailNotFoundException {
+		if(this.userRepository.existsByEmail(email)) {
+			this.userRepository.deleteByEmail(email);
 		} else {
-			throw new CpfNotFoundException(cpf);
+			throw new EmailNotFoundException(email);
 		}
 	}
 	
-	public User addBook(String cpf, Long registry) throws CpfNotFoundException {
-		User userRequest = returnUserByCPF(cpf);
+	public User addBook(String email, Long registry) throws EmailNotFoundException {
+		User userRequest = returnUserByEmail(email);
 		List<Long> booksRegistryRequest = new ArrayList<>();
 		if(userRequest.getBooksRegistry()!=null) {
 			booksRegistryRequest = userRequest.getBooksRegistry();
 		}
 		booksRegistryRequest.add(registry);
 		userRequest.setBooksRegistry(booksRegistryRequest);
-		return updateUser(cpf, userRequest);
+		return updateUser(email, userRequest);
 	}
 	
-	public User returnUserBooks(String cpf) throws CpfNotFoundException, RegistryNotFoundException {
-		User userRequest = returnUserByCPF(cpf);
+	public User returnUserBooks(String email) throws EmailNotFoundException, RegistryNotFoundException {
+		User userRequest = returnUserByEmail(email);
 		List<Long> booksRegistryRequest = new ArrayList<>();
 		if(userRequest.getBooksRegistry()!=null) {
 			booksRegistryRequest = userRequest.getBooksRegistry();
@@ -116,16 +117,9 @@ public class UserService {
 		return false;
 	}
 
-	public User returnUserByEmail(String email) {
-		if(this.userRepository.existsByEmail(email)) {
-			return this.userRepository.findByEmail(email);
-		}
-		throw new RuntimeException("email não econtrado");
-	}
-
-	public Boolean verifyCredentials(User user) {
+	public Boolean verifyCredentials(User user) throws EmailNotFoundException {
 		User userRequest = returnUserByEmail(user.getEmail());
-		if(userRequest.getPassword().equals(user.getPassword())) {
+		if(BCrypt.verifyer().verify(user.getPassword().toCharArray(), userRequest.getPassword()).verified) {
 			return true;
 		}
 		return false;
@@ -154,6 +148,8 @@ public class UserService {
 		}
 		if(user.getPassword() == null) {
 			user.setPassword(userRequest.getPassword());
+		} else {
+			user.setPassword(BCrypt.withDefaults().hashToString(12, user.getPassword().toCharArray()));
 		}
 		return this.userRepository.save(user);
 	}

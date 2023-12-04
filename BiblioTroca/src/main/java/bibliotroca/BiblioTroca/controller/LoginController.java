@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import bibliotroca.BiblioTroca.dto.UserDTO;
 import bibliotroca.BiblioTroca.entity.User;
-import bibliotroca.BiblioTroca.exception.CpfAlreadyInUseException;
+import bibliotroca.BiblioTroca.exception.EmailAlreadyInUseException;
+import bibliotroca.BiblioTroca.exception.EmailNotFoundException;
 import bibliotroca.BiblioTroca.service.LoginService;
 import bibliotroca.BiblioTroca.service.UserService;
 import jakarta.servlet.http.Cookie;
@@ -29,7 +30,7 @@ public class LoginController {
 	LoginService loginService;
 
     @GetMapping("/")
-    public String getHomePage(Authentication authentication, HttpServletResponse res) throws CpfAlreadyInUseException{
+    public String getHomePage(Authentication authentication, HttpServletResponse res) {
     	DefaultOAuth2User user = (DefaultOAuth2User) authentication.getPrincipal();
         Map<String, Object> attributes = user.getAttributes();
         
@@ -42,7 +43,7 @@ public class LoginController {
         User newUser = new User(name, surname, email);
         
         if(!this.userService.existsByEmail(email)) {
-        	this.userService.createUser(newUser);
+        	this.userService.createUserLogin(newUser);
         }
         
         String token = loginService.generateToken(newUser, picture);
@@ -66,13 +67,14 @@ public class LoginController {
 
     @PostMapping("/usuarios")
     @ResponseStatus(HttpStatus.CREATED)
-    public String createUserFromMobile(@RequestBody User user) throws CpfAlreadyInUseException {
+    public String createUserFromMobile(@RequestBody User user) throws EmailAlreadyInUseException {
+		System.out.print("a " +String.valueOf(user.getEmail().hashCode()));
     	User userCreated = this.userService.createUserLogin(user);
 		return loginService.generateToken(userCreated);
     }
     
     @PostMapping("/autenticar")
-    public String loginFromMobile(@RequestBody User user) throws CpfAlreadyInUseException {
+    public String loginFromMobile(@RequestBody User user) throws EmailAlreadyInUseException, EmailNotFoundException {
         if(!this.userService.existsByEmail(user.getEmail())) {
         	return "";
         }
@@ -85,8 +87,8 @@ public class LoginController {
     }
     
     @PostMapping("/alterar-senha")
-    public UserDTO updateLoginFromMobile(@RequestBody User user) throws CpfAlreadyInUseException {
+    public UserDTO updateLoginFromMobile(@RequestBody User user) throws EmailAlreadyInUseException {
 		User userUpdated = this.userService.updateUserMobile(user);
-		return UserDTO.returnUserLoginDTO(userUpdated);
+		return UserDTO.returnUserDTO(userUpdated);
     }
 }

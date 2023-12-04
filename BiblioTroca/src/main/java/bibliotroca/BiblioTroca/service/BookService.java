@@ -44,6 +44,7 @@ public class BookService {
 		Book bookRequest = this.bookRepository.findByRegistry(registry);
 		book.setId(bookRequest.getId());
 		book.setRegistry(registry);
+		book.setCreatedAt(bookRequest.getCreatedAt());
 		if (book.getTitle() == null) {
 			book.setTitle(bookRequest.getTitle());
 		}
@@ -67,6 +68,9 @@ public class BookService {
 		}
 		if (book.getState() == null) {
 			book.setState(bookRequest.getState());
+		}
+		if (book.getUserEmail() == null) {
+			book.setUserEmail(bookRequest.getUserEmail());
 		}
 		return this.bookRepository.save(book);
 	}
@@ -122,6 +126,7 @@ public class BookService {
 				"Livro cadastrado pelo funcionário BiblioTroca", "Livro cadastrado pelo funcionário BiblioTroca",
 				"Livro cadastrado pelo funcionário BiblioTroca", State.Seminovo);
 		book.setRegistry(generateRegistry());
+		book.setUserEmail("bibliotroca5@gmail.com");
 		return this.bookRepository.save(book);
 	}
 }

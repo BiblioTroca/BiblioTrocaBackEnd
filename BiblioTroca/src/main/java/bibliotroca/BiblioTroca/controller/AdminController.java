@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import bibliotroca.BiblioTroca.entity.Book;
 import bibliotroca.BiblioTroca.entity.User;
-import bibliotroca.BiblioTroca.exception.CpfNotFoundException;
+import bibliotroca.BiblioTroca.exception.EmailNotFoundException;
 import bibliotroca.BiblioTroca.exception.RegistryNotFoundException;
 import bibliotroca.BiblioTroca.service.BookService;
 import bibliotroca.BiblioTroca.service.UserService;
@@ -30,14 +30,14 @@ public class AdminController {
 		return this.userService.returnAllUsers();
 	}
 	
-	@GetMapping("/usuarios/{cpf}")
-	public User returnUserByCPF(@PathVariable String cpf) throws CpfNotFoundException {
-		return userService.returnUserByCPF(cpf);
+	@GetMapping("/usuarios/{email}")
+	public User returnUserByCPF(@PathVariable String email) throws EmailNotFoundException {
+		return userService.returnUserByEmail(email);
 	}
 	
-	@GetMapping("/usuarios/{cpf}/livros")
-	public User returnUserWithBooksByCPF(@PathVariable String cpf) throws CpfNotFoundException, RegistryNotFoundException {
-		User userRequest = this.userService.returnUserBooks(cpf);
+	@GetMapping("/usuarios/{email}/livros")
+	public User returnUserWithBooksByCPF(@PathVariable String email) throws EmailNotFoundException, RegistryNotFoundException {
+		User userRequest = this.userService.returnUserBooks(email);
 		List<Book> books = new ArrayList<>();
 		for(Book bookRequest : userRequest.getBooks()) {
 			books.add(bookRequest);

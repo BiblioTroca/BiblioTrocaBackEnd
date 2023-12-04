@@ -14,7 +14,6 @@ import jakarta.validation.constraints.NotBlank;
 public class User {
 	@Id
 	private String id;
-	private String cpf;
 	@NotBlank(message="O nome é obrigatório")
 	private String name;
 	@NotBlank(message="O sobrenome é obrigatório")
@@ -38,6 +37,19 @@ public class User {
 	
 	public User() {	}
 	
+	public User(String id, String name, String surname, String email, String telephone, String cep, Integer avaliationsNumber, Double averageRating,
+			String password) {
+		this.id = id;
+		this.name = name;
+		this.surname = surname;
+		this.email = email;
+		this.telephone = telephone;
+		this.cep = cep;
+		this.avaliationsNumber = avaliationsNumber;
+		this.averageRating = averageRating;
+		this.password = password;
+	}
+
 	public User(String id, String name, String surname, String email, String telephone, String cep, String password) {
 		this.id = id;
 		this.name = name;
@@ -48,17 +60,7 @@ public class User {
 		this.password = password;
 	}
 	
-	public User(String cpf, String name, String surname, String email, String telephone, String cep) {
-		this.cpf = cpf;
-		this.name = name;
-		this.surname = surname;
-		this.email = email;
-		this.telephone = telephone;
-		this.cep = cep;
-	}
-	
-	public User(String cpf, String name, String surname, String email, String telephone, String cep, Integer avaliationsNumber, Double averageRating) {
-		this.cpf = cpf;
+	public User(String name, String surname, String email, String telephone, String cep, Integer avaliationsNumber, Double averageRating) {
 		this.name = name;
 		this.surname = surname;
 		this.email = email;
@@ -87,13 +89,6 @@ public class User {
 	}
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getCpf() {
-		return cpf;
-	}
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
 	}
 
 	public String getName() {

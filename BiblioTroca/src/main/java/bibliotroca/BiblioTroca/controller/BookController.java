@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import bibliotroca.BiblioTroca.dto.BookDTO;
 import bibliotroca.BiblioTroca.dto.UserDTO;
 import bibliotroca.BiblioTroca.entity.Book;
-import bibliotroca.BiblioTroca.exception.CpfNotFoundException;
+import bibliotroca.BiblioTroca.exception.EmailNotFoundException;
 import bibliotroca.BiblioTroca.exception.RegistryNotFoundException;
 import bibliotroca.BiblioTroca.service.BookService;
 import bibliotroca.BiblioTroca.service.UserBooksService;
@@ -36,19 +36,19 @@ public class BookController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public BookDTO createBook(@RequestBody @Valid Book book) throws CpfNotFoundException {
+	public BookDTO createBook(@RequestBody @Valid Book book) throws EmailNotFoundException {
 		Book createdBook = this.bookService.createBook(book);
-		this.userBooksService.addUserBook(createdBook.getUserCpf(), createdBook.getRegistry());
+		this.userBooksService.addUserBook(createdBook.getUserEmail(), createdBook.getRegistry());
 		BookDTO createdBookDTO = BookDTO.returnBookDTO(createdBook);
 		createdBookDTO.setRegistry(book.getRegistry());
-		UserDTO user = UserDTO.returnUserDTO(this.userService.returnUserByCPF(createdBook.getUserCpf()));
-		user.setCpf(createdBook.getUserCpf());
+		UserDTO user = UserDTO.returnUserDTO(this.userService.returnUserByEmail(createdBook.getUserEmail()));
+		user.setEmail(createdBook.getUserEmail());
 		createdBookDTO.setUser(user);
 		return createdBookDTO;
 	}
 	
 	@GetMapping
-	public ArrayList<BookDTO> returnAllBooks(@RequestParam(required=false) String q) throws CpfNotFoundException {
+	public ArrayList<BookDTO> returnAllBooks(@RequestParam(required=false) String q) throws EmailNotFoundException {
 		List<Book> books = new ArrayList<>();
 		if(q == null) {
 			books = this.bookService.returnAllBooks();
@@ -58,8 +58,8 @@ public class BookController {
 		ArrayList<BookDTO> booksDTO = new ArrayList<>();
 		for(Book book : books) {
 			BookDTO bookDTO = BookDTO.returnBookDTO(book);
-			UserDTO user = UserDTO.returnUserDTO(this.userService.returnUserByCPF(book.getUserCpf()));
-			user.setCpf(book.getUserCpf());
+			UserDTO user = UserDTO.returnUserDTO(this.userService.returnUserByEmail(book.getUserEmail()));
+			user.setEmail(book.getUserEmail());
 			bookDTO.setUser(user);
 			booksDTO.add(bookDTO);
 		}
@@ -67,26 +67,25 @@ public class BookController {
 	}
 	
 	@GetMapping("/{registry}")
-	public BookDTO returnBookByRegistry(@PathVariable Long registry) throws RegistryNotFoundException, CpfNotFoundException {
+	public BookDTO returnBookByRegistry(@PathVariable Long registry) throws RegistryNotFoundException, EmailNotFoundException {
 		Book book = this.bookService.returnBookByRegistry(registry);
 		BookDTO bookDTO = BookDTO.returnBookDTO(book);
-		UserDTO user = UserDTO.returnUserDTO(this.userService.returnUserByCPF(book.getUserCpf()));
-		user.setCpf(book.getUserCpf());
+		UserDTO user = UserDTO.returnUserDTO(this.userService.returnUserByEmail(book.getUserEmail()));
+		user.setEmail(book.getUserEmail());
 		bookDTO.setUser(user);
 		bookDTO.setRegistry(registry);	
 		return bookDTO;
 	}
 	
 	@PutMapping("/{registry}")
-	public BookDTO updateBook(@PathVariable Long registry, @RequestBody @Valid BookDTO bookDTO) throws RegistryNotFoundException, CpfNotFoundException {
-		Book bookRequest = BookDTO.returnBook(bookDTO);
-		Book bookUpdated = this.bookService.updateBook(registry, bookRequest);
-		BookDTO book = BookDTO.returnBookDTO(bookUpdated);
-		book.setRegistry(registry);
-		UserDTO user = UserDTO.returnUserDTO(this.userService.returnUserByCPF(bookUpdated.getUserCpf()));
-		user.setCpf(bookUpdated.getUserCpf());
-		book.setUser(user);
-		return book;
+	public BookDTO updateBook(@PathVariable Long registry, @RequestBody @Valid Book book) throws RegistryNotFoundException, EmailNotFoundException {
+		Book bookUpdated = this.bookService.updateBook(registry, book);
+		BookDTO bookDTO = BookDTO.returnBookDTO(bookUpdated);
+		bookDTO.setRegistry(registry);
+		UserDTO user = UserDTO.returnUserDTO(this.userService.returnUserByEmail(bookUpdated.getUserEmail()));
+		user.setEmail(bookUpdated.getUserEmail());
+		bookDTO.setUser(user);
+		return bookDTO;
 	}
 	
 	@DeleteMapping("/{registry}")

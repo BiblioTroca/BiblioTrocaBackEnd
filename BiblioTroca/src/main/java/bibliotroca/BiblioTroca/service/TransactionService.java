@@ -34,10 +34,10 @@ public class TransactionService {
 		return transactionList;
 	}
     
-    public List<Transaction> returnUserTransactions(String cpf) {
+    public List<Transaction> returnUserTransactions(String email) {
     	List<Transaction> transactions = new ArrayList<>();
-    	List<Transaction> sellerTransactions = this.transactionRepository.findAllBySellerCpf(cpf);
-    	List<Transaction> buyerTransactions = this.transactionRepository.findAllByBuyerCpf(cpf);
+    	List<Transaction> sellerTransactions = this.transactionRepository.findAllBySellerEmail(email);
+    	List<Transaction> buyerTransactions = this.transactionRepository.findAllByBuyerEmail(email);
     	for(Transaction transaction : sellerTransactions ) {
     		transactions.add(transaction);
     	}
@@ -49,9 +49,9 @@ public class TransactionService {
 		return transactions;
 	}
     
-    public List<Transaction> returnUserTransactionsByStatus(String cpf, String status) {
+    public List<Transaction> returnUserTransactionsByStatus(String email, String status) {
     	List<Transaction> transactions = new ArrayList<>();
-    	List<Transaction> userTransactions = this.returnUserTransactions(cpf);
+    	List<Transaction> userTransactions = this.returnUserTransactions(email);
     	for(Transaction transaction : userTransactions ) {
     		if(transaction.getTransactionStatus().equals(TransactionStatus.getByTransactionStatus(status))) {
     			transactions.add(transaction);
@@ -89,8 +89,8 @@ public class TransactionService {
     	}
     	transaction.setTransactionStatus(TransactionStatus.getByTransactionStatus(transactionStatus));
     	if(transaction.getTransactionStatus() == TransactionStatus.CONCLUDED) {
-    		this.pointService.addPoints(20, transaction.getSellerCpf());
-    		this.pointService.deducePoints(20, transaction.getBuyerCpf());
+    		this.pointService.addPoints(20, transaction.getSellerEmail());
+    		this.pointService.deducePoints(20, transaction.getBuyerEmail());
     		transaction.setCompletionDate(LocalDateTime.now());
     	}
     	if(transaction.getTransactionStatus() == TransactionStatus.CANCELLED) {

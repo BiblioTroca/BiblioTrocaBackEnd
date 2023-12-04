@@ -13,14 +13,14 @@ public class Point {
 	private String id;
 	private int walletPoints;
 	@NotBlank(message="O CPF do usuário é obrigatório")
-	private String userCpf;
+	private String userEmail;
 	private String lastLogin;
 
 	public Point() { }
 	
-	public Point(int walletPoints, String userCpf) {
+	public Point(int walletPoints, String userEmail) {
 		this.walletPoints = walletPoints;
-		this.userCpf = userCpf;
+		this.userEmail = userEmail;
 		this.lastLogin = this.getCurrentDate();
 	}
 	
@@ -43,11 +43,11 @@ public class Point {
 		this.walletPoints = walletPoints;
 	}
 	
-	public String getUserCpf() {
-		return userCpf;
+	public String getUserEmail() {
+		return userEmail;
 	}
-	public void setUserCpf(String userCpf) {
-		this.userCpf = userCpf;
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
 	}
 	
 	public String getLastLogin() {
