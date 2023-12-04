@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import bibliotroca.BiblioTroca.strategy.TransactionStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Document(collection="Transacoes")
@@ -15,10 +14,8 @@ public class Transaction {
 	@Id
 	private String id;
 	private Long registry;
-	@NotBlank(message = "Campo não pode ser vazio.")
-	private String sellerCpf;	
-	@NotBlank(message = "Campo não pode ser vazio.")
-	private String buyerCpf;
+	private String sellerEmail;
+	private String buyerEmail;
 	@NotNull(message = "O número de registro do livro é obrigatório.")
 	private Long bookRegistry;
 	private LocalDateTime startDate;	
@@ -28,32 +25,34 @@ public class Transaction {
 	
 	public Transaction() { }
 	
-	public Transaction(String id, Long registry, String sellerCpf, String buyerCpf, Long bookRegistry, LocalDateTime startDate,
+	public Transaction(String id, Long registry, String sellerEmail, String buyerEmail, Long bookRegistry, LocalDateTime startDate,
 			LocalDateTime completionDate, TransactionStatus transactionStatus) {
 		this.id = id;
 		this.registry = registry;
-		this.sellerCpf = sellerCpf;
-		this.buyerCpf = buyerCpf;
+		this.sellerEmail = sellerEmail;
+		this.buyerEmail = buyerEmail;
 		this.bookRegistry = bookRegistry;
 		this.startDate = startDate;
 		this.completionDate = completionDate;
 		this.transactionStatus = transactionStatus;
 	}
 	
-	public Transaction(Long registry, String sellerCpf, String buyerCpf, Long bookRegistry, LocalDateTime startDate,
+	public Transaction(Long registry, String sellerEmail, String buyerEmail, Long bookRegistry, LocalDateTime startDate,
 			LocalDateTime completionDate, TransactionStatus transactionStatus) {
 		this.registry = registry;
-		this.sellerCpf = sellerCpf;
-		this.buyerCpf = buyerCpf;
+		this.sellerEmail = sellerEmail;
+		this.buyerEmail = buyerEmail;
 		this.bookRegistry = bookRegistry;
 		this.startDate = startDate;
 		this.completionDate = completionDate;
 		this.transactionStatus = transactionStatus;
 	}
 	
-	public Transaction(Long registry, LocalDateTime startDate, LocalDateTime completionDate, TransactionStatus transactionStatus) {
+	public Transaction(Long registry, String sellerEmail, String buyerEmail, LocalDateTime startDate, LocalDateTime completionDate, TransactionStatus transactionStatus) {
 		this.registry = registry;
 		this.startDate = startDate;
+		this.sellerEmail = sellerEmail;
+		this.buyerEmail = buyerEmail;
 		this.completionDate = completionDate;
 		this.transactionStatus = transactionStatus;
 	}
@@ -70,20 +69,6 @@ public class Transaction {
 	}
 	public void setRegistry(Long registry) {
 		this.registry = registry;
-	}
-	
-	public String getSellerCpf() {
-		return sellerCpf;
-	}
-	public void setSellerCpf(String sellerCpf) {
-		this.sellerCpf = sellerCpf;
-	}
-	
-	public String getBuyerCpf() {
-		return buyerCpf;
-	}
-	public void setBuyerCpf(String buyerCpf) {
-		this.buyerCpf = buyerCpf;
 	}
 	
 	public Long getBookRegistry() {
@@ -112,5 +97,19 @@ public class Transaction {
 	}
 	public void setTransactionStatus(TransactionStatus transactionStatus) {
 		this.transactionStatus = transactionStatus;
+	}
+	
+	public String getSellerEmail() {
+		return sellerEmail;
+	}
+	public void setSellerEmail(String sellerEmail) {
+		this.sellerEmail = sellerEmail;
+	}
+	
+	public String getBuyerEmail() {
+		return buyerEmail;
+	}
+	public void setBuyerEmail(String buyerEmail) {
+		this.buyerEmail = buyerEmail;
 	}
 }

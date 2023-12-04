@@ -44,13 +44,13 @@ public class WishlistService {
                 return repository.findByBookName(bookName);
         }
 
-        public Wishlist saveWishlist(Wishlist wishlist, String cpf) throws  BookAlreadyRegisteredException, UserNotFoundException{
+        public Wishlist saveWishlist(Wishlist wishlist, String email) throws  BookAlreadyRegisteredException, UserNotFoundException{
                 wishlist.setCreateDate(LocalDateTime.now());
                 Optional<Wishlist> existingWishlist = repository.findByBookName(wishlist.getBookName());
                 if (existingWishlist.isPresent()) {
                         throw new BookAlreadyRegisteredException();
                 }
-                Optional<User> user = Optional.ofNullable(userRepository.findByCpf(cpf));
+                Optional<User> user = Optional.ofNullable(userRepository.findByEmail(email));
 
                 if (user.isPresent()) {
                         wishlist.setUser(user.get().getName());

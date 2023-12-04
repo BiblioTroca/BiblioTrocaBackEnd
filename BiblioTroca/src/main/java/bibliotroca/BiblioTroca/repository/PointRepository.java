@@ -10,9 +10,9 @@ public interface PointRepository extends MongoRepository<Point, String> {
   
 	Optional<Point> findById(String id);	  
 
-	Point findByUserCpf(String userCpf);
+	boolean existsByUserEmail(String email);
 
-	boolean existsByUserCpf(String userCpf);
+	Point findByUserEmail(String email);
   
 }
  

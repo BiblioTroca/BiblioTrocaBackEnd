@@ -10,6 +10,8 @@ import bibliotroca.BiblioTroca.strategy.TransactionStatus;
 public class TransactionDTO {
 	
 	private String id;
+	private String sellerEmail;
+	private String buyerEmail;
 	@JsonInclude(Include.NON_NULL)
 	private UserDTO seller;
 	@JsonInclude(Include.NON_NULL)
@@ -23,8 +25,10 @@ public class TransactionDTO {
 	
 	public TransactionDTO() { }
 	
-	public TransactionDTO(Long registry, LocalDateTime newStartDate, LocalDateTime newCompletionDate, TransactionStatus newTransactionStatus) {
+	public TransactionDTO(Long registry, String sellerEmail, String buyerEmail, LocalDateTime newStartDate, LocalDateTime newCompletionDate, TransactionStatus newTransactionStatus) {
 		this.id = registry.toString();
+		this.sellerEmail = sellerEmail;
+		this.buyerEmail = buyerEmail;
 		this.createdAt = createdAt != null ? createdAt.toString() : null;
 		this.endedAt = endedAt != null ? endedAt.toString() : null;
 		this.status = newTransactionStatus.getTransactionStatus();
@@ -90,12 +94,26 @@ public class TransactionDTO {
 		this.type = type;
 	}
 	
+	public String getSellerEmail() {
+		return sellerEmail;
+	}
+	public void setSellerEmail(String sellerEmail) {
+		this.sellerEmail = sellerEmail;
+	}
+	
+	public String getBuyerEmail() {
+		return buyerEmail;
+	}
+	public void setBuyerEmail(String buyerEmail) {
+		this.buyerEmail = buyerEmail;
+	}
+	
 	public static TransactionDTO returnTransactionDTO(Transaction transaction) {
-		return new TransactionDTO(transaction.getRegistry(), transaction.getStartDate(), transaction.getCompletionDate(), transaction.getTransactionStatus());
+		return new TransactionDTO(transaction.getRegistry(), transaction.getSellerEmail(), transaction.getBuyerEmail(), transaction.getStartDate(), transaction.getCompletionDate(), transaction.getTransactionStatus());
 	}
 	
 	public static Transaction returnTransaction(TransactionDTO transactionDTO) {
-		return new Transaction(Long.getLong(transactionDTO.getId()), (transactionDTO.getCreatedAt() != null) ? LocalDateTime.parse(transactionDTO.getCreatedAt()) : null, (transactionDTO.getEndedAt() != null) ? LocalDateTime.parse(transactionDTO.getEndedAt()) : null, TransactionStatus.getByTransactionStatus(transactionDTO.getStatus()));
+		return new Transaction(Long.getLong(transactionDTO.getId()), transactionDTO.getSellerEmail(), transactionDTO.getBuyerEmail(), (transactionDTO.getCreatedAt() != null) ? LocalDateTime.parse(transactionDTO.getCreatedAt()) : null, (transactionDTO.getEndedAt() != null) ? LocalDateTime.parse(transactionDTO.getEndedAt()) : null, TransactionStatus.getByTransactionStatus(transactionDTO.getStatus()));
 	}
 
 }

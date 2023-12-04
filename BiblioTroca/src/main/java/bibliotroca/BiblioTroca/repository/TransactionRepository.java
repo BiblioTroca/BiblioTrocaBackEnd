@@ -17,8 +17,8 @@ public interface TransactionRepository extends MongoRepository<Transaction, Stri
 
 	void deleteByRegistry(Long registry);
 
-	List<Transaction> findAllBySellerCpf(String cpf);
+	List<Transaction> findAllBySellerEmail(String email);
 
-	List<Transaction> findAllByBuyerCpf(String cpf);
+	List<Transaction> findAllByBuyerEmail(String email);
 	
 }

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import bibliotroca.BiblioTroca.entity.User;
-import bibliotroca.BiblioTroca.exception.CpfNotFoundException;
+import bibliotroca.BiblioTroca.exception.EmailNotFoundException;
 
 @Service
 public class UserBooksService {
@@ -16,9 +16,9 @@ public class UserBooksService {
 	@Autowired
 	BookService bookService;
 	
-	public void addUserBook(String cpf, Long registry) throws CpfNotFoundException {
+	public void addUserBook(String email, Long registry) throws EmailNotFoundException {
 		List<Long> userBooks = new ArrayList<>();
-		User user = this.userService.returnUserByCPF(cpf);
+		User user = this.userService.returnUserByEmail(email);
 		if(user.getBooksRegistry()!=null) {
 			for(Long userBooksRequest : user.getBooksRegistry()) {
 				userBooks.add(userBooksRequest);
@@ -26,17 +26,17 @@ public class UserBooksService {
 		}
 		userBooks.add(registry);
 		user.setBooksRegistry(userBooks);
-		this.userService.updateUser(cpf, user);
+		this.userService.updateUser(email, user);
 	}
 	
-	public void removeUserBook(String cpf, Long registry) throws CpfNotFoundException {
+	public void removeUserBook(String email, Long registry) throws EmailNotFoundException {
 		List<Long> userBooks = new ArrayList<>();
-		User user = this.userService.returnUserByCPF(cpf);
+		User user = this.userService.returnUserByEmail(email);
 		if(user.getBooksRegistry()!=null) {
 			userBooks = user.getBooksRegistry();
 			userBooks.remove(registry);
 		}
 		user.setBooksRegistry(userBooks);
-		this.userService.updateUser(cpf, user);
+		this.userService.updateUser(email, user);
 	}
 }

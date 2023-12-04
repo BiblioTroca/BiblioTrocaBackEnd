@@ -17,8 +17,8 @@ import bibliotroca.BiblioTroca.dto.UserDTO;
 import bibliotroca.BiblioTroca.dto.BookDTO;
 import bibliotroca.BiblioTroca.entity.Book;
 import bibliotroca.BiblioTroca.entity.User;
-import bibliotroca.BiblioTroca.exception.CpfAlreadyInUseException;
-import bibliotroca.BiblioTroca.exception.CpfNotFoundException;
+import bibliotroca.BiblioTroca.exception.EmailAlreadyInUseException;
+import bibliotroca.BiblioTroca.exception.EmailNotFoundException;
 import bibliotroca.BiblioTroca.exception.RegistryNotFoundException;
 import bibliotroca.BiblioTroca.exception.StateNotValidException;
 import bibliotroca.BiblioTroca.service.BookService;
@@ -35,7 +35,7 @@ public class UserController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public UserDTO createUser(@RequestBody @Valid User user) throws CpfAlreadyInUseException {
+	public UserDTO createUser(@RequestBody @Valid User user) throws EmailAlreadyInUseException {
 		User userCreated = this.userService.createUser(user);
 		UserDTO userDTO = UserDTO.returnUserDTO(userCreated);
 		return userDTO;
@@ -51,14 +51,14 @@ public class UserController {
 		return usersDTO;
 	}
 	
-	@GetMapping("/{cpf}")
-	public UserDTO returnUserByCPF(@PathVariable String cpf) throws CpfNotFoundException {
-		return UserDTO.returnUserDTO(userService.returnUserByCPF(cpf));
+	@GetMapping("/{email}")
+	public UserDTO returnUserByEmail(@PathVariable String email) throws EmailNotFoundException {
+		return UserDTO.returnUserDTO(userService.returnUserByEmail(email));
 	}
 	
-	@GetMapping("/{cpf}/livros")
-	public UserDTO returnUserWithBooksByCPF(@PathVariable String cpf) throws CpfNotFoundException, RegistryNotFoundException {
-		User userRequest = this.userService.returnUserBooks(cpf);
+	@GetMapping("/{email}/livros")
+	public UserDTO returnUserWithBooksByEmail(@PathVariable String email) throws EmailNotFoundException, RegistryNotFoundException {
+		User userRequest = this.userService.returnUserBooks(email);
 		UserDTO userResponse = UserDTO.returnUserDTO(userRequest);
 		List<BookDTO> booksDTO = new ArrayList<>();
 		for(Book bookRequest : userRequest.getBooks()) {
@@ -68,11 +68,11 @@ public class UserController {
 		return userResponse;
 	}
 	
-	@PutMapping("/{cpf}/cadastrar-livro")
-	public UserDTO updateUserBooksByCPF(@PathVariable String cpf, @RequestBody Book book) throws CpfNotFoundException, RegistryNotFoundException, StateNotValidException {
+	@PutMapping("/{email}/cadastrar-livro")
+	public UserDTO updateUserBooksByEmail(@PathVariable String email, @RequestBody Book book) throws EmailNotFoundException, RegistryNotFoundException, StateNotValidException {
 		this.bookService.createBook(book);
-		User userRequest = this.userService.addBook(cpf, book.getRegistry());
-		userRequest = this.userService.returnUserBooks(cpf);
+		User userRequest = this.userService.addBook(email, book.getRegistry());
+		userRequest = this.userService.returnUserBooks(email);
 		UserDTO userResponse = UserDTO.returnUserDTO(userRequest);
 		List<BookDTO> booksDTO = new ArrayList<>();
 		for(Book bookRequest : userRequest.getBooks()) {
@@ -82,16 +82,16 @@ public class UserController {
 		return userResponse;
 	}
 	
-	@PutMapping("/{cpf}")
-	public UserDTO updateUserByCPF(@PathVariable String cpf, @RequestBody @Valid UserDTO userDTO) throws CpfNotFoundException {
+	@PutMapping("/{email}")
+	public UserDTO updateUserByEmail(@PathVariable String email, @RequestBody @Valid UserDTO userDTO) throws EmailNotFoundException {
 		User userRequest = UserDTO.returnUser(userDTO);
-		User userUpdated = this.userService.updateUser(cpf, userRequest);
+		User userUpdated = this.userService.updateUser(email, userRequest);
 		return UserDTO.returnUserDTO(userUpdated);
 	}
 	
-	@DeleteMapping("/{cpf}")
+	@DeleteMapping("/{email}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteUser(@PathVariable String cpf) throws CpfNotFoundException {
-		this.userService.deleteUser(cpf);
+	public void deleteUser(@PathVariable String email) throws EmailNotFoundException {
+		this.userService.deleteUser(email);
 	}
 }

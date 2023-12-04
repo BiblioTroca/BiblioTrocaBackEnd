@@ -29,12 +29,12 @@ public class Book {
 	//@NotBlank(message="A condição do livro é obrigatória")
 	private State state;
 	@NotBlank(message="O CPF do usuário dono do livro é obrigatório")
-	private String userCpf;
+	private String userEmail;
 	private LocalDateTime createdAt;
 	
 	public Book() {	}
 	
-	public Book(Long newRegistry, String newTitle, String newAuthor, String newField, String newLanguage, String newEdition, String newDescription, String newPublishingCompany, State newState, String newUserCpf) {
+	public Book(Long newRegistry, String newTitle, String newAuthor, String newField, String newLanguage, String newEdition, String newDescription, String newPublishingCompany, State newState, String newUserEmail) {
 		this.registry = newRegistry;
 		this.title = newTitle;
 		this.author = newAuthor;
@@ -44,7 +44,7 @@ public class Book {
 		this.description = newDescription;
 		this.publishingCompany = newPublishingCompany;
 		this.state = newState;
-		this.userCpf = newUserCpf;
+		this.userEmail = newUserEmail;
 		this.createdAt = LocalDateTime.now();
 	}
 
@@ -154,11 +154,11 @@ this.createdAt = createdAt;
 		this.state = state;
 	}
 	
-	public String getUserCpf() {
-		return userCpf;
+	public String getUserEmail() {
+		return userEmail;
 	}
-	public void setUserCpf(String userCpf) {
-		this.userCpf = userCpf;
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
 	}
 	
 	public LocalDateTime getCreatedAt() {

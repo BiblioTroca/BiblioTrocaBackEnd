@@ -4,10 +4,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class CpfNotFoundException extends Exception {
+public class EmailNotFoundException extends Exception {
 	private static final long serialVersionUID = 1L;
 	
-	public CpfNotFoundException(String cpf) {
-		super(String.format("O CPF %s não foi encontrado", cpf), null, false, false);
+	public EmailNotFoundException(String email) {
+		super(String.format("O Email %s não foi encontrado", email), null, false, false);
 	}
 }

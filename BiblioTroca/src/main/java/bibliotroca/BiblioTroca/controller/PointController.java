@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import bibliotroca.BiblioTroca.dto.PointDTO;
 import bibliotroca.BiblioTroca.entity.Point; 
-import bibliotroca.BiblioTroca.exception.CpfNotFoundException;
+import bibliotroca.BiblioTroca.exception.EmailNotFoundException;
 import bibliotroca.BiblioTroca.exception.InsuficientPointsException;
 import bibliotroca.BiblioTroca.exception.PointAlreadyCreatedException;
 import bibliotroca.BiblioTroca.service.PointService; 
@@ -20,37 +20,37 @@ public class PointController {
     @Autowired
     private PointService pointService;
 
-    @PostMapping("/{cpf}/criar")
-    public PointDTO createPoint(@PathVariable String cpf) throws CpfNotFoundException, PointAlreadyCreatedException {
-    	Point point = this.pointService.createPoint(cpf);
+    @PostMapping("/{email}/criar")
+    public PointDTO createPoint(@PathVariable String email) throws EmailNotFoundException, PointAlreadyCreatedException {
+    	Point point = this.pointService.createPoint(email);
         return PointDTO.returnPointDTO(point);
     }
     
-    @GetMapping("/{cpf}")
-    public PointDTO getPoints(@PathVariable String cpf) throws CpfNotFoundException, PointAlreadyCreatedException {
-        if(!this.pointService.existsByUserCpf(cpf)) {
-        	return this.createPoint(cpf);
+    @GetMapping("/{email}")
+    public PointDTO getPoints(@PathVariable String email) throws EmailNotFoundException, PointAlreadyCreatedException {
+        if(!this.pointService.existsByUserCpf(email)) {
+        	return this.createPoint(email);
         }
-    	Point point = pointService.returnPointsByCpf(cpf);       
+    	Point point = pointService.returnPointsByEmail(email);       
         this.pointService.verifyLoggedToday(point);
         PointDTO pointDTO = new PointDTO(point.getWalletPoints());
         return pointDTO;        
     }
 
-    @GetMapping("/{cpf}/adicionar/{pontos}")
-    public PointDTO addPoints(@PathVariable("cpf") String cpf, @PathVariable("pontos") String points) throws CpfNotFoundException {
-        Point pointRequest = pointService.addPoints(Integer.parseInt(points), cpf);
+    @GetMapping("/{email}/adicionar/{pontos}")
+    public PointDTO addPoints(@PathVariable("email") String email, @PathVariable("pontos") String points) throws EmailNotFoundException {
+        Point pointRequest = pointService.addPoints(Integer.parseInt(points), email);
         if (pointRequest == null) {
-        	throw new CpfNotFoundException(cpf);
+        	throw new EmailNotFoundException(email);
         }
         return PointDTO.returnPointDTO(pointRequest);
     }
 
-    @GetMapping("/{cpf}/remover/{pontos}")
-    public PointDTO deducePoints(@PathVariable("cpf") String cpf, @PathVariable("pontos") String points) throws CpfNotFoundException, InsuficientPointsException {
-    	Point pointRequest = pointService.deducePoints(Integer.parseInt(points), cpf);
+    @GetMapping("/{email}/remover/{pontos}")
+    public PointDTO deducePoints(@PathVariable("email") String email, @PathVariable("pontos") String points) throws EmailNotFoundException, InsuficientPointsException {
+    	Point pointRequest = pointService.deducePoints(Integer.parseInt(points), email);
         if (pointRequest == null) {
-        	throw new CpfNotFoundException(cpf);
+        	throw new EmailNotFoundException(email);
         }
         return PointDTO.returnPointDTO(pointRequest);
         

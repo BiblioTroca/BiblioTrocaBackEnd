@@ -11,14 +11,10 @@ public interface UserRepository extends MongoRepository<User, String> {
 
 	Optional<User> findById(String id);
 
-	boolean existsByCpf(String cpf);
-
-	User findByCpf(String cpf);
-
-	void deleteByCpf(String cpf);
-
 	boolean existsByEmail(String email);
 
 	User findByEmail(String email);
+
+	void deleteByEmail(String email);
 
 }
