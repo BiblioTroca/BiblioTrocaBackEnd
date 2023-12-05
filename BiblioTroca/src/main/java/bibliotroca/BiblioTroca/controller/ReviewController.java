@@ -2,8 +2,10 @@ package bibliotroca.BiblioTroca.controller;
 
 import bibliotroca.BiblioTroca.dto.ReviewDTO;
 import bibliotroca.BiblioTroca.entity.Review;
+import bibliotroca.BiblioTroca.exception.EmailNotFoundException;
 import bibliotroca.BiblioTroca.exception.ReviewAlreadyExists;
 import bibliotroca.BiblioTroca.exception.ReviewNotFoundException;
+import bibliotroca.BiblioTroca.exception.TransactionNotFoundException;
 import bibliotroca.BiblioTroca.service.ReviewService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,19 +26,20 @@ public class ReviewController {
 
     @CrossOrigin
     @PostMapping
-    public ResponseEntity<Object> createReview(@RequestBody @Valid ReviewDTO reviewDTO) throws ReviewAlreadyExists, ReviewNotFoundException {
-        int score = reviewDTO.getScore();
+    public ResponseEntity<Object> createReview(@RequestBody @Valid Review review) throws ReviewAlreadyExists, ReviewNotFoundException, EmailNotFoundException, TransactionNotFoundException {
+        int score = review.getScore();
         if (score < 1 || score > 5) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Pontuação inválida.");
         }
-        String transactionId = reviewDTO.getTransactionId();
+        Long transactionId = review.getTransactionId();
         if (transactionId != null) {
             Optional<Review> existingReview = reviewService.findReviewByTransactionId(transactionId);
             if (existingReview.isPresent()) {
                 throw new ReviewAlreadyExists();
             }
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.reviewService.createReview(reviewDTO.returnReview(reviewDTO)));
+   
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.reviewService.createReview(review));
     }
 
     @CrossOrigin

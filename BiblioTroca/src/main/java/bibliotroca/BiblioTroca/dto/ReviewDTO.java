@@ -1,57 +1,53 @@
 package bibliotroca.BiblioTroca.dto;
 
 import bibliotroca.BiblioTroca.entity.Review;
-import bibliotroca.BiblioTroca.entity.Wishlist;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
 public class ReviewDTO {
 
 
-    @NotBlank(message = "Nome do avaliador é obrigatório")
-    private String nameEvaluator;
+    @NotBlank(message = "Email do avaliador é obrigatório")
+    private String evaluatorEmail;
 
-    @NotBlank(message = "Nome do avaliado é obrigatório")
-    private String nameEvaluated;
+    @NotBlank(message = "Email do avaliado é obrigatório")
+    private String evaluatedEmail;
 
     @NotNull(message = "Pontuação necessária")
     private int score;
 
-    @CreatedDate
-    private LocalDateTime createDate;
+    
+    private String createDate;
 
-    private String transactionId;
-
-    private String userIdEvaluated;
+    private Long transactionId;
 
     public ReviewDTO() {
     }
 
-    public ReviewDTO(String nameEvaluator, String nameEvaluated, int score, LocalDateTime createDate, String transactionId) {
-        this.nameEvaluator = nameEvaluator;
-        this.nameEvaluated = nameEvaluated;
+    public ReviewDTO(String nameEvaluator, String nameEvaluated, int score, LocalDateTime newcreateDate, Long transactionId) {
+        this.evaluatorEmail = nameEvaluator;
+        this.evaluatedEmail = nameEvaluated;
         this.score = score;
-        this.createDate = createDate;
+        this.createDate = newcreateDate != null ? newcreateDate.toString() : null;
         this.transactionId = transactionId;
     }
 
-    public String getNameEvaluator() {
-        return nameEvaluator;
+    public String getEvaluatorEmail() {
+        return evaluatorEmail;
     }
 
-    public void setNameEvaluator(String nameEvaluator) {
-        this.nameEvaluator = nameEvaluator;
+    public void setEvaluatorEmail(String evaluatorEmail) {
+        this.evaluatorEmail = evaluatorEmail;
     }
 
-    public String getNameEvaluated() {
-        return nameEvaluated;
+    public String getEvaluatedEmail() {
+        return evaluatedEmail;
     }
 
-    public void setNameEvaluated(String nameEvaluated) {
-        this.nameEvaluated = nameEvaluated;
+    public void setEvaluatedEmail(String evaluatedEmail) {
+        this.evaluatedEmail = evaluatedEmail;
     }
 
     public int getScore() {
@@ -62,31 +58,27 @@ public class ReviewDTO {
         this.score = score;
     }
 
-    public LocalDateTime getCreateDate() {
+    public String getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(LocalDateTime createDate) {
+    public void setCreateDate(String createDate) {
         this.createDate = createDate;
     }
 
-    public String getTransactionId() {
+    public Long getTransactionId() {
         return transactionId;
     }
 
-    public void setTransactionId(String transactionId) {
+    public void setTransactionId(Long transactionId) {
         this.transactionId = transactionId;
     }
 
-    public String getUserIdEvaluated() {
-        return userIdEvaluated;
-    }
-
-    public void setUserIdEvaluated(String userIdEvaluated) {
-        this.userIdEvaluated = userIdEvaluated;
-    }
-
     public Review returnReview(ReviewDTO reviewDTO) {
-        return new Review(reviewDTO.getNameEvaluator(), reviewDTO.getNameEvaluated(), reviewDTO.getScore(), reviewDTO.getCreateDate(), reviewDTO.getTransactionId());
+        return new Review(reviewDTO.getEvaluatorEmail(), reviewDTO.getEvaluatedEmail(), reviewDTO.getScore(), (reviewDTO.getCreateDate() != null) ? LocalDateTime.parse(reviewDTO.getCreateDate()) : null, reviewDTO.getTransactionId());
+    }
+    
+    public ReviewDTO returnReviewDTO(Review review) {
+        return new ReviewDTO(review.getEvaluatorEmail(), review.getEvaluatedEmail(), review.getScore(), review.getCreateDate(), review.getTransactionId());
     }
 }

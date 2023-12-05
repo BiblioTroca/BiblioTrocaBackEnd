@@ -19,8 +19,10 @@ public class TransactionDTO {
 	@JsonInclude(Include.NON_NULL)
 	private BookDTO bookDetails;
 	private String createdAt;
+	@JsonInclude(Include.NON_NULL)
 	private String endedAt;
 	private String status;
+	@JsonInclude(Include.NON_NULL)
 	private String type;
 	
 	public TransactionDTO() { }
@@ -29,8 +31,8 @@ public class TransactionDTO {
 		this.id = registry.toString();
 		this.sellerEmail = sellerEmail;
 		this.buyerEmail = buyerEmail;
-		this.createdAt = createdAt != null ? createdAt.toString() : null;
-		this.endedAt = endedAt != null ? endedAt.toString() : null;
+		this.createdAt = newStartDate != null ? newStartDate.toString() : null;
+		this.endedAt = newCompletionDate != null ? newCompletionDate.toString() : null;
 		this.status = newTransactionStatus.getTransactionStatus();
 	}
 	

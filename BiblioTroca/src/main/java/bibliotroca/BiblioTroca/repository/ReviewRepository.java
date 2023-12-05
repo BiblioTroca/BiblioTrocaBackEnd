@@ -9,12 +9,9 @@ import java.util.Optional;
 
 @Repository
 public interface ReviewRepository extends MongoRepository<Review, String> {
-    Optional<Review> findByTransactionId(String transactionId);
 
+	Optional<Review> findByTransactionId(Long transactionId);
 
-    List<Review> findByUserIdEvaluated(String userIdEvaluated);
-
-
-    // void deleteAllBy();
-
+	List<Review> findByEvaluatedEmail(String evaluatedEmail);
+    
 }
