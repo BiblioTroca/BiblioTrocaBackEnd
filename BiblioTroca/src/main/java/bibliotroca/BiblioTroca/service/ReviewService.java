@@ -1,12 +1,10 @@
 package bibliotroca.BiblioTroca.service;
 
-
 import bibliotroca.BiblioTroca.entity.Review;
-import bibliotroca.BiblioTroca.entity.Transaction;
 import bibliotroca.BiblioTroca.entity.User;
-
+import bibliotroca.BiblioTroca.exception.EmailNotFoundException;
 import bibliotroca.BiblioTroca.exception.ReviewNotFoundException;
-import bibliotroca.BiblioTroca.exception.UserNotFoundException;
+import bibliotroca.BiblioTroca.exception.TransactionNotFoundException;
 import bibliotroca.BiblioTroca.repository.ReviewRepository;
 import bibliotroca.BiblioTroca.repository.TransactionRepository;
 import bibliotroca.BiblioTroca.repository.UserRepository;
@@ -18,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 
 @Service
 public class ReviewService {
@@ -32,35 +29,39 @@ public class ReviewService {
     UserRepository userRepository;
 
 
-    public Optional<Review> createReview (Review review)  {
+    public Review createReview (Review review) throws EmailNotFoundException, TransactionNotFoundException  {
         review.setCreateDate(LocalDateTime.now());
 
-        Optional<Transaction> transactionOptional = transactionRepository.findById(review.getTransactionId());
-        /*if (transactionOptional.isEmpty()) {
-            throw new TransactionNotFoundException("Transação não encontrada");
-        }*/
-        Transaction transaction = transactionOptional.get();
-
-        Optional<User> evaluatorOptional = (userRepository.findById(review.getNameEvaluator()));
-        Optional<User> evaluatedOptional = (userRepository.findById(review.getNameEvaluated()));
-
-        //.orElseThrow(() -> new UserNotFoundException());
-        //  .orElseThrow(() -> new UserNotFoundException());
-
-        User evaluator = evaluatorOptional.get();
-        User evaluated = evaluatedOptional.get();
-
-        review.setTransactionId(transaction.getId());
-        review.setNameEvaluated(evaluated.getName());
-        review.setNameEvaluator(evaluator.getName());
-        review.setUserIdEvaluated(evaluated.getId());
-
-        return Optional.ofNullable(reviewRepository.save(review));
+        if(this.transactionRepository.findByRegistry(review.getTransactionId()) == null) {
+        	throw new TransactionNotFoundException();
+        }
+        if(this.userRepository.findByEmail(review.getEvaluatedEmail()) == null) {
+        	throw new EmailNotFoundException(review.getEvaluatedEmail());
+        }
+        if(this.userRepository.findByEmail(review.getEvaluatorEmail()) == null) {
+        	throw new EmailNotFoundException(review.getEvaluatorEmail());
+        }
+        
+        User user = this.userRepository.findByEmail(review.getEvaluatedEmail());
+        if(user.getAvaliationsNumber()==null) {
+        	user.setAvaliationsNumber(1);
+        }
+        user.setAvaliationsNumber(user.getAvaliationsNumber()+1);
+        List<Review> reviews = reviewRepository.findByEvaluatedEmail(review.getEvaluatedEmail());
+        double totalScore = 0.0;
+        int totalReviews = reviews.size();
+        for (Review reviewreq : reviews) {
+            totalScore += reviewreq.getScore();
+        }
+        user.setAverageRating(totalScore / totalReviews);
+        this.userRepository.save(user);
+        
+        return reviewRepository.save(review);
     }
 
 
-    public  Map<String, Object> calculateUserScoreRatings(String userIdEvaluated) {
-        List<Review> reviews = reviewRepository.findByUserIdEvaluated(userIdEvaluated);
+    public  Map<String, Object> calculateUserScoreRatings(String evaluatedEmail) {
+        List<Review> reviews = reviewRepository.findByEvaluatedEmail(evaluatedEmail);
 
         if (reviews.isEmpty()) {
             Map<String, Object> result = new HashMap<>();
@@ -97,7 +98,7 @@ public class ReviewService {
             throw new ReviewNotFoundException();
         }
     }
-    public Optional<Review> findReviewByTransactionId(String transactionId) {
+    public Optional<Review> findReviewByTransactionId(Long transactionId) {
         return reviewRepository.findByTransactionId(transactionId);
     }
 

@@ -1,13 +1,10 @@
 package bibliotroca.BiblioTroca.entity;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-
 
 @Document(collection="Avaliacao")
 public class Review {
@@ -16,47 +13,38 @@ public class Review {
     private String id;
 
     //@NotBlank(message = "Nome do avaliador é obrigatório")
-    private String nameEvaluator;
+    private String evaluatorEmail;
 
     //@NotBlank(message = "Nome do avaliado é obrigatório")
-    private String nameEvaluated;
+    private String evaluatedEmail;
 
     @NotNull(message = "Pontuação necessária")
     private int score;
 
-    @CreatedDate
+    
     private LocalDateTime createDate;
 
-    private String transactionId;
+    private Long transactionId;
 
-    private String userIdEvaluated;
 
 
     public Review() {
     }
 
-    public Review(String nameEvaluator, String nameEvaluated, int score) {
-        this.nameEvaluator = nameEvaluator;
-        this.nameEvaluated = nameEvaluated;
+    public Review(String evaluatorEmail, String evaluatedEmail, int score) {
+        this.evaluatorEmail = evaluatorEmail;
+        this.evaluatedEmail = evaluatedEmail;
         this.score = score;
     }
 
-    public Review(String nameEvaluator, String nameEvaluated, int score, LocalDateTime createDate, String transactionId) {
-        this.nameEvaluator = nameEvaluator;
-        this.nameEvaluated = nameEvaluated;
+    public Review(String evaluatorEmail, String evaluatedEmail, int score, LocalDateTime createDate, Long transactionId) {
+        this.evaluatorEmail = evaluatorEmail;
+        this.evaluatedEmail = evaluatedEmail;
         this.score = score;
         this.createDate = createDate;
         this.transactionId = transactionId;
     }
 
-    public Review(String userIdEvaluated, String nameEvaluator, String nameEvaluated, int score, LocalDateTime createDate, String transactionId) {
-        this.userIdEvaluated = userIdEvaluated;
-        this.nameEvaluator = nameEvaluator;
-        this.nameEvaluated = nameEvaluated;
-        this.score = score;
-        this.createDate = createDate;
-        this.transactionId = transactionId;
-    }
 
     public String getId() {
         return id;
@@ -66,20 +54,20 @@ public class Review {
         this.id = id;
     }
 
-    public String getNameEvaluator() {
-        return nameEvaluator;
+    public String getEvaluatorEmail() {
+        return evaluatorEmail;
     }
 
-    public void setNameEvaluator(String nameEvaluator) {
-        this.nameEvaluator = nameEvaluator;
+    public void setEvaluatorEmail(String evaluatorEmail) {
+        this.evaluatorEmail = evaluatorEmail;
     }
 
-    public String getNameEvaluated() {
-        return nameEvaluated;
+    public String getEvaluatedEmail() {
+        return evaluatedEmail;
     }
 
-    public void setNameEvaluated(String nameEvaluated) {
-        this.nameEvaluated = nameEvaluated;
+    public void setEvaluatedEmail(String evaluatedEmail) {
+        this.evaluatedEmail = evaluatedEmail;
     }
 
     public int getScore() {
@@ -98,22 +86,11 @@ public class Review {
         this.createDate = createDate;
     }
 
-    public String getTransactionId() {
+    public Long getTransactionId() {
         return transactionId;
     }
 
-    public void setTransactionId(String transactionId) {
+    public void setTransactionId(Long transactionId) {
         this.transactionId = transactionId;
     }
-
-    public void setUserIdEvaluated(String userIdEvaluated) {
-        this.userIdEvaluated = userIdEvaluated;
-    }
-
-    public String getUserIdEvaluated() {
-        return userIdEvaluated;
-    }
 }
-
-
-

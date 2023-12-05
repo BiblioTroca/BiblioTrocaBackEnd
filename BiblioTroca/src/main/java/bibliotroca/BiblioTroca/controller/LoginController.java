@@ -19,6 +19,7 @@ import java.util.Map;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 public class LoginController {
@@ -30,7 +31,7 @@ public class LoginController {
 	LoginService loginService;
 
     @GetMapping("/")
-    public String getHomePage(Authentication authentication, HttpServletResponse res) {
+    public RedirectView getHomePage(Authentication authentication, HttpServletResponse res) {
     	DefaultOAuth2User user = (DefaultOAuth2User) authentication.getPrincipal();
         Map<String, Object> attributes = user.getAttributes();
         
@@ -54,7 +55,9 @@ public class LoginController {
         tokenCookie.setDomain("BiblioTroca");
         tokenCookie.setPath("/token");
         
-        return "redirect:/api/v1/bibliotroca/livros";
+        RedirectView redirect = new RedirectView();
+        redirect.setUrl("https://bibliotroca.vercel.app/perfil/completar-perfil");
+        return redirect;
     }
 
     @GetMapping("/login")

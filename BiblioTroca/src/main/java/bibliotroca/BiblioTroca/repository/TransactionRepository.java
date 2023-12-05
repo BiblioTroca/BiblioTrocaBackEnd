@@ -1,6 +1,8 @@
 package bibliotroca.BiblioTroca.repository;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 import bibliotroca.BiblioTroca.entity.Transaction;
@@ -20,5 +22,7 @@ public interface TransactionRepository extends MongoRepository<Transaction, Stri
 	List<Transaction> findAllBySellerEmail(String email);
 
 	List<Transaction> findAllByBuyerEmail(String email);
+
+	Optional<Transaction> findById(Long transactionId);
 	
 }
