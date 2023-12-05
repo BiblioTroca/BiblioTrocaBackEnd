@@ -56,7 +56,7 @@ public class LoginController {
         tokenCookie.setPath("/token");
         
         RedirectView redirect = new RedirectView();
-        redirect.setUrl("https://bibliotroca.vercel.app/perfil/completar-perfil?token=" + token);
+        redirect.setUrl("http://localhost:3000/perfil/completar-perfil?token=" + token);
         return redirect;
     }
 
