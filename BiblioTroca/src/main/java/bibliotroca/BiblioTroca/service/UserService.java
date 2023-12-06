@@ -30,6 +30,13 @@ public class UserService {
 		if(this.userRepository.existsByEmail(user.getEmail())) {
 			throw new RuntimeException("Email já cadastrado.");
 		}
+		return this.userRepository.save(user);
+	}
+	
+	public User createUserMobile(User user) {
+		if(this.userRepository.existsByEmail(user.getEmail())) {
+			throw new RuntimeException("Email já cadastrado.");
+		}
 		user.setPassword(BCrypt.withDefaults().hashToString(12, user.getPassword().toCharArray()));
 		return this.userRepository.save(user);
 	}

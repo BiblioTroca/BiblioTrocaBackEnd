@@ -72,7 +72,7 @@ public class LoginController {
     @ResponseStatus(HttpStatus.CREATED)
     public String createUserFromMobile(@RequestBody User user) throws EmailAlreadyInUseException {
 		System.out.print("a " +String.valueOf(user.getEmail().hashCode()));
-    	User userCreated = this.userService.createUserLogin(user);
+    	User userCreated = this.userService.createUserMobile(user);
 		return loginService.generateToken(userCreated);
     }
     
